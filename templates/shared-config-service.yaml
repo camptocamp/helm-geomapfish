@@ -1,0 +1,23 @@
+{{- if .Values.sharedConfigManager.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-shared-config
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: shared-config
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    release: {{ .Release.Name }}
+    service: shared-config
+{{- end }}

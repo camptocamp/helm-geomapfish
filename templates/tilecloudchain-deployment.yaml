@@ -1,0 +1,113 @@
+{{- if .Values.tilecloudchain.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+{{- $service := "tilecloudchain" }}
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-{{ $service }}
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: {{ $service }}
+  {{- if .Values.openshift }}
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {{ template "c2cgeoportal.trigger" (dict "image" "config" "tag" .Values.image.tag "initContainer" "tilecloudchain-config" "root" . ) }},
+        {{- if gt .Values.version 2.4 }}
+        {{     template "c2cgeoportal.trigger" (dict "image" "config" "tag" .Values.image.tag "initContainer" "gunicorn-config" "root" . ) }},
+        {{- end }}
+        {{ template "c2cgeoportal.trigger" (dict "image" "tilecloudchain" "tag" .Values.tilecloudchain.image.tag "container" "tilecloudchain" "root" . ) }}
+      ]
+  {{- end }}
+spec:
+  replicas: {{ .Values.tilecloudchain.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "c2cgeoportal.fullname" . }}
+      release: {{ .Release.Name }}
+      service: {{ $service }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "c2cgeoportal.fullname" . }}
+        release: {{ .Release.Name }}
+        service: {{ $service }}
+    spec:
+      {{- include "commonPodConfig" (dict "service" .Values.tilecloudchain "affinitySelector" (dict "release" .Release.Name "service" $service) "root" .) | indent 6 }}
+      initContainers:
+        - name: tilecloudchain-config
+          args: ['bash', '-c', 'cp -a /etc/tilegeneration/* /etc/tilegeneration-volume/']
+          volumeMounts:
+            - mountPath: /etc/tilegeneration-volume
+              name: configs
+          {{- template "c2cgeoportal.config" . }}
+        {{- if gt .Values.version 2.4 }}
+        - name: gunicorn-config
+          args: ['bash', '-c', 'cp -a /etc/gunicorn/* /etc/gunicorn-volume/']
+          volumeMounts:
+            - mountPath: /etc/gunicorn-volume
+              name: configs
+          {{- template "c2cgeoportal.config" . }}
+        {{- end }}
+      containers:
+        - name: tilecloudchain
+          {{- if .Values.openshift }}
+          image: " "
+          {{- else }}
+          image: {{ .Values.tilecloudchain.image.name }}:{{ .Values.tilecloudchain.image.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.openshift | ternary "IfNotPresent" .Values.image.externalPullPolicy }}
+          env:
+            - name: VISIBLE_ENTRY_POINT
+              value: {{ .Values.geoportal.entrypoint | quote }}
+            - name: TILEGENERATION_CONFIGFILE
+              value: "/etc/tilegeneration/config.yaml"
+            - name: C2C_BASE_PATH
+              value: "/tiles/c2c"
+            - name: PGOPTIONS
+              value: "-c statement_timeout={{ .Values.postgresql.statementTimeout}}"
+          # Custom env
+          {{- range $name, $value := .Values.tilecloudchain.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+          {{- end }}
+          # c2cwsgiutils env
+          {{- template "c2cwsgiutilsEnv" (dict "service" "tilecloudchain" "root" .) }}
+          # AWS creds env
+          {{- include "c2cgeoportal.awscreds" .Values.s3 | indent 12 }}
+          volumeMounts:
+            - mountPath: /etc/tilegeneration
+              name: configs
+              readOnly: true
+            - mountPath: /etc/gunicorn
+              name: configs
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: "{{ .Values.geoportal.entrypoint }}tiles/c2c/health_check"
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            {{- if not .Values.openshift }}
+            runAsUser: 33  # www-data
+            {{- end }}
+          {{- include "common.containerConfig" (dict "service" .Values.tilecloudchain "root" .) | indent 10 }}
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+{{- end -}}

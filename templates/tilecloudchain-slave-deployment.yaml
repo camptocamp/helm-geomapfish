@@ -1,0 +1,89 @@
+{{- if and .Values.tilecloudchain.enabled .Values.tilecloudchain.slave.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-tilecloudchain-slave
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: tilecloudchain-slave
+  {{- if .Values.openshift }}
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {{ template "c2cgeoportal.trigger" (dict "image" "config" "tag" .Values.image.tag "initContainer" "tilecloudchain-slave-config" "root" . ) }},
+        {{ template "c2cgeoportal.trigger" (dict "image" "tilecloudchain" "tag" .Values.tilecloudchain.image.tag "container" "tilecloudchain-slave" "root" . ) }}
+      ]
+  {{- end }}
+spec:
+  replicas: {{ .Values.tilecloudchain.slave.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "c2cgeoportal.fullname" . }}
+      release: {{ .Release.Name }}
+      service: tilecloudchain-slave
+  template:
+    metadata:
+      labels:
+        app: {{ template "c2cgeoportal.fullname" . }}
+        release: {{ .Release.Name }}
+        service: tilecloudchain-slave
+    spec:
+      {{- include "commonPodConfig" (dict "service" .Values.tilecloudchain.slave "root" .) | indent 6 }}
+      initContainers:
+        - name: tilecloudchain-slave-config
+          args: ['bash', '-c', 'cp -a /etc/tilegeneration/* /etc/tilegeneration-volume/']
+          volumeMounts:
+            - mountPath: /etc/tilegeneration-volume
+              name: configs
+          {{- template "c2cgeoportal.config" . }}
+      containers:
+        - name: tilecloudchain-slave
+          {{- if .Values.openshift }}
+          image: " "
+          {{- else }}
+          image: {{ .Values.tilecloudchain.image.name }}:{{ .Values.tilecloudchain.image.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.openshift | ternary "IfNotPresent" .Values.image.externalPullPolicy }}
+          args: ["generate_tiles", "--role=slave", "--daemon"]
+          env:
+            - name: VISIBLE_ENTRY_POINT
+              value: {{ .Values.geoportal.entrypoint | quote }}
+            - name: TILEGENERATION_CONFIGFILE
+              value: "/etc/tilegeneration/config.yaml"
+            - name: C2C_BASE_PATH
+              value: "/tiles/c2c"
+            - name: PGOPTIONS
+              value: "-c statement_timeout={{ .Values.postgresql.statementTimeout}}"
+          # Custom env
+          {{- range $name, $value := .Values.tilecloudchain.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+          {{- end }}
+          # c2cwsgiutils env
+          {{- template "c2cwsgiutilsEnv" (dict "service" "tilecloudchain" "root" .) }}
+          # AWS creds env
+          {{- include "c2cgeoportal.awscreds" .Values.s3 | indent 12 }}
+          volumeMounts:
+            - mountPath: /etc/tilegeneration
+              name: configs
+              readOnly: true
+            - mountPath: /tmp
+              name: tmp-volume
+          securityContext:
+            runAsNonRoot: true
+            {{- if not .Values.openshift }}
+            runAsUser: 33  # www-data
+            {{- end }}
+          {{- include "common.containerConfig" (dict "service" .Values.tilecloudchain.slave "root" .) | indent 10 }}
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+{{- end -}}

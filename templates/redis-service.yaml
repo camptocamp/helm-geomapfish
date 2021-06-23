@@ -1,0 +1,23 @@
+{{- if not .Values.redis.external.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-redis
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: redis
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: redis
+      protocol: TCP
+      port: 6379
+      name: redis
+  selector:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    release: {{ .Release.Name }}
+    service: redis
+{{- end }}

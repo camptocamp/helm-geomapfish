@@ -1,0 +1,116 @@
+{{- if .Values.tinyows.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+{{- $service := "tinyows" }}
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-{{ $service }}
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: {{ $service }}
+  {{- if .Values.openshift }}
+  annotations:
+    image.openshift.io/triggers: |
+      [
+            {{- if and .Values.sharedConfigManager.enabled .Values.sharedConfigManager.mapserver }}
+            {{    template "c2cgeoportal.trigger" (dict "image" "sharedconfigmanager" "tag" .Values.sharedConfigManager.image.tag "container" "tinyows-config" "root" . ) }},
+            {{- else }}
+            {{    template "c2cgeoportal.trigger" (dict "image" "config" "tag" .Values.image.tag "initContainer" "tinyows-config" "root" . ) }},
+            {{- end }}
+            {{ template "c2cgeoportal.trigger" (dict "image" "tinyows" "tag" .Values.tinyows.image.tag "container" "tinyows" "root" . ) }}
+      ]
+  {{- end }}
+spec:
+  replicas: {{ .Values.tinyows.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "c2cgeoportal.fullname" . }}
+      release: {{ .Release.Name }}
+      service: {{ $service }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "c2cgeoportal.fullname" . }}
+        release: {{ .Release.Name }}
+        service: {{ $service }}
+    spec:
+      {{- include "commonPodConfig" (dict "service" .Values.tinyows "affinitySelector" (dict "release" .Release.Name "service" $service) "root" .) | indent 6 }}
+      {{- if not (and .Values.sharedConfigManager.enabled .Values.sharedConfigManager.mapserver) }}
+      initContainers:
+        - name: tinyows-config
+          args: ['bash', '-c', 'cp -a /etc/mapserver/* /etc/mapserver-volume/']
+          volumeMounts:
+            - mountPath: /etc/mapserver-volume
+              name: configs
+          {{- template "c2cgeoportal.config" . }}
+      {{- end }}
+      containers:
+        {{- if and .Values.sharedConfigManager.enabled .Values.sharedConfigManager.mapserver }}
+        - name: tinyows-config
+          {{- template "c2cgeoportal.sharedConfig" (dict "service" "tinyows_config" "root" .) }}
+            # Config env
+            {{- include "c2cgeoportal.configEnv" . | indent 12 }}
+            # Config env end
+            - name: TAG_FILTER
+              value: mapserver
+            - name: API_BASE_URL
+              value: http://{{ template "c2cgeoportal.fullname" . }}-shared-config/scm
+          args: ['shared-config-slave']
+          volumeMounts:
+            - mountPath: /config/mapserver
+              name: configs
+          {{- include "common.containerConfig" (dict "service" .Values.sharedConfigManager.slave "root" .) | indent 10 }}
+        {{- end }}
+        - name: tinyows
+          {{- if .Values.openshift }}
+          image: " "
+          {{- else }}
+          image: {{ .Values.tinyows.image.name }}:{{ .Values.tinyows.image.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.openshift | ternary "IfNotPresent" .Values.image.externalPullPolicy }}
+          env:
+            - name: PGOPTIONS
+              value: "-c statement_timeout={{ .Values.postgresql.statementTimeout}}"
+            {{- if .Values.c2c.catchSegV }}
+            - name: TINYOWS_CATCH_SEGV
+              value: "1"
+            - name: SEGFAULT_SIGNALS
+              value: "all"
+            {{- end }}
+            {{- range $name, $value := .Values.tinyows.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+          workingDir: /var/log
+          volumeMounts:
+            - mountPath: /etc/mapserver
+              name: configs
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0
+              port: http
+            initialDelaySeconds: 5
+          securityContext:
+            runAsNonRoot: true
+            {{- if not .Values.openshift }}
+            runAsUser: 33  # www-data
+            {{- end }}
+          {{- include "common.containerConfig" (dict "service" .Values.tinyows "root" .) | indent 10 }}
+      volumes:
+        - name: configs
+          emptyDir: {}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+{{- end -}}

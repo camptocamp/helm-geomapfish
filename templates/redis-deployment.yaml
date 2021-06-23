@@ -1,0 +1,71 @@
+{{- if not .Values.redis.external.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-redis
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: redis
+  {{- if .Values.openshift }}
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {{ template "c2cgeoportal.trigger" (dict "image" "redis" "tag" .Values.redis.image.tag "container" "redis" "root" . ) }}
+      ]
+  {{- end }}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "c2cgeoportal.fullname" . }}
+      release: {{ .Release.Name }}
+      service: redis
+  template:
+    metadata:
+      labels:
+        app: {{ template "c2cgeoportal.fullname" . }}
+        release: {{ .Release.Name }}
+        service: redis
+    spec:
+      {{- include "commonPodConfig" (dict "service" .Values.redis "root" .) | indent 6 }}
+      containers:
+        - name: redis
+          {{- if .Values.openshift }}
+          image: " "
+          {{- else }}
+          image: {{ .Values.redis.image.name }}:{{ .Values.redis.image.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.openshift | ternary "IfNotPresent" .Values.image.externalPullPolicy }}
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          args:
+            - redis-server
+            - --save
+            - ""
+            - --appendonly
+            - "no"
+            - --maxmemory
+            - "{{ .Values.redis.maxMemory }}mb"
+            - --maxmemory-policy
+            - volatile-lru
+            - --tcp-keepalive
+            - "30"
+          readinessProbe:
+            tcpSocket:
+              port: redis
+            initialDelaySeconds: 2
+          securityContext:
+            runAsNonRoot: true
+            {{- if not .Values.openshift }}
+            runAsUser: 33  # www-data
+            {{- end }}
+          {{- include "common.containerConfig" (dict "service" .Values.redis "root" .) | indent 10 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+{{- end }}

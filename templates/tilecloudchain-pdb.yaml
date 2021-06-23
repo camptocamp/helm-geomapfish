@@ -1,0 +1,18 @@
+{{- if .Values.tilecloudchain.enabled -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-tilecloudchain-pdb
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: tilecloudchain-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: {{ template "c2cgeoportal.fullname" . }}
+      service: tilecloudchain
+{{- end -}}

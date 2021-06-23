@@ -1,0 +1,195 @@
+{{- if .Values.print.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+{{- $service := "print" }}
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-{{ $service }}
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: {{ $service }}
+  {{- if .Values.openshift }}
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {{- if and .Values.sharedConfigManager.enabled .Values.sharedConfigManager.print }}
+        {{    template "c2cgeoportal.trigger" (dict "image" "sharedconfigmanager" "tag" .Values.sharedConfigManager.image.tag "container" "print-config" "root" . ) }},
+        {{- else }}
+        {{    template "c2cgeoportal.trigger" (dict "image" "config" "tag" .Values.image.tag "initContainer" "print-config" "root" . ) }},
+        {{- end }}
+        {{ template "c2cgeoportal.trigger" (dict "image" "print" "tag" .Values.print.image.tag "container" "print" "root" . ) }}
+      ]
+  {{- end }}
+spec:
+  {{- if .Values.print.multiInstance.enabled }}
+  replicas: {{ .Values.print.multiInstance.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      {{- if (gt .Values.print.multiInstance.replicaCount 1.0) }}
+      # The print uses a lot of resources and cannot be installed twice on a node.
+      # So we stop an old POD before starting a new one.
+      maxSurge: 0
+      {{- else }}
+      maxSurge: 1
+      {{- end }}
+      maxUnavailable: 25%
+  {{- else }}
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "c2cgeoportal.fullname" . }}
+      release: {{ .Release.Name }}
+      service: {{ $service }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "c2cgeoportal.fullname" . }}
+        release: {{ .Release.Name }}
+        service: {{ $service }}
+    spec:
+      {{- include "commonPodConfig" (dict "service" .Values.print "affinitySelector" (dict "release" .Release.Name "service" $service) "root" .) | indent 6 }}
+      {{- if not (and .Values.sharedConfigManager.enabled .Values.sharedConfigManager.print) }}
+      initContainers:
+        - name: print-config
+          args: ['bash', '-c', 'cp -a /usr/local/tomcat/webapps/ROOT/print-apps/* /usr/local/tomcat/webapps/ROOT/print-apps-volume/']
+          volumeMounts:
+            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps-volume
+              name: configs
+          {{- template "c2cgeoportal.config" . }}
+      {{- end }}
+      containers:
+        {{- if and .Values.sharedConfigManager.enabled .Values.sharedConfigManager.print }}
+        - name: print-config
+          {{- template "c2cgeoportal.sharedConfig" (dict "service" "print_config" "root" .) }}
+            # Config env
+            {{- include "c2cgeoportal.configEnv" . | indent 12 }}
+            # Config env end
+            - name: TAG_FILTER
+              value: print
+            - name: API_BASE_URL
+              value: http://{{ template "c2cgeoportal.fullname" . }}-shared-config/scm
+          args: ['shared-config-slave']
+          volumeMounts:
+            - mountPath: /config/print
+              name: configs
+          {{- include "common.containerConfig" (dict "service" .Values.sharedConfigManager.slave "root" .) | indent 10 }}
+        {{- end }}
+        - name: print
+          {{- if .Values.openshift }}
+          image: " "
+          {{- else }}
+          image: {{ .Values.print.image.name }}:{{ .Values.print.image.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.openshift | ternary "IfNotPresent" .Values.image.externalPullPolicy }}
+          volumeMounts:
+            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+              name: configs
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+          {{- range $name, $value := .Values.print.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+          {{- end }}
+          {{- if eq .Values.c2c.logging.type "logstash" }}
+            - name: TOMCAT_LOG_TYPE
+              value: logstash
+            - name: TOMCAT_LOG_HOST
+              value: {{ .Values.c2c.logging.host }}
+            - name: TOMCAT_LOG_PORT
+              value: {{ .Values.c2c.logging.port }}
+          {{- end }}
+          {{- if eq .Values.c2c.logging.type "console" }}
+            - name: TOMCAT_LOG_TYPE
+              value: classic
+          {{- end }}
+          {{- if eq .Values.c2c.logging.type "json" }}
+            - name: TOMCAT_LOG_TYPE
+              value: json
+          {{- end }}
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: hostname
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: database
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: password
+          {{- if .Values.c2c.statsd.enabled }}
+            - name: STATSD_ADDRESS
+              value: {{ .Values.c2c.statsd.url }}
+            - name: STATSD_PREFIX
+              value: {{ .Chart.Name }}.{{ .Release.Name }}.%h
+          {{- end }}
+            - name: CATALINA_OPTS
+              value: >-
+                -Dmapfish.maxContentLength={{ .Values.print.maxContentLength }}
+                -DmaxNumberOfRunningPrintJobs={{ .Values.print.maxNumberOfRunningPrintJobs }}
+                {{- if .Values.c2c.sentry.enabled }}
+                -Dsentry.dsn=https://{{ .Values.c2c.sentry.key }}:{{ .Values.c2c.sentry.secret }}@{{ .Values.c2c.sentry.hostname }}/{{ .Values.c2c.sentry.project }}
+                -Dsentry.release={{ .Values.print.image.tag }}
+                -Dsentry.environment={{ .Release.Name }}
+                -Dsentry.tags=service:print
+                {{- end }}
+                {{- if .Values.print.multiInstance.enabled }}
+                -Ddb.username=$(DB_USERNAME)
+                -Ddb.password=$(DB_PASSWORD)
+                -Ddb.host=$(DB_HOST)
+                -Ddb.name=$(DB_DATABASE)
+                -Ddb.schema={{ .Values.print.dbSchema }}
+                {{- end }}
+                -Dsun.net.inetaddr.ttl=30
+                -Xmx{{ .Values.print.maxMemory }}M
+                -Xms{{ div .Values.print.maxMemory 2 }}M
+                -XX:GCTimeLimit=70
+                -XX:GCHeapFreeLimit=10
+                -XX:+ExitOnOutOfMemoryError
+                {{ .Values.print.catalinaOpts }}
+            - name: PGOPTIONS
+              value: "-c statement_timeout={{ .Values.postgresql.statementTimeout}}"
+            - name: PRINT_CANCEL_OLD_POLL_INTERVAL
+              value: "{{ mul .Values.print.replicaCount 60 }}"  # target a poll every minute
+            - name: PRINT_POLL_INTERVAL
+              value: "{{ div .Values.print.replicaCount 2.0 }}"  # target a poll every 0.5s
+          readinessProbe:
+            httpGet:
+              path: /metrics/ping?health_check=true
+              port: http
+            initialDelaySeconds: 15
+          securityContext:
+            runAsNonRoot: true
+            {{- if not .Values.openshift }}
+            runAsUser: 33  # www-data
+            {{- end }}
+          {{- if .Values.print.multiInstance.enabled }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh {{ .Values.print.terminationGracePeriodSeconds }} || true']
+          {{- end }}
+          {{- include "common.containerConfig" (dict "service" .Values.print "root" .) | indent 10 }}
+      volumes:
+        - name: configs
+          emptyDir: {}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+{{- end -}}

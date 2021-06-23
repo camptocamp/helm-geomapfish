@@ -1,0 +1,23 @@
+{{- if and .Values.tilecloudchain.enabled .Values.mapcache.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-memcached
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: memcached
+spec:
+  type: ClusterIP
+  ports:
+    - port: 11211
+      targetPort: memcached
+      protocol: TCP
+      name: memcached
+  selector:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    release: {{ .Release.Name }}
+    service: memcached
+{{- end }}

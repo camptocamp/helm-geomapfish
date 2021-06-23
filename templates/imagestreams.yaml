@@ -1,0 +1,150 @@
+{{- if .Values.openshift }}
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-geoportal
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: {{ .Values.image.tag | quote }}
+      from:
+        kind: DockerImage
+        {{- if .Values.geoportal.image }}
+        name: {{ .Values.geoportal.image }}
+        {{- else }}
+        name: {{ .Values.image.repositoryPrefix }}-geoportal:{{ .Values.image.tag }}
+        {{- end }}
+      referencePolicy:
+        type: Local
+      importPolicy:
+        scheduled: true
+{{- if .Values.tools.enabled }}
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-tools
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: {{ .Values.image.tag | quote }}
+      from:
+        kind: DockerImage
+        {{- if .Values.tools.image }}
+        name: {{ .Values.tools.image }}
+        {{- else }}
+        name: {{ .Values.image.repositoryPrefix }}-tools:{{ .Values.image.tag }}
+        {{- end }}
+      referencePolicy:
+        type: Local
+      importPolicy:
+        scheduled: true
+{{- end }}
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-config
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+  - name: {{ .Values.image.tag | quote }}
+    from:
+      kind: DockerImage
+      name: {{ .Values.image.repositoryPrefix }}-config:{{ .Values.image.tag }}
+    referencePolicy:
+      type: Local
+    importPolicy:
+      scheduled: true
+
+{{-   range tuple "mapserver" "tinyows" "qgisserver" "mapcache" "tilecloudchain" "print" "memcached" "sharedConfigManager" }}
+{{-     $service := index $.Values . }}
+{{-     if or $service.enabled ( eq . "redis" ) ( and ( eq . "memcached" ) $.Values.mapcache.enabled )}}
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ template "c2cgeoportal.fullname" $ }}-{{ . | lower }}
+  labels:
+    app: {{ template "c2cgeoportal.fullname" $ }}
+    chart: {{ template "c2cgeoportal.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+{{- if $service.image.tag }}
+    - name: {{ $service.image.tag | quote }}
+      from:
+        kind: DockerImage
+        name: {{ $service.image.name }}:{{ $service.image.tag }}
+{{- else }}
+    - name: {{ printf "gmf%g-qgis%s" $.Values.version $service.version | quote }}
+      from:
+        kind: DockerImage
+        name: {{ $service.image.name }}:{{ printf "gmf%g-qgis%s" $.Values.version $service.version }}
+{{- end }}
+      referencePolicy:
+        type: Local
+      importPolicy:
+        scheduled: true
+{{-     end }}
+{{-   end }}
+
+{{- if not .Values.redis.external.enabled }}
+{{-   range tuple "redis" }}
+{{-     $service := index $.Values . }}
+{{-     if or $service.enabled ( eq . "redis" ) ( and ( eq . "memcached" ) $.Values.mapcache.enabled )}}
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: {{ template "c2cgeoportal.fullname" $ }}-{{ . | lower }}
+  labels:
+    app: {{ template "c2cgeoportal.fullname" $ }}
+    chart: {{ template "c2cgeoportal.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+{{- if $service.image.tag }}
+    - name: {{ $service.image.tag | quote }}
+      from:
+        kind: DockerImage
+        name: {{ $service.image.name }}:{{ $service.image.tag }}
+{{- else }}
+    - name: {{ printf "gmf%g-qgis%s" $.Values.version $service.version | quote }}
+      from:
+        kind: DockerImage
+        name: {{ $service.image.name }}:{{ printf "gmf%g-qgis%s" $.Values.version $service.version }}
+{{- end }}
+      referencePolicy:
+        type: Local
+      importPolicy:
+        scheduled: true
+{{-     end }}
+{{-   end }}
+{{- end }}
+{{- end }}

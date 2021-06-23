@@ -1,0 +1,65 @@
+{{- if and .Values.tilecloudchain.enabled .Values.mapcache.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+{{- $service := "memcached" }}
+metadata:
+  name: {{ template "c2cgeoportal.fullname" . }}-{{ $service }}
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: {{ $service }}
+  {{- if .Values.openshift }}
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {{ template "c2cgeoportal.trigger" (dict "image" "memcached" "tag" .Values.memcached.image.tag "container" "memcached" "root" . ) }}
+      ]
+  {{- end }}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ template "c2cgeoportal.fullname" . }}
+      release: {{ .Release.Name }}
+      service: {{ $service }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "c2cgeoportal.fullname" . }}
+        release: {{ .Release.Name }}
+        service: {{ $service }}
+    spec:
+      {{- include "commonPodConfig" (dict "service" .Values.memcached "affinitySelector" (dict "release" .Release.Name "service" $service) "root" .) | indent 6 }}
+      containers:
+        - name: memcached
+          {{- if .Values.openshift }}
+          image: " "
+          {{- else }}
+          image: {{ .Values.memcached.image.name }}:{{ .Values.memcached.image.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.openshift | ternary "IfNotPresent" .Values.image.externalPullPolicy }}
+          args:
+            - memcached
+            - --memory-limit
+            - {{ .Values.memcached.maxMemory | quote }}
+          ports:
+            - name: memcached
+              containerPort: 11211
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: memcached
+            initialDelaySeconds: 2
+          securityContext:
+            runAsNonRoot: true
+            {{- if not .Values.openshift }}
+            runAsUser: 33  # www-data
+            {{- end }}
+          {{- include "common.containerConfig" (dict "service" .Values.memcached "root" .) | indent 10 }}
+
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+{{- end -}}

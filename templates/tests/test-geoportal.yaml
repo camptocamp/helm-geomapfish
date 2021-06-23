@@ -1,0 +1,66 @@
+{{- define "tilecloudchain" -}}
+{{-   if .Values.ingress.enabled -}}
+{{-     $host := (index .Values.ingress.hosts 0).host -}}
+{{-     if .Values.ingress.tls -}}
+{{-       printf "https://%s%s" $host .Values.geoportal.entrypoint -}}
+{{-     else -}}
+{{-       printf "http://%s%s" $host .Values.geoportal.entrypoint -}}
+{{-     end -}}
+{{-   else -}}
+{{-     $fullname := include "c2cgeoportal.fullname" . -}}
+{{-     printf "http://%s-tilecloudchain%s" $fullname .Values.geoportal.entrypoint -}}
+{{-   end -}}
+{{- end -}}
+{{- define "geoportal" -}}
+{{-   if .Values.ingress.enabled -}}
+{{-     $host := (index .Values.ingress.hosts 0).host -}}.
+{{-     if .Values.ingress.tls -}}
+{{-       printf "https://%s%s" $host .Values.geoportal.entrypoint -}}
+{{-     else -}}
+{{-       printf "http://%s%s" $host .Values.geoportal.entrypoint -}}
+{{-     end -}}
+{{-   else -}}
+{{-     $fullname := include "c2cgeoportal.fullname" . -}}
+{{-     printf "http://%s-geoportal%s" $fullname .Values.geoportal.entrypoint -}}
+{{-   end -}}
+{{- end -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-c2cgeoportal-test"
+  annotations:
+    "helm.sh/hook": test-success
+  labels:
+    app: {{ template "c2cgeoportal.fullname" . }}
+    chart: {{ template "c2cgeoportal.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    test: "yes"
+spec:
+  containers:
+  - name: {{ .Release.Name }}-c2cgeoportal-test
+    image: ghcr.io/camptocamp/c2cwsgiutils:4
+    resources:
+      limits:
+        cpu: 4
+        memory: 64Mi
+      requests:
+        cpu: 1m
+        memory: 16Mi
+    command:
+      - python
+      - -c
+      - |
+        import requests
+        def test_url(url):
+            print("#################################")
+            print("## " + url)
+            r = requests.get(url)
+            print(r.text)
+            r.raise_for_status()
+            print()
+        {{- if .Values.tilecloudchain.enabled }}
+        test_url("{{ template "tilecloudchain" . }}tiles/c2c/health_check?max_level=100")
+        {{- end }}
+        test_url("{{ template "geoportal" . }}c2c/health_check?max_level=2")
+  restartPolicy: Never

@@ -1,0 +1,97 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "c2cgeoportal.fullname" . -}}
+{{- $entrypoint := .Values.geoportal.entrypoint -}}
+{{- range $ingress_conf := .Values.ingress.hosts }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-{{ $ingress_conf.name }}
+  labels:
+    app: {{ $fullName }}
+    chart: {{ template "c2cgeoportal.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    host: {{ $ingress_conf.host }}
+  annotations:
+    {{- if $.Values.openshift }}
+    {{-   if $.Values.ingress.tls }}
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    {{-   end }}
+    haproxy.router.openshift.io/timeout: "{{ $.Values.timeout }}s"
+    # Disable sticky sessions
+    haproxy.router.openshift.io/balance: leastconn
+    haproxy.router.openshift.io/disable_cookies: "true"
+    # Early failing in case of too many connections in //. This will protect the system in case of overload.
+    {{-   if not $.Values.ingress.useCache }}
+    haproxy.router.openshift.io/pod-concurrent-connections: {{ sub (div (mul $.Values.c2c.nbThreads $.Values.c2c.nbProcesses) $.Values.ingress.nbRouters) 1 | quote}}
+    {{-   end }}
+    {{- else }}
+    {{-   if $.Values.ingress.tls }}
+    kubernetes.io/tls-acme: "true"
+    {{-   end }}
+    kubernetes.io/ingress.class: nginx
+    nginx.org/proxy-connect-timeout: "{{ $.Values.timeout }}s"
+    nginx.org/proxy-read-timeout: "{{ $.Values.timeout }}s"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{ $.Values.timeout }}s"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{ $.Values.timeout }}s"
+    {{- end }}
+    {{- range $key, $val := $.Values.ingress.annotations }}
+    {{ $key | quote }}: {{$val | quote }}
+    {{- end }}
+spec:
+{{- if $.Values.ingress.tls }}
+  tls:
+    - hosts:
+      - {{ $ingress_conf.host }}
+      secretName: "{{ $fullName }}-{{ $ingress_conf.name }}-tls"
+{{- end }}
+  rules:
+    - host: {{ $ingress_conf.host }}
+      http:
+        paths:
+          {{- if $.Values.ingress.useCache }}
+          - backend:
+              serviceName: cache
+              servicePort: http
+          {{- else }}
+          {{-   if $.Values.c2c.profiler.enabled }}
+          {{-     if $.Values.tilecloudchain.enabled }}
+          - path: "{{ $entrypoint }}{{ $.Values.c2c.profiler.pathPrefix }}tilecloudchain/"
+            backend:
+              serviceName: "{{ $fullName }}-tilecloudchain"
+              servicePort: http
+          {{-     end }}
+          - path: "{{ $entrypoint }}{{ $.Values.c2c.profiler.pathPrefix }}geoportal/"
+            backend:
+              serviceName: "{{ $fullName }}-geoportal"
+              servicePort: http
+          {{-   end }}
+          {{-   if $.Values.tilecloudchain.enabled }}
+          - path: "{{ $entrypoint }}tiles/"
+            backend:
+              serviceName: "{{ $fullName }}-tilecloudchain"
+              servicePort: http
+          {{-   end }}
+          {{-   if $.Values.sharedConfigManager.enabled }}
+          - path: "/scm"
+            backend:
+              serviceName: "{{ $fullName }}-shared-config"
+              servicePort: http
+          {{-   end }}
+          {{- range $custom := $.Values.ingress.custom }}
+          {{- range $path, $service := $custom }}
+          - path: "{{ $path }}"
+            backend:
+              serviceName: "{{ $service }}"
+              servicePort: http
+          {{- end }}
+          {{- end }}
+          - path: "{{ $entrypoint }}"
+            backend:
+              serviceName: "{{ $fullName }}-geoportal"
+              servicePort: http
+          {{- end }}
+{{- end }}
+{{- end }}

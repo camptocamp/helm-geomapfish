@@ -1,0 +1,366 @@
+---
+version: 2.5
+
+geoportal:
+  image: False
+  replicaCount: 1
+  healthCheckLevel: 0
+  entrypoint: /
+  prometheus: false
+  env: {} # Custom environment variables
+  alembic:
+    enabled: true
+    mainStatic: false
+    resources:
+      requests:
+        cpu: 1m
+        memory: 2Mi
+      limits:
+        memory: 64Mi
+  busybox:
+    resources:
+      requests:
+        cpu: 1m
+        memory: 80Ki
+      limits:
+        memory: 4Mi
+  resources:
+    requests:
+      memory: 175Mi
+      cpu: 88m
+    limits:
+      memory: 1024Mi
+  # You can change the s3 used for this service by specifying a s3 section that looks like the root one
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+tools:
+  enabled: false
+  image: must be changed
+  resources:
+    requests:
+      cpu: 1m
+      memory: 1.46Mi
+    limits:
+      memory: 100Mi
+
+config:
+  env: {} # Custom environment variables
+  resources:
+    requests:
+      memory: 16Mi
+      cpu: 1m
+    limits:
+      memory: 64Mi
+
+sharedConfigManager:
+  enabled: false
+  mapserver: true # and tinyows
+  print: true
+  # customPrintSources: ""  # custom print sources definition
+  qgisserver: true
+  repo: git@github.com:camptocamp/demo_geomapfish.git
+  branch: 2.4
+  key: must be changed
+  image:
+    name: camptocamp/shared_config_manager
+    tag: 2
+  resources:
+    requests:
+      memory: 55Mi
+      cpu: 6m
+    limits:
+      memory: 256Mi
+  slave:
+    resources:
+      requests:
+        memory: 37Mi
+        cpu: 14m
+      limits:
+        memory: 128Mi
+
+redis:
+  external:
+    enabled: false
+    sentinel: false
+    host: redis-tunnel
+    db: 0
+    servicename: mymaster
+    timeout: 3
+    port: 6379
+  image:
+    name: redis
+    tag: '5'
+  maxMemory: 32 # Mib
+  resources:
+    requests:
+      memory: 3.92Mi
+      cpu: 1.461m
+    limits:
+      memory: 57Mi
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+mapserver:
+  enabled: true
+  replicaCount: 1
+  parallelism: 1
+  image:
+    name: camptocamp/mapserver
+    tag: '7.2'
+  env: {}
+  resources:
+    requests:
+      memory: 12.3Mi
+      cpu: 1m
+    limits:
+      memory: 256Mi
+  apache_exporter: &apache_exporter
+    resources:
+      requests:
+        memory: 10.3Mi
+        cpu: 4m
+      limits:
+        memory: 20Mi
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+tinyows:
+  enabled: false
+  replicaCount: 1
+  image:
+    name: camptocamp/tinyows
+    tag: latest
+  env: {}
+  resources:
+    requests:
+      memory: 24Mi
+      cpu: 5m
+    limits:
+      memory: 64Mi
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+qgisserver:
+  enabled: false
+  replicaCount: 1
+  parallelism: 1
+  projectFile: /etc/qgisserver/project.qgz
+  version: '3.4'
+  image:
+    name: camptocamp/geomapfish-qgisserver
+    # tag:
+  env: {}
+  resources:
+    requests:
+      memory: 110Mi
+      cpu: 12.2m
+    limits:
+      memory: 300Mi
+  probe:
+    liveness: /
+    readiness: /?SERVICE=WMS&REQUEST=GetCapabilities
+  apache_exporter: *apache_exporter
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+mapcache:
+  enabled: true # only if tilecloudchain.enabled=true also
+  replicaCount: 1
+  image:
+    name: camptocamp/mapcache
+    tag: '1.6'
+  resources:
+    requests:
+      memory: 11.3Mi
+      cpu: 32m
+    limits:
+      memory: 300Mi
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+tilecloudchain:
+  enabled: true
+  replicaCount: 1
+  slave:
+    enabled: true
+    replicaCount: 1
+    resources:
+      requests:
+        memory: 42Mi
+        cpu: 1m
+      limits:
+        memory: 256Mi
+  image:
+    name: camptocamp/tilecloud-chain
+    tag: '1.13'
+  env:
+    C2CWSGI_LOG_LEVEL: WARN
+    TILECLOUD_LOG_LEVEL: INFO
+    TILECLOUD_CHAIN_LOG_LEVEL: INFO
+  s3:
+    bucket: tiles
+  resources:
+    requests:
+      memory: 237Mi
+      cpu: 14m
+    limits:
+      memory: 450Mi
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+s3:
+  enabled: false
+  # A secret with access_key, secret_key, region, hostname
+  secretRef: must be changed
+
+print:
+  enabled: true
+  # external: https://.../print/   only if !enabled
+  external: False
+  application: '' # if you don't want to use the default application
+  image:
+    name: camptocamp/mapfish_print
+    tag: '3.20'
+  env:
+    LOG_LEVEL: info
+  maxContentLength: '1048576'
+  maxNumberOfRunningPrintJobs: '2'
+  multiInstance:
+    enabled: false
+    replicaCount: 2 # Used only if enabled==true
+  terminationGracePeriodSeconds: 120
+  dbSchema: public
+  catalinaOpts: ''
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+  maxMemory: 600 # Mib
+  resources:
+    requests:
+      memory: 312Mi
+      cpu: 20m
+    limits:
+      memory: 1300Mi
+
+memcached:
+  # enabled only if mapcache is enabled
+  image:
+    name: memcached
+    tag: '1.5'
+  maxMemory: '128' # Mib
+  resources:
+    requests:
+      memory: 117Mi
+      cpu: 6m
+    limits:
+      memory: 178Mi
+
+c2c:
+  # if not specified, a random secret will be generated
+  secret: must be changed
+  authtkt: must be changed
+  requestsDefaultTimeout: 120
+  profiler:
+    enabled: false
+    pathPrefix: profiler_ # the service name will be added at the end
+
+  statsd:
+    enabled: false
+    url: monitoring-statsd:9125
+    dbstats:
+      enabled: true
+      extraSchemas: []
+      prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
+      extraDBs: []
+      # - database: xxx
+      #   user: optional and defaults to the main DB's
+      #   password: optional and defaults to the main DB's
+      #   host: optional and defaults to the main DB's
+      env:
+        C2CWSGIUTILS_STATS_DB_TRYNUMBER: '10'
+        C2CWSGIUTILS_STATS_DB_SLEEP: '30'
+        LOG_LEVEL: WARNING
+        LOG_TYPE: json
+        C2C_REQUESTS_DEFAULT_TIMEOUT: "30"
+      resources:
+        requests:
+          cpu: 30m
+          memory: 41.1Mi
+        limits:
+          memory: 50Mi
+
+  logging:
+    type: console # can be console, json or logstash
+    # for type==logstash:
+    # host: ...
+    # port: ...
+
+  sentry:
+    enabled: false
+    hostname: o330647.ingest.sentry.io
+    key: XXX
+    secret: YYY
+    project: Z
+
+  catchSegV: false
+  requestsDefaultTimeout: 30 # default timeout in seconds for queries done with the "requests" module
+  nbThreads: 10
+  nbProcesses: 2
+
+postgresql:
+  # A secret with password, username, hostname, hostnameSlave, database
+  secret: secret_name
+
+  # schema: main
+  staticSchema: main_static
+  statementTimeout: 30000 # milliseconds
+
+image:
+  repositoryPrefix: camptocamp/demo
+  tag: latest
+  pullPolicy: Always # for the geoportal images
+  externalPullPolicy: Always # only for the non geoportal images
+  serviceAccountName: default # service account used by containers not needing root
+
+# Kubernetes and OpenShift ingress
+ingress:
+  enabled: true
+  useCache: false # use the cache chart instead of this ingress
+  annotations: {}
+  # - name: <name>
+  #   host: <host>
+  # The host can't change on Kubernetes then if you need to change it you should also change the name.
+  hosts: []
+  tls: true
+  nbRouters: 2 # number of front routers in the cluster
+  custom: [] # custom paths to services
+  #  /path: k8s-service-name
+
+timeout: 120 # request timeout in seconds
+openshift: false
+revisionHistoryLimit: 1
+
+# the next entries are default values that can be overridden in the different services
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+#imagePullSecrets:
+#  registry: https://index.docker.io/v1/
+#  username: dockerhubc2c
+#  password: ???
+#  email: docker-hub@camptocamp.com
+
+nameOverride: ''
+fullnameOverride: ''

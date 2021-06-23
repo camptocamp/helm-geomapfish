@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+description: A Helm chart for deploying c2cgeoportal on Kubernetes
+name: c2cgeoportal
+version: 0.1.0
+home: http://geomapfish.org/
+sources:
+  - https://github.com/camptocamp/c2cgeoportal
+icon: http://geomapfish.org/images/brand/logo.png
