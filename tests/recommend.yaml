@@ -1,0 +1,104 @@
+geoportal:
+  image:
+    repository: camptocamp/project-groportal or camptocamp/geomapfishapp-geoportal
+    tag: version
+  resources:
+    limits:
+      memory: 2Mi
+    requests:
+      memory: 1Mi
+      cpu: 1m
+
+  configMapNameOverride:
+    env: prod-2-6-geomapfish-env
+    secret: prod-2-6-geomapfish-secret
+  env:
+    PRINT_URL:
+      value: print-url
+
+  config: &config
+    image:
+      repository: camptocamp/project-config
+      tag: version
+    resources:
+      limits:
+        memory: 2Mi
+      requests:
+        memory: 1Mi
+        cpu: 1m
+
+  alembic:
+    image:
+      repository: camptocamp/geomapfish
+      tag: version
+    resources:
+      limits:
+        memory: 2Mi
+      requests:
+        memory: 1Mi
+        cpu: 1m
+
+  tools:
+    resources:
+      limits:
+        memory: 2Mi
+      requests:
+        memory: 1Mi
+        cpu: 1m
+
+  dbstats:
+    image:
+      repository: camptocamp/c2cwsgiutils
+      tag: version
+    resources:
+      limits:
+        memory: 2Mi
+      requests:
+        memory: 1Mi
+        cpu: 1m
+    schemas:
+      - main
+      - static
+
+mapserver:
+  image:
+    repository: camptocamp/mapserver
+    tag: version
+  resources:
+    limits:
+      memory: 2Mi
+    requests:
+      memory: 1Mi
+      cpu: 1m
+  configMapNameOverride:
+    env: prod-2-6-geomapfish-env
+  config: *config
+  apacheExporter: &apacheExporter
+    resources:
+      limits:
+        memory: 2Mi
+      requests:
+        memory: 1Mi
+        cpu: 1m
+
+qgisserver:
+  image:
+    repository: camptocamp/qgisserver
+    tag: version
+  resources:
+    limits:
+      memory: 2Mi
+    requests:
+      memory: 1Mi
+      cpu: 1m
+  configMapNameOverride:
+    env: prod-2-6-geomapfish-env
+  config: *config
+  apacheExporter: *apacheExporter
+
+postgresql:
+  schema: main
+  staticSchema: static
+
+redis:
+  host: redis
