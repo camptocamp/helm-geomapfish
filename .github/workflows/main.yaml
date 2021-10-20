@@ -32,14 +32,37 @@ jobs:
       - name: Checks
         run: c2cciutils-checks
 
-      - uses: azure/setup-helm@v1
+      - name: Install helm
+        uses: azure/setup-helm@v1
+
       - run: helm dependency update .
       - run: helm lint .
+
+      - name: Setup k3s/k3d
+        run: c2cciutils-k8s-install
+
       - run: helm template --namespace=default test . > tests/actual.yaml
       - run: diff --ignore-trailing-space tests/actual.yaml tests/expected.yaml
       - run: helm lint --values=tests/recommend.yaml .
+      - run: kubectl apply -f tests/expected.yaml
+      - run: kubectl delete -f tests/expected.yaml || true
+
+      - name: Create the database
+        run: c2cciutils-k8s-db --script=tests/db.sql
+      - run: helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false bitnami/redis
+
       - run: helm template --namespace=default --values=tests/recommend.yaml test . > tests/recommend-actual.yaml
       - run: diff --ignore-trailing-space tests/recommend-actual.yaml tests/recommend-expected.yaml
+      - run: kubectl apply -f tests/recommend-expected.yaml
+      - run: c2cciutils-k8s-wait
+      - run: c2cciutils-k8s-logs
+        if: always()
+      - run: kubectl delete -f tests/recommend-expected.yaml || true
+
+      - run: helm uninstall test-redis
+      - name: Clean the database
+        run: c2cciutils-k8s-db --cleanup
+        if: always()
 
       - name: Publish
         run: c2cciutils-publish
