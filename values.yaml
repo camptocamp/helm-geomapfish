@@ -1,263 +1,24 @@
-shared:
-  redisEnv: &redisEnv
-    C2C_REDIS_SENTINELS:
-      type: configMap
-      name: env
-      key: REDIS_SENTINELS
-    C2C_REDIS_TIMEOUT:
-      value: 30
-    C2C_REDIS_SERVICENAME:
-      value: mymaster
-    C2C_REDIS_DB:
-      type: configMap
-      name: env
-      key: REDIS_DB
-    C2C_BROADCAST_PREFIX:
-      type: configMap
-      name: env
-      key: REDIS_GEOPORTAL_BROADCAST_PREFIX
-  c2cwsgiutilsEnv: &c2cwsgiutilsEnv
-    <<: *redisEnv
-    #C2C_BROADCAST_PREFIX:
-    #              value: broadcast_{{ .service }}{{ .root.Values.redis.external.db }}
-    #            - name: SENTRY_CLIENT_RELEASE
-    #              value: {{ .root.Values.version | quote }}
-    #            - name: SENTRY_TAG_SERVICE
-    #              value: {{ .service }}
-    GUNICORN_PARAMS:
-      type: configMap
-      name: env
-      key: GUNICORN_PARAMS
-    C2C_LOG_VIEW_ENABLED:
-      value: '1'
-    C2C_DEBUG_VIEW_ENABLED:
-      value: '1'
-    C2C_SQL_PROFILER_ENABLED:
-      value: '1'
-    LOG_TYPE:
-      value: json
-    C2C_REQUESTS_DEFAULT_TIMEOUT:
-      value: '30'
-    SENTRY_URL:
-      type: configMap
-      name: env
-      key: SENTRY_URL
-    SENTRY_CLIENT_ENVIRONMENT:
-      type: configMap
-      name: env
-      key: RELEASE_NAME
-  dbEnv: &dbEnv
-    PGPORT:
-      type: secret
-      name: postgresql-secret
-      key: port
-    PGPORT_SLAVE:
-      type: secret
-      name: postgresql-secret
-      key: portSlave
-    PGHOST:
-      type: secret
-      name: postgresql-secret
-      key: hostname
-    PGHOST_SLAVE:
-      type: secret
-      name: postgresql-secret
-      key: hostnameSlave
-    PGDATABASE:
-      type: secret
-      name: postgresql-secret
-      key: database
-    PGUSER:
-      type: secret
-      name: postgresql-secret
-      key: username
-    PGPASSWORD:
-      type: secret
-      name: postgresql-secret
-      key: password
-    PGSCHEMA:
-      type: configMap
-      name: env
-      key: PGSCHEMA
-    PGSCHEMA_STATIC:
-      type: configMap
-      name: env
-      key: PGSCHEMA_STATIC
-    PGOPTIONS:
-      type: configMap
-      name: env
-      key: PGOPTIONS
-
-  configEnv: &configEnv
-    <<: *dbEnv
-    TILECLOUDCHAIN_INTERNAL_URL:
-      type: configMap
-      name: env
-      key: TILECLOUDCHAIN_INTERNAL_URL
-    GEOPORTAL_INTERNAL_URL:
-      type: configMap
-      name: env
-      key: GEOPORTAL_INTERNAL_URL
-    VISIBLE_WEB_HOST:
-      type: configMap
-      name: env
-      key: VISIBLE_WEB_HOST
-    VISIBLE_WEB_PROTOCOL:
-      value: https
-    VISIBLE_ENTRY_POINT:
-      type: configMap
-      name: env
-      key: VISIBLE_ENTRY_POINT
-    REDIS_DB:
-      type: configMap
-      name: env
-      key: REDIS_DB
-    REDIS_SERVICENAME:
-      type: configMap
-      name: env
-      key: REDIS_SERVICENAME
-    REDIS_TIMEOUT:
-      type: configMap
-      name: env
-      key: REDIS_TIMEOUT
-    MAPSERVER_DATA_SUBSELECT:
-      type: configMap
-      name: env
-      key: MAPSERVER_DATA_SUBSELECT
-    MAPSERVER_DATA_NOAREA_SUBSELECT:
-      type: configMap
-      name: env
-      key: MAPSERVER_DATA_NOAREA_SUBSELECT
-    MAPSERVER_JOIN_TABLES:
-      type: configMap
-      name: env
-      key: MAPSERVER_JOIN_TABLES
-    MAPSERVER_JOIN_WHERE:
-      type: configMap
-      name: env
-      key: MAPSERVER_JOIN_WHERE
-    QGISSERVER_URL:
-      type: configMap
-      name: env
-      key: QGISSERVER_URL
-
 geoportal:
-  env:
-    <<: *configEnv
-    <<: *c2cwsgiutilsEnv
-    SENTRY_CLIENT_RELEASE:
-      type: configMap
-      name: env
-      key: GEOPORTAL_CLIENT_RELEASE
-    SENTRY_TAG_SERVICE:
-      value: geoportal
-    AUTHTKT_SECRET:
-      type: secret
-      name: secret
-      key: authtkt
-
   config: &config
     image: &config-image
       repository: camptocamp/<project>-config
       tag: latest
-      sha:
-    env:
-      <<: *configEnv
-
-  tools:
-    env:
-      <<: *configEnv
-
-  alembic:
-    image:
-      tag: latest
-    env:
-      <<: *configEnv
-      <<: *c2cwsgiutilsEnv
-      SENTRY_CLIENT_RELEASE:
-        type: configMap
-        name: env
-        key: ALEMBIC_CLIENT_RELEASE
-      SENTRY_TAG_SERVICE:
-        value: alembic
 
   dbstats:
-    image:
-      tag: latest
-    env:
-      <<: *dbEnv
-    SENTRY_URL:
-      type: configMap
-      name: env
-      key: SENTRY_URL
-    SENTRY_CLIENT_ENVIRONMENT:
-      type: configMap
-      name: env
-      key: RELEASE_NAME
-    SENTRY_CLIENT_RELEASE:
-      type: configMap
-      name: env
-      key: DBSTATS_CLIENT_RELEASE
-    SENTRY_TAG_SERVICE:
-      value: dbstats
-    STATSD_USE_TAGS:
-      value: '1'
-    STATSD_TAG_CHART:
-      type: configMap
-      name: env
-      key: CHART_NAME
-    STATSD_TAG_RELEASE:
-      type: configMap
-      name: env
-      key: RELEASE_NAME
-    STATSD_TAG_NAMESPACE:
-      type: configMap
-      name: env
-      key: RELEASE_NAMESPACE
+    # Should be on geoportal
+    serviceName: dbstats
 
 mapserver:
-  env:
-    PGOPTIONS:
-      type: configMap
-      name: env
-      key: PGOPTIONS
-    MAX_PROCESSES:
-      value: '1'
-    MAPSERVER_CATCH_SEGV:
-      value: '1'
-    SEGFAULT_SIGNALS:
-      value: all
   config:
     <<: *config
     enabled: true
+    folder: /etc/mapserver
 
 qgisserver:
-  env:
-    <<: *redisEnv
-    MAX_PROCESSES:
-      value: '1'
-    MAX_REQUESTS_PER_PROCESS:
-      value: '500'
-    QGIS_PROJECT_FILE:
-      value: ''
-    QGIS_CUSTOM_CONFIG_PATH:
-      value: /tmp
   config:
     <<: *config
     enabled: true
-
-dbstats:
-  env:
-    C2CWSGIUTILS_STATS_DB_TRYNUMBER:
-      value: '10'
-    C2CWSGIUTILS_STATS_DB_SLEEP:
-      value: '30'
-    LOG_LEVEL:
-      value: WARNING
-    LOG_TYPE:
-      value: json
-    C2C_REQUESTS_DEFAULT_TIMEOUT:
-      value: '30'
+    folder: /etc/qgisserver
 
 gunicorn:
   nbThreads: 10
@@ -265,7 +26,6 @@ gunicorn:
   maxRequests: 2000
   maxRequestsJitter: 200
   timeout: 30
-  #config:
 
 postgresql:
   schema: main

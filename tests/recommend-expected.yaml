@@ -1,11 +1,11 @@
 ---
 # Source: geomapfish/charts/geoportal/templates/pdb.yaml
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.2
+    helm.sh/chart: geoportal-0.1.3
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -90,7 +90,7 @@ data:
   VISIBLE_ENTRY_POINT_RE_ESCAPED: "/"
 
   PGSCHEMA: "main"
-  PGSCHEMA_STATIC: "static"
+  PGSCHEMA_STATIC: "main_static"
   PGOPTIONS: "-c statement_timeout=30000"
 
   REDIS_SENTINELS: "redis:6379"
@@ -125,9 +125,9 @@ data:
     lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
   GEOPORTAL_BROADCAST_PREFIX: broadcast_geoportal_0
 
-  GEOPORTAL_CLIENT_RELEASE: "version"
-  ALEMBIC_CLIENT_RELEASE: "version"
-  DBSTATS_CLIENT_RELEASE: "version"
+  GEOPORTAL_CLIENT_RELEASE: "2.7"
+  ALEMBIC_CLIENT_RELEASE: "2.7"
+  DBSTATS_CLIENT_RELEASE: "4"
 ---
 # Source: geomapfish/charts/geoportal/templates/service.yaml
 apiVersion: v1
@@ -135,7 +135,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.2
+    helm.sh/chart: geoportal-0.1.3
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -148,6 +148,26 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+  selector:
+    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+---
+# Source: geomapfish/charts/geoportal/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-geoportal
+  labels:
+    helm.sh/chart: geoportal-0.1.3
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  type: ClusterIP
+  ports:
     - port: 80
       targetPort: prometheus
       protocol: TCP
@@ -163,7 +183,7 @@ kind: Service
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.13
+    helm.sh/chart: mapserver-0.1.14
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -191,7 +211,7 @@ kind: Service
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.13
+    helm.sh/chart: qgisserver-0.1.14
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -219,7 +239,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.2
+    helm.sh/chart: geoportal-0.1.3
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -244,7 +264,6 @@ spec:
 
       serviceAccountName: default
       securityContext:
-        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 33
       affinity:
@@ -252,35 +271,15 @@ spec:
       initContainers:
         - name: alembic
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/geomapfish:version"
+          image: "camptocamp/geomapfishapp-geoportal:2.7"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_GEOPORTAL_BROADCAST_PREFIX"
               - name: "C2C_DEBUG_VIEW_ENABLED"
                 value: "1"
               - name: "C2C_LOG_VIEW_ENABLED"
                 value: "1"
-              - name: "C2C_REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "C2C_REDIS_SENTINELS"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SENTINELS"
-              - name: "C2C_REDIS_SERVICENAME"
-                value: "mymaster"
-              - name: "C2C_REDIS_TIMEOUT"
-                value: "30"
               - name: "C2C_REQUESTS_DEFAULT_TIMEOUT"
                 value: "30"
               - name: "C2C_SQL_PROFILER_ENABLED"
@@ -288,157 +287,111 @@ spec:
               - name: "GEOPORTAL_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
               - name: "GUNICORN_PARAMS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GUNICORN_PARAMS"
               - name: "LOG_TYPE"
-                value: "json"
+                value: "console"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
               - name: "MAPSERVER_DATA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_SUBSELECT"
               - name: "MAPSERVER_JOIN_TABLES"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_TABLES"
               - name: "MAPSERVER_JOIN_WHERE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_WHERE"
               - name: "PGDATABASE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "database"
+                value: "postgres"
               - name: "PGHOST"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostname"
+                value: "test-pg-postgresql"
               - name: "PGHOST_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostnameSlave"
+                value: "test-pg-postgresql"
               - name: "PGOPTIONS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGOPTIONS"
               - name: "PGPASSWORD"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "password"
+                value: "mySuperTestingPassword"
               - name: "PGPORT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "port"
+                value: "5432"
               - name: "PGPORT_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "portSlave"
+                value: "5432"
               - name: "PGSCHEMA"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA"
               - name: "PGSCHEMA_STATIC"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA_STATIC"
               - name: "PGUSER"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "username"
+                value: "postgres"
               - name: "QGISSERVER_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "QGISSERVER_URL"
-              - name: "REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "REDIS_SERVICENAME"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SERVICENAME"
-              - name: "REDIS_TIMEOUT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_TIMEOUT"
-              - name: "SENTRY_CLIENT_ENVIRONMENT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "RELEASE_NAME"
               - name: "SENTRY_CLIENT_RELEASE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "ALEMBIC_CLIENT_RELEASE"
               - name: "SENTRY_TAG_SERVICE"
                 value: "alembic"
-              - name: "SENTRY_URL"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "SENTRY_URL"
               - name: "TILECLOUDCHAIN_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "TILECLOUDCHAIN_INTERNAL_URL"
               - name: "VISIBLE_ENTRY_POINT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_ENTRY_POINT"
               - name: "VISIBLE_WEB_HOST"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_WEB_HOST"
               - name: "VISIBLE_WEB_PROTOCOL"
                 value: "https"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
-              memory: 2Mi
+              memory: 200Mi
             requests:
-              cpu: 1m
-              memory: 1Mi
+              cpu: 88m
+              memory: 171Mi
           args:
-            - alembic
-            - --name=static
-            - upgrade
-            - head
+            - bash
+            - -c
+            - alembic --name=main upgrade head && alembic --name=static upgrade head
       containers:
         - name: sleep
           image: busybox:latest
           args:
-            - sleep
-            - infinity
+            - tail
+            - -f
+            - /dev/null
 ---
 # Source: geomapfish/charts/geoportal/templates/deployment.yaml
 apiVersion: apps/v1
@@ -446,7 +399,7 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.2
+    helm.sh/chart: geoportal-0.1.3
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -471,7 +424,6 @@ spec:
 
       serviceAccountName: default
       securityContext:
-        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 33
       affinity:
@@ -495,172 +447,110 @@ spec:
       initContainers:
         - name: config
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/project-config:version"
+          image: "camptocamp/geomapfishdemo-config:prod-2-7"
           imagePullPolicy: IfNotPresent
           env:
               - name: "GEOPORTAL_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
               - name: "MAPSERVER_DATA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_SUBSELECT"
               - name: "MAPSERVER_JOIN_TABLES"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_TABLES"
               - name: "MAPSERVER_JOIN_WHERE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_WHERE"
               - name: "PGDATABASE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "database"
+                value: "postgres"
               - name: "PGHOST"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostname"
+                value: "test-pg-postgresql"
               - name: "PGHOST_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostnameSlave"
+                value: "test-pg-postgresql"
               - name: "PGOPTIONS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGOPTIONS"
               - name: "PGPASSWORD"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "password"
+                value: "mySuperTestingPassword"
               - name: "PGPORT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "port"
+                value: "5432"
               - name: "PGPORT_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "portSlave"
+                value: "5432"
               - name: "PGSCHEMA"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA"
               - name: "PGSCHEMA_STATIC"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA_STATIC"
               - name: "PGUSER"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "username"
+                value: "postgres"
               - name: "QGISSERVER_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "QGISSERVER_URL"
-              - name: "REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "REDIS_SERVICENAME"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SERVICENAME"
-              - name: "REDIS_TIMEOUT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_TIMEOUT"
               - name: "TILECLOUDCHAIN_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "TILECLOUDCHAIN_INTERNAL_URL"
               - name: "VISIBLE_ENTRY_POINT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_ENTRY_POINT"
               - name: "VISIBLE_WEB_HOST"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_WEB_HOST"
               - name: "VISIBLE_WEB_PROTOCOL"
                 value: "https"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
-            limits:
-              memory: 2Mi
-            requests:
-              cpu: 1m
-              memory: 1Mi
+            {}
           args: ['bash', '-c', 'cp -a /etc/geomapfish/* /etc/geomapfish-volume/ && cp -a /etc/gunicorn/* /etc/gunicorn-volume/']
           volumeMounts:
-            - mountPath: /etc/config-volume
+            - mountPath: /etc/geomapfish-volume
               name: configs
+            - mountPath: /etc/gunicorn-volume
+              name: gunicorn
       containers:
         - name: geoportal
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/project-groportal or camptocamp/geomapfishapp-geoportal:version"
+          image: "camptocamp/geomapfishapp-geoportal:2.7"
           imagePullPolicy: IfNotPresent
           env:
               - name: "AUTHTKT_SECRET"
-                valueFrom:
-                  secretKeyRef:
-                    name: "prod-2-6-geomapfish-secret"
-                    key: "authtkt"
-              - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_GEOPORTAL_BROADCAST_PREFIX"
+                value: "secret012345678901234567890123456789012345678901234567890123456789"
               - name: "C2C_DEBUG_VIEW_ENABLED"
                 value: "1"
               - name: "C2C_LOG_VIEW_ENABLED"
                 value: "1"
-              - name: "C2C_REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "C2C_REDIS_SENTINELS"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SENTINELS"
-              - name: "C2C_REDIS_SERVICENAME"
-                value: "mymaster"
-              - name: "C2C_REDIS_TIMEOUT"
-                value: "30"
               - name: "C2C_REQUESTS_DEFAULT_TIMEOUT"
                 value: "30"
               - name: "C2C_SQL_PROFILER_ENABLED"
@@ -668,151 +558,103 @@ spec:
               - name: "GEOPORTAL_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
               - name: "GUNICORN_PARAMS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GUNICORN_PARAMS"
               - name: "LOG_TYPE"
-                value: "json"
+                value: "console"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
               - name: "MAPSERVER_DATA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_SUBSELECT"
               - name: "MAPSERVER_JOIN_TABLES"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_TABLES"
               - name: "MAPSERVER_JOIN_WHERE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_WHERE"
               - name: "PGDATABASE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "database"
+                value: "postgres"
               - name: "PGHOST"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostname"
+                value: "test-pg-postgresql"
               - name: "PGHOST_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostnameSlave"
+                value: "test-pg-postgresql"
               - name: "PGOPTIONS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGOPTIONS"
               - name: "PGPASSWORD"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "password"
+                value: "mySuperTestingPassword"
               - name: "PGPORT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "port"
+                value: "5432"
               - name: "PGPORT_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "portSlave"
+                value: "5432"
               - name: "PGSCHEMA"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA"
               - name: "PGSCHEMA_STATIC"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA_STATIC"
               - name: "PGUSER"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "username"
-              - name: "PRINT_URL"
-                value: "print-url"
+                value: "postgres"
               - name: "QGISSERVER_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "QGISSERVER_URL"
-              - name: "REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "REDIS_SERVICENAME"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SERVICENAME"
-              - name: "REDIS_TIMEOUT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_TIMEOUT"
-              - name: "SENTRY_CLIENT_ENVIRONMENT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "RELEASE_NAME"
               - name: "SENTRY_CLIENT_RELEASE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GEOPORTAL_CLIENT_RELEASE"
               - name: "SENTRY_TAG_SERVICE"
                 value: "geoportal"
-              - name: "SENTRY_URL"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "SENTRY_URL"
               - name: "TILECLOUDCHAIN_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "TILECLOUDCHAIN_INTERNAL_URL"
               - name: "VISIBLE_ENTRY_POINT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_ENTRY_POINT"
               - name: "VISIBLE_WEB_HOST"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_WEB_HOST"
               - name: "VISIBLE_WEB_PROTOCOL"
                 value: "https"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
-              memory: 2Mi
+              memory: 400Mi
             requests:
-              cpu: 1m
-              memory: 1Mi
+              cpu: 88m
+              memory: 271Mi
           volumeMounts:
             - mountPath: /etc/geomapfish
-              name: geomapfish
+              name: configs
               readOnly: true
             - mountPath: /etc/gunicorn
               name: gunicorn
@@ -847,7 +689,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.2
+    helm.sh/chart: geoportal-0.1.3
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -872,7 +714,6 @@ spec:
 
       serviceAccountName: default
       securityContext:
-        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 33
       affinity:
@@ -880,131 +721,94 @@ spec:
       containers:
         - name: tools
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/geomapfish-tools:latest"
+          image: "camptocamp/geomapfish-tools:2.7"
           imagePullPolicy: IfNotPresent
           env:
               - name: "GEOPORTAL_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
               - name: "MAPSERVER_DATA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_SUBSELECT"
               - name: "MAPSERVER_JOIN_TABLES"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_TABLES"
               - name: "MAPSERVER_JOIN_WHERE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_WHERE"
               - name: "PGDATABASE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "database"
+                value: "postgres"
               - name: "PGHOST"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostname"
+                value: "test-pg-postgresql"
               - name: "PGHOST_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostnameSlave"
+                value: "test-pg-postgresql"
               - name: "PGOPTIONS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGOPTIONS"
               - name: "PGPASSWORD"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "password"
+                value: "mySuperTestingPassword"
               - name: "PGPORT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "port"
+                value: "5432"
               - name: "PGPORT_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "portSlave"
+                value: "5432"
               - name: "PGSCHEMA"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA"
               - name: "PGSCHEMA_STATIC"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA_STATIC"
               - name: "PGUSER"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "username"
+                value: "postgres"
               - name: "QGISSERVER_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "QGISSERVER_URL"
-              - name: "REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "REDIS_SERVICENAME"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SERVICENAME"
-              - name: "REDIS_TIMEOUT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_TIMEOUT"
               - name: "TILECLOUDCHAIN_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "TILECLOUDCHAIN_INTERNAL_URL"
               - name: "VISIBLE_ENTRY_POINT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_ENTRY_POINT"
               - name: "VISIBLE_WEB_HOST"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_WEB_HOST"
               - name: "VISIBLE_WEB_PROTOCOL"
                 value: "https"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
-              memory: 2Mi
+              memory: 200Mi
             requests:
               cpu: 1m
-              memory: 1Mi
+              memory: 100Mi
           args:
            - sleep
            - infinity
@@ -1015,7 +819,7 @@ kind: Deployment
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.13
+    helm.sh/chart: mapserver-0.1.14
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -1040,7 +844,6 @@ spec:
 
       serviceAccountName: default
       securityContext:
-        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 33
       affinity:
@@ -1048,142 +851,100 @@ spec:
       initContainers:
         - name: config
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/project-config:version"
+          image: "camptocamp/geomapfishdemo-config:prod-2-7"
           imagePullPolicy: IfNotPresent
           env:
               - name: "GEOPORTAL_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
               - name: "MAPSERVER_DATA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_SUBSELECT"
               - name: "MAPSERVER_JOIN_TABLES"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_TABLES"
               - name: "MAPSERVER_JOIN_WHERE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_WHERE"
               - name: "PGDATABASE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "database"
+                value: "postgres"
               - name: "PGHOST"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostname"
+                value: "test-pg-postgresql"
               - name: "PGHOST_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostnameSlave"
+                value: "test-pg-postgresql"
               - name: "PGOPTIONS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGOPTIONS"
               - name: "PGPASSWORD"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "password"
+                value: "mySuperTestingPassword"
               - name: "PGPORT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "port"
+                value: "5432"
               - name: "PGPORT_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "portSlave"
+                value: "5432"
               - name: "PGSCHEMA"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA"
               - name: "PGSCHEMA_STATIC"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA_STATIC"
               - name: "PGUSER"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "username"
+                value: "postgres"
               - name: "QGISSERVER_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "QGISSERVER_URL"
-              - name: "REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "REDIS_SERVICENAME"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SERVICENAME"
-              - name: "REDIS_TIMEOUT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_TIMEOUT"
               - name: "TILECLOUDCHAIN_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "TILECLOUDCHAIN_INTERNAL_URL"
               - name: "VISIBLE_ENTRY_POINT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_ENTRY_POINT"
               - name: "VISIBLE_WEB_HOST"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_WEB_HOST"
               - name: "VISIBLE_WEB_PROTOCOL"
                 value: "https"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
-            limits:
-              memory: 2Mi
-            requests:
-              cpu: 1m
-              memory: 1Mi
-          args: ['bash', '-c', 'cp -a /etc/apache/* /etc/config-volume/']
+            {}
+          args: ['bash', '-c', 'cp -a /etc/mapserver/* /etc/config-volume/']
           volumeMounts:
             - mountPath: /etc/config-volume
               name: configs
       containers:
         - name: apache
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/mapserver:version"
+          image: "camptocamp/mapserver:7.6"
           imagePullPolicy: IfNotPresent
           env:
               - name: "MAPSERVER_CATCH_SEGV"
@@ -1193,19 +954,19 @@ spec:
               - name: "PGOPTIONS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGOPTIONS"
               - name: "SEGFAULT_SIGNALS"
                 value: "all"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
-              memory: 2Mi
+              memory: 560Mi
             requests:
-              cpu: 1m
-              memory: 1Mi
+              cpu: 4m
+              memory: 110.5Mi
           volumeMounts:
-            - mountPath: /etc/apache
+            - mountPath: /etc/mapserver
               name: configs
               readOnly: false
             - mountPath: /tmp
@@ -1214,34 +975,41 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 30
+            timeoutSeconds: 10
           readinessProbe:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 5
+            initialDelaySeconds: 2
             periodSeconds: 20
             timeoutSeconds: 10
           startupProbe:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 5
+            initialDelaySeconds: 2
             periodSeconds: 20
             timeoutSeconds: 10
         - name: apache-exporter
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "quay.io/lusitaniae/apache-exporter:0.7.0"
+          image: "quay.io/lusitaniae/apache-exporter:v0.10.1"
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
-              memory: 2Mi
+              memory: 20Mi
             requests:
               cpu: 1m
-              memory: 1Mi
+              memory: 10Mi
           args:
             - '--scrape_uri=http://test-mapserver/server-status-remote?auto'
           ports:
@@ -1267,7 +1035,7 @@ kind: Deployment
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.13
+    helm.sh/chart: qgisserver-0.1.14
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -1292,7 +1060,6 @@ spec:
 
       serviceAccountName: default
       securityContext:
-        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 33
       affinity:
@@ -1300,180 +1067,134 @@ spec:
       initContainers:
         - name: config
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/project-config:version"
+          image: "camptocamp/geomapfishdemo-config:prod-2-7"
           imagePullPolicy: IfNotPresent
           env:
               - name: "GEOPORTAL_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
               - name: "MAPSERVER_DATA_SUBSELECT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_DATA_SUBSELECT"
               - name: "MAPSERVER_JOIN_TABLES"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_TABLES"
               - name: "MAPSERVER_JOIN_WHERE"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "MAPSERVER_JOIN_WHERE"
               - name: "PGDATABASE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "database"
+                value: "postgres"
               - name: "PGHOST"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostname"
+                value: "test-pg-postgresql"
               - name: "PGHOST_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "hostnameSlave"
+                value: "test-pg-postgresql"
               - name: "PGOPTIONS"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGOPTIONS"
               - name: "PGPASSWORD"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "password"
+                value: "mySuperTestingPassword"
               - name: "PGPORT"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "port"
+                value: "5432"
               - name: "PGPORT_SLAVE"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "portSlave"
+                value: "5432"
               - name: "PGSCHEMA"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA"
               - name: "PGSCHEMA_STATIC"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "PGSCHEMA_STATIC"
               - name: "PGUSER"
-                valueFrom:
-                  secretKeyRef:
-                    name: "postgresql-secret"
-                    key: "username"
+                value: "postgres"
               - name: "QGISSERVER_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "QGISSERVER_URL"
-              - name: "REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "REDIS_SERVICENAME"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SERVICENAME"
-              - name: "REDIS_TIMEOUT"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_TIMEOUT"
               - name: "TILECLOUDCHAIN_INTERNAL_URL"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "TILECLOUDCHAIN_INTERNAL_URL"
               - name: "VISIBLE_ENTRY_POINT"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_ENTRY_POINT"
               - name: "VISIBLE_WEB_HOST"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "VISIBLE_WEB_HOST"
               - name: "VISIBLE_WEB_PROTOCOL"
                 value: "https"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
-            limits:
-              memory: 2Mi
-            requests:
-              cpu: 1m
-              memory: 1Mi
-          args: ['bash', '-c', 'cp -a /etc/apache/* /etc/config-volume/']
+            {}
+          args: ['bash', '-c', 'cp -a /etc/qgisserver/* /etc/config-volume/']
           volumeMounts:
             - mountPath: /etc/config-volume
               name: configs
       containers:
         - name: apache
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/qgisserver:version"
+          image: "camptocamp/geomapfish-qgisserver:gmf2.7-qgismaster"
           imagePullPolicy: IfNotPresent
           env:
               - name: "C2C_BROADCAST_PREFIX"
                 valueFrom:
                   configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
+                    name: "test-geomapfish-env"
                     key: "REDIS_GEOPORTAL_BROADCAST_PREFIX"
-              - name: "C2C_REDIS_DB"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_DB"
-              - name: "C2C_REDIS_SENTINELS"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "prod-2-6-geomapfish-env"
-                    key: "REDIS_SENTINELS"
-              - name: "C2C_REDIS_SERVICENAME"
-                value: "mymaster"
               - name: "C2C_REDIS_TIMEOUT"
                 value: "30"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/1"
+              - name: "FCGID_IO_TIMEOUT"
+                value: "120"
+              - name: "GEOMAPFISH_ACCESSCONTROL_BASE_URL"
+                value: "http://test-qgis"
               - name: "MAX_PROCESSES"
                 value: "1"
               - name: "MAX_REQUESTS_PER_PROCESS"
                 value: "500"
               - name: "QGIS_CUSTOM_CONFIG_PATH"
                 value: "/tmp"
-              - name: "QGIS_PROJECT_FILE"
-                value: ""
+              - name: "QGIS_SERVER_IGNORE_BAD_LAYERS"
+                value: "TRUE"
+              - name: "QGIS_SERVER_LOG_LEVEL"
+                value: "0"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
-              memory: 2Mi
+              memory: 1300Mi
             requests:
-              cpu: 1m
-              memory: 1Mi
+              cpu: 12.5m
+              memory: 113Mi
           volumeMounts:
-            - mountPath: /etc/apache
+            - mountPath: /etc/qgisserver
               name: configs
               readOnly: false
             - mountPath: /tmp
@@ -1482,34 +1203,41 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 300
           readinessProbe:
             httpGet:
-              path: /
+              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
               port: http
-            initialDelaySeconds: 5
+            initialDelaySeconds: 20
             periodSeconds: 20
-            timeoutSeconds: 10
+            timeoutSeconds: 300
           startupProbe:
             httpGet:
-              path: /
+              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
               port: http
-            initialDelaySeconds: 5
+            initialDelaySeconds: 20
             periodSeconds: 20
-            timeoutSeconds: 10
+            timeoutSeconds: 300
         - name: apache-exporter
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
-          image: "quay.io/lusitaniae/apache-exporter:0.7.0"
+          image: "quay.io/lusitaniae/apache-exporter:v0.10.1"
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
-              memory: 2Mi
+              memory: 20Mi
             requests:
               cpu: 1m
-              memory: 1Mi
+              memory: 10Mi
           args:
             - '--scrape_uri=http://test-qgisserver/server-status-remote?auto'
           ports:
@@ -1530,17 +1258,17 @@ spec:
           emptyDir: {}
 ---
 # Source: geomapfish/charts/geoportal/templates/dbstats-deployment.yaml
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: test-geoportal
+  name: test-geoportal-dbstats
   labels:
-    helm.sh/chart: geoportal-0.1.2
+    helm.sh/chart: geoportal-0.1.3
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: dbstats
 spec:
   schedule: "32 * * * *"
   successfulJobsHistoryLimit: 0
@@ -1554,82 +1282,104 @@ spec:
           labels:
             app.kubernetes.io/name: geoportal
             app.kubernetes.io/instance: test
-            app.kubernetes.io/component: main
+            app.kubernetes.io/component: dbstats
         spec:
 
           serviceAccountName: default
           securityContext:
-            readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 33
           affinity:
             {}
+          restartPolicy: Never
           containers:
             - name: dbstats
               securityContext:
-                readOnlyRootFilesystem: true
                 runAsNonRoot: true
                 runAsUser: 33
-              image: "camptocamp/c2cwsgiutils:version"
+              image: "camptocamp/c2cwsgiutils:4"
               imagePullPolicy: IfNotPresent
               env:
+                  - name: "C2CWSGIUTILS_STATS_DB_SLEEP"
+                    value: "30"
+                  - name: "C2CWSGIUTILS_STATS_DB_TRYNUMBER"
+                    value: "10"
+                  - name: "C2C_REQUESTS_DEFAULT_TIMEOUT"
+                    value: "30"
+                  - name: "LOG_LEVEL"
+                    value: "WARNING"
+                  - name: "LOG_TYPE"
+                    value: "json"
                   - name: "PGDATABASE"
-                    valueFrom:
-                      secretKeyRef:
-                        name: "postgresql-secret"
-                        key: "database"
+                    value: "postgres"
                   - name: "PGHOST"
-                    valueFrom:
-                      secretKeyRef:
-                        name: "postgresql-secret"
-                        key: "hostname"
+                    value: "test-pg-postgresql"
                   - name: "PGHOST_SLAVE"
-                    valueFrom:
-                      secretKeyRef:
-                        name: "postgresql-secret"
-                        key: "hostnameSlave"
+                    value: "test-pg-postgresql"
                   - name: "PGOPTIONS"
                     valueFrom:
                       configMapKeyRef:
-                        name: "prod-2-6-geomapfish-env"
+                        name: "test-geomapfish-env"
                         key: "PGOPTIONS"
                   - name: "PGPASSWORD"
-                    valueFrom:
-                      secretKeyRef:
-                        name: "postgresql-secret"
-                        key: "password"
+                    value: "mySuperTestingPassword"
                   - name: "PGPORT"
-                    valueFrom:
-                      secretKeyRef:
-                        name: "postgresql-secret"
-                        key: "port"
+                    value: "5432"
                   - name: "PGPORT_SLAVE"
-                    valueFrom:
-                      secretKeyRef:
-                        name: "postgresql-secret"
-                        key: "portSlave"
+                    value: "5432"
                   - name: "PGSCHEMA"
                     valueFrom:
                       configMapKeyRef:
-                        name: "prod-2-6-geomapfish-env"
+                        name: "test-geomapfish-env"
                         key: "PGSCHEMA"
                   - name: "PGSCHEMA_STATIC"
                     valueFrom:
                       configMapKeyRef:
-                        name: "prod-2-6-geomapfish-env"
+                        name: "test-geomapfish-env"
                         key: "PGSCHEMA_STATIC"
                   - name: "PGUSER"
+                    value: "postgres"
+                  - name: "SENTRY_CLIENT_ENVIRONMENT"
                     valueFrom:
-                      secretKeyRef:
-                        name: "postgresql-secret"
-                        key: "username"
+                      configMapKeyRef:
+                        name: "test-geomapfish-env"
+                        key: "RELEASE_NAME"
+                  - name: "SENTRY_CLIENT_RELEASE"
+                    valueFrom:
+                      configMapKeyRef:
+                        name: "test-geomapfish-env"
+                        key: "DBSTATS_CLIENT_RELEASE"
+                  - name: "SENTRY_TAG_SERVICE"
+                    value: "dbstats"
+                  - name: "SENTRY_URL"
+                    valueFrom:
+                      configMapKeyRef:
+                        name: "test-geomapfish-env"
+                        key: "SENTRY_URL"
+                  - name: "STATSD_TAG_CHART"
+                    valueFrom:
+                      configMapKeyRef:
+                        name: "test-geomapfish-env"
+                        key: "CHART_NAME"
+                  - name: "STATSD_TAG_NAMESPACE"
+                    valueFrom:
+                      configMapKeyRef:
+                        name: "test-geomapfish-env"
+                        key: "RELEASE_NAMESPACE"
+                  - name: "STATSD_TAG_RELEASE"
+                    valueFrom:
+                      configMapKeyRef:
+                        name: "test-geomapfish-env"
+                        key: "RELEASE_NAME"
+                  - name: "STATSD_USE_TAGS"
+                    value: "1"
               terminationMessagePolicy: FallbackToLogsOnError
               resources:
                 limits:
-                  memory: 2Mi
+                  memory: 200Mi
                 requests:
                   cpu: 1m
-                  memory: 1Mi
+                  memory: 100Mi
               args:
                 - bash
                 - -ce
@@ -1639,5 +1389,5 @@ spec:
                   c2cwsgiutils-stats-db \
                     --db=postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDATABASE) \
                   --schema=main \
-                  --schema=static \
+                  --schema=main_static \
                     ${TARGET}

@@ -1,104 +1,318 @@
+shared:
+  redisEnv: &redisEnv
+    C2C_REDIS_URL:
+      value: redis://test-redis-master/1
+    C2C_REDIS_TIMEOUT:
+      value: 30
+    C2C_BROADCAST_PREFIX:
+      type: configMap
+      name: env
+      key: REDIS_GEOPORTAL_BROADCAST_PREFIX
+
+  c2cwsgiutilsEnv: &c2cwsgiutilsEnv #<<: *redisEnv
+    GUNICORN_PARAMS:
+      type: configMap
+      name: env
+      key: GUNICORN_PARAMS
+    C2C_LOG_VIEW_ENABLED:
+      value: 1
+    C2C_DEBUG_VIEW_ENABLED:
+      value: 1
+    C2C_SQL_PROFILER_ENABLED:
+      value: 1
+    LOG_TYPE:
+      value: console
+    C2C_REQUESTS_DEFAULT_TIMEOUT:
+      value: 30
+
+  dbEnv: &dbEnv
+    PGPORT:
+      value: 5432
+    PGPORT_SLAVE:
+      value: 5432
+    PGHOST:
+      value: test-pg-postgresql
+    PGHOST_SLAVE:
+      value: test-pg-postgresql
+    PGDATABASE:
+      value: postgres
+    PGUSER:
+      value: postgres
+    PGPASSWORD:
+      value: mySuperTestingPassword
+    PGSCHEMA:
+      type: configMap
+      name: env
+      key: PGSCHEMA
+    PGSCHEMA_STATIC:
+      type: configMap
+      name: env
+      key: PGSCHEMA_STATIC
+    PGOPTIONS:
+      type: configMap
+      name: env
+      key: PGOPTIONS
+
+  configEnv: &configEnv
+    <<: *dbEnv
+    TILECLOUDCHAIN_INTERNAL_URL:
+      type: configMap
+      name: env
+      key: TILECLOUDCHAIN_INTERNAL_URL
+    GEOPORTAL_INTERNAL_URL:
+      type: configMap
+      name: env
+      key: GEOPORTAL_INTERNAL_URL
+    VISIBLE_WEB_HOST:
+      type: configMap
+      name: env
+      key: VISIBLE_WEB_HOST
+    VISIBLE_WEB_PROTOCOL:
+      value: https
+    VISIBLE_ENTRY_POINT:
+      type: configMap
+      name: env
+      key: VISIBLE_ENTRY_POINT
+    MAPSERVER_DATA_SUBSELECT:
+      type: configMap
+      name: env
+      key: MAPSERVER_DATA_SUBSELECT
+    MAPSERVER_DATA_NOAREA_SUBSELECT:
+      type: configMap
+      name: env
+      key: MAPSERVER_DATA_NOAREA_SUBSELECT
+    MAPSERVER_JOIN_TABLES:
+      type: configMap
+      name: env
+      key: MAPSERVER_JOIN_TABLES
+    MAPSERVER_JOIN_WHERE:
+      type: configMap
+      name: env
+      key: MAPSERVER_JOIN_WHERE
+    QGISSERVER_URL:
+      type: configMap
+      name: env
+      key: QGISSERVER_URL
+
 geoportal:
-  image:
-    repository: camptocamp/project-groportal or camptocamp/geomapfishapp-geoportal
-    tag: version
+  image: &geoportal-image
+    repository: camptocamp/geomapfishapp-geoportal
+    tag: 2.7
+  env:
+    <<: *configEnv
+    <<: *c2cwsgiutilsEnv
+    SENTRY_CLIENT_RELEASE:
+      type: configMap
+      name: env
+      key: GEOPORTAL_CLIENT_RELEASE
+    SENTRY_TAG_SERVICE:
+      value: geoportal
+    AUTHTKT_SECRET:
+      value: secret012345678901234567890123456789012345678901234567890123456789
   resources:
     limits:
-      memory: 2Mi
+      memory: 400Mi
     requests:
-      memory: 1Mi
-      cpu: 1m
+      memory: 271Mi
+      cpu: 88m
 
-  configMapNameOverride:
-    env: prod-2-6-geomapfish-env
-    secret: prod-2-6-geomapfish-secret
-  env:
-    PRINT_URL:
-      value: print-url
+  configMapNameOverride: &configMapNameOverride
+    env: test-geomapfish-env
 
   config: &config
     image:
-      repository: camptocamp/project-config
-      tag: version
-    resources:
-      limits:
-        memory: 2Mi
-      requests:
-        memory: 1Mi
-        cpu: 1m
+      repository: camptocamp/geomapfishdemo-config
+      tag: prod-2-7
+    env:
+      <<: *configEnv
 
   alembic:
-    image:
-      repository: camptocamp/geomapfish
-      tag: version
+    image: *geoportal-image
+    mainStatic: true
+    env:
+      <<: *configEnv
+      <<: *c2cwsgiutilsEnv
+      SENTRY_CLIENT_RELEASE:
+        type: configMap
+        name: env
+        key: ALEMBIC_CLIENT_RELEASE
+      SENTRY_TAG_SERVICE:
+        value: alembic
     resources:
       limits:
-        memory: 2Mi
+        memory: 200Mi
       requests:
-        memory: 1Mi
-        cpu: 1m
+        memory: 171Mi
+        cpu: 88m
 
   tools:
+    image:
+      repository: camptocamp/geomapfish-tools
+      tag: 2.7
+    env:
+      <<: *configEnv
     resources:
       limits:
-        memory: 2Mi
+        memory: 200Mi
       requests:
-        memory: 1Mi
+        memory: 100Mi
         cpu: 1m
 
   dbstats:
+    enable: false
     image:
       repository: camptocamp/c2cwsgiutils
-      tag: version
+      tag: 4
+    env:
+      <<: *dbEnv
+      SENTRY_URL:
+        type: configMap
+        name: env
+        key: SENTRY_URL
+      SENTRY_CLIENT_ENVIRONMENT:
+        type: configMap
+        name: env
+        key: RELEASE_NAME
+      SENTRY_CLIENT_RELEASE:
+        type: configMap
+        name: env
+        key: DBSTATS_CLIENT_RELEASE
+      SENTRY_TAG_SERVICE:
+        value: dbstats
+      STATSD_USE_TAGS:
+        value: '1'
+      STATSD_TAG_CHART:
+        type: configMap
+        name: env
+        key: CHART_NAME
+      STATSD_TAG_RELEASE:
+        type: configMap
+        name: env
+        key: RELEASE_NAME
+      STATSD_TAG_NAMESPACE:
+        type: configMap
+        name: env
+        key: RELEASE_NAMESPACE
+      C2CWSGIUTILS_STATS_DB_TRYNUMBER:
+        value: '10'
+      C2CWSGIUTILS_STATS_DB_SLEEP:
+        value: '30'
+      LOG_LEVEL:
+        value: WARNING
+      LOG_TYPE:
+        value: json
+      C2C_REQUESTS_DEFAULT_TIMEOUT:
+        value: '30'
     resources:
       limits:
-        memory: 2Mi
+        memory: 200Mi
       requests:
-        memory: 1Mi
+        memory: 100Mi
         cpu: 1m
     schemas:
       - main
-      - static
+      - main_static
 
 mapserver:
   image:
     repository: camptocamp/mapserver
-    tag: version
+    tag: 7.6
+  env:
+    PGOPTIONS:
+      type: configMap
+      name: env
+      key: PGOPTIONS
+    MAX_PROCESSES:
+      value: '1'
+    MAPSERVER_CATCH_SEGV:
+      value: '1'
+    SEGFAULT_SIGNALS:
+      value: all
   resources:
-    limits:
-      memory: 2Mi
     requests:
-      memory: 1Mi
-      cpu: 1m
-  configMapNameOverride:
-    env: prod-2-6-geomapfish-env
+      memory: 110.5Mi
+      cpu: 4m
+    limits:
+      memory: 560Mi
+  configMapNameOverride: *configMapNameOverride
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 2
+    timeoutSeconds: 10
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 2
+    timeoutSeconds: 10
+    periodSeconds: 30
+    failureThreshold: 5
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 33 # www-data
   config: *config
   apacheExporter: &apacheExporter
+    image:
+      tag: v0.10.1
     resources:
       limits:
-        memory: 2Mi
+        memory: 20Mi
       requests:
-        memory: 1Mi
+        memory: 10Mi
         cpu: 1m
 
 qgisserver:
   image:
-    repository: camptocamp/qgisserver
-    tag: version
+    repository: camptocamp/geomapfish-qgisserver
+    tag: gmf2.7-qgismaster
+  env:
+    <<: *redisEnv
+    MAX_PROCESSES:
+      value: '1'
+    MAX_REQUESTS_PER_PROCESS:
+      value: '500'
+    QGIS_CUSTOM_CONFIG_PATH:
+      value: /tmp
+    GEOMAPFISH_ACCESSCONTROL_BASE_URL:
+      value: http://test-qgis
+    QGIS_SERVER_LOG_LEVEL:
+      value: 0
+    FCGID_IO_TIMEOUT:
+      value: 120
+    QGIS_SERVER_IGNORE_BAD_LAYERS:
+      value: 'TRUE'
   resources:
     limits:
-      memory: 2Mi
+      memory: 1300Mi
     requests:
-      memory: 1Mi
-      cpu: 1m
-  configMapNameOverride:
-    env: prod-2-6-geomapfish-env
+      memory: 113Mi
+      cpu: 12.5m
+  readinessProbe:
+    httpGet:
+      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
+      port: http
+    initialDelaySeconds: 20
+    timeoutSeconds: 300
+  livenessProbe:
+    httpGet:
+      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
+      port: http
+    initialDelaySeconds: 20
+    timeoutSeconds: 300
+    periodSeconds: 60
+    failureThreshold: 5
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 33 # www-data
+  configMapNameOverride: *configMapNameOverride
   config: *config
   apacheExporter: *apacheExporter
 
 postgresql:
   schema: main
-  staticSchema: static
+  staticSchema: main_static
 
 redis:
   host: redis
