@@ -165,10 +165,10 @@ geoportal:
       tag: 4
     env:
       <<: *dbEnv
-      SENTRY_URL:
-        type: configMap
-        name: env
-        key: SENTRY_URL
+      #SENTRY_URL:
+      #  type: configMap
+      #  name: env
+      #  key: SENTRY_URL
       SENTRY_CLIENT_ENVIRONMENT:
         type: configMap
         name: env
@@ -309,6 +309,27 @@ qgisserver:
   configMapNameOverride: *configMapNameOverride
   config: *config
   apacheExporter: *apacheExporter
+
+mutualized_print:
+  - name: demo
+    content:
+      type: git
+      repo: git@github.com:camptocamp/test.git
+      branch: master
+      key: admin1234
+      sub_dir: dir
+      template_engines:
+        - type: shell
+          environment_variables: true
+          data:
+            TEST: test
+
+github_webhook:
+  - name: demo
+    content:
+      repository: camptocamp/helm-geomapfish
+      url: https://example.com
+      contentType: json
 
 postgresql:
   schema: main

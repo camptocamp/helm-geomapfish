@@ -1,0 +1,9 @@
+{{- range .Values.github_webhook }}
+---
+apiVersion: camptocamp.com/v1
+kind: GitHubWebhook
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ .name }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+spec: {{- toYaml .content | nindent 2 }}
+{{- end }}
