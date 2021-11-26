@@ -27,6 +27,10 @@ gunicorn:
   maxRequestsJitter: 200
   timeout: 30
 
+mutualized_print: []
+
+github_webhook: []
+
 postgresql:
   schema: main
   staticSchema: main_static

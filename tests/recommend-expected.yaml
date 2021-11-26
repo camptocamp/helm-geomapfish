@@ -1351,11 +1351,6 @@ spec:
                         key: "DBSTATS_CLIENT_RELEASE"
                   - name: "SENTRY_TAG_SERVICE"
                     value: "dbstats"
-                  - name: "SENTRY_URL"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "SENTRY_URL"
                   - name: "STATSD_TAG_CHART"
                     valueFrom:
                       configMapKeyRef:
@@ -1391,3 +1386,44 @@ spec:
                   --schema=main \
                   --schema=main_static \
                     ${TARGET}
+---
+# Source: geomapfish/templates/github-webhooks.yaml
+apiVersion: camptocamp.com/v1
+kind: GitHubWebhook
+metadata:
+  name: test-geomapfish-demo
+  labels:
+    helm.sh/chart: geomapfish-0.1.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  contentType: json
+  repository: camptocamp/helm-geomapfish
+  url: https://example.com
+---
+# Source: geomapfish/templates/mutualized-print-config.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: test-geomapfish-print-demo
+  labels:
+    helm.sh/chart: geomapfish-0.1.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  name: demo
+  content:
+    branch: master
+    key: admin1234
+    repo: git@github.com:camptocamp/test.git
+    sub_dir: dir
+    template_engines:
+    - data:
+        TEST: test
+      environment_variables: true
+      type: shell
+    type: git

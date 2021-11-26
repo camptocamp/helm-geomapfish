@@ -1,0 +1,11 @@
+{{- range .Values.mutualized_print }}
+---
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-print-{{ .name }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+spec:
+  name: {{ .name }}
+  content: {{- toYaml .content | nindent 4 }}
+{{- end }}
