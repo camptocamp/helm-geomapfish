@@ -1257,141 +1257,27 @@ spec:
         - name: tmp-volume
           emptyDir: {}
 ---
-# Source: geomapfish/charts/geoportal/templates/dbstats-deployment.yaml
-apiVersion: batch/v1
-kind: CronJob
+# Source: geomapfish/templates/github-webhooks.yaml
+apiVersion: camptocamp.com/v1
+kind: GitHubWebhook
 metadata:
-  name: test-geoportal-dbstats
+  name: test-geomapfish-test-print
   labels:
-    helm.sh/chart: geoportal-0.1.3
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish-0.1.0
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: dbstats
+    app.kubernetes.io/component: main
 spec:
-  schedule: "32 * * * *"
-  successfulJobsHistoryLimit: 0
-  failedJobsHistoryLimit: 1
-  concurrencyPolicy: Forbid
-  jobTemplate:
-    spec:
-      backoffLimit: 0
-      template:
-        metadata:
-          labels:
-            app.kubernetes.io/name: geoportal
-            app.kubernetes.io/instance: test
-            app.kubernetes.io/component: dbstats
-        spec:
-
-          serviceAccountName: default
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          affinity:
-            {}
-          restartPolicy: Never
-          containers:
-            - name: dbstats
-              securityContext:
-                runAsNonRoot: true
-                runAsUser: 33
-              image: "camptocamp/c2cwsgiutils:4"
-              imagePullPolicy: IfNotPresent
-              env:
-                  - name: "C2CWSGIUTILS_STATS_DB_SLEEP"
-                    value: "30"
-                  - name: "C2CWSGIUTILS_STATS_DB_TRYNUMBER"
-                    value: "10"
-                  - name: "C2C_REQUESTS_DEFAULT_TIMEOUT"
-                    value: "30"
-                  - name: "LOG_LEVEL"
-                    value: "WARNING"
-                  - name: "LOG_TYPE"
-                    value: "json"
-                  - name: "PGDATABASE"
-                    value: "postgres"
-                  - name: "PGHOST"
-                    value: "test-pg-postgresql"
-                  - name: "PGHOST_SLAVE"
-                    value: "test-pg-postgresql"
-                  - name: "PGOPTIONS"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "PGOPTIONS"
-                  - name: "PGPASSWORD"
-                    value: "mySuperTestingPassword"
-                  - name: "PGPORT"
-                    value: "5432"
-                  - name: "PGPORT_SLAVE"
-                    value: "5432"
-                  - name: "PGSCHEMA"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "PGSCHEMA"
-                  - name: "PGSCHEMA_STATIC"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "PGSCHEMA_STATIC"
-                  - name: "PGUSER"
-                    value: "postgres"
-                  - name: "SENTRY_CLIENT_ENVIRONMENT"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "RELEASE_NAME"
-                  - name: "SENTRY_CLIENT_RELEASE"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "DBSTATS_CLIENT_RELEASE"
-                  - name: "SENTRY_TAG_SERVICE"
-                    value: "dbstats"
-                  - name: "STATSD_TAG_CHART"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "CHART_NAME"
-                  - name: "STATSD_TAG_NAMESPACE"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "RELEASE_NAMESPACE"
-                  - name: "STATSD_TAG_RELEASE"
-                    valueFrom:
-                      configMapKeyRef:
-                        name: "test-geomapfish-env"
-                        key: "RELEASE_NAME"
-                  - name: "STATSD_USE_TAGS"
-                    value: "1"
-              terminationMessagePolicy: FallbackToLogsOnError
-              resources:
-                limits:
-                  memory: 200Mi
-                requests:
-                  cpu: 1m
-                  memory: 100Mi
-              args:
-                - bash
-                - -ce
-                - |
-                  TARGET="--prometheus_instance=default-test-geoportal --prometheus_url=http://prometheus-pushgateway.gs-metrics.svc:9091/"
-                  export STATSD_TAG_DB=$(PGDATABASE)
-                  c2cwsgiutils-stats-db \
-                    --db=postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDATABASE) \
-                  --schema=main \
-                  --schema=main_static \
-                    ${TARGET}
+  repository: camptocamp/test
+  url: /scm/1/refresh/test-print-print/
+  contentType: json
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
 apiVersion: camptocamp.com/v1
 kind: GitHubWebhook
 metadata:
-  name: test-geomapfish-demo
+  name: test-geomapfish-test-tilecloudchain
   labels:
     helm.sh/chart: geomapfish-0.1.0
     app.kubernetes.io/managed-by: Helm
@@ -1399,31 +1285,98 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 spec:
+  repository: camptocamp/test
+  url: /scm/1/refresh/test-tilecloudchain-print/
   contentType: json
-  repository: camptocamp/helm-geomapfish
-  url: https://example.com
 ---
-# Source: geomapfish/templates/mutualized-print-config.yaml
+# Source: geomapfish/templates/mutualize-sharedconfig.yaml
 apiVersion: camptocamp.com/v1
 kind: SharedConfigSource
 metadata:
-  name: test-geomapfish-print-demo
+  name: test-geomapfish-test-print
   labels:
     helm.sh/chart: geomapfish-0.1.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+    mutualize-sharedconfig: 'true'
 spec:
-  name: demo
+  name: test-print
   content:
-    branch: master
-    key: admin1234
-    repo: git@github.com:camptocamp/test.git
-    sub_dir: dir
-    template_engines:
-    - data:
-        TEST: test
-      environment_variables: true
-      type: shell
-    type: git
+      type: git
+      repo: git@github.com:camptocamp/test.git
+      branch: master
+      key: admin1234
+      sub_dir: print/print-apps/test
+      tags:
+        - print
+      template_engines:
+        - type: shell
+          environment_variables: true
+          data:
+            - name: "TEST"
+              value: "test"
+---
+# Source: geomapfish/templates/mutualize-sharedconfig.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: test-geomapfish-test-tilecloudchain
+  labels:
+    helm.sh/chart: geomapfish-0.1.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    mutualize-sharedconfig: 'true'
+spec:
+  name: test-tilecloudchain
+  content:
+      type: git
+      repo: git@github.com:camptocamp/test.git
+      branch: master
+      key: admin1234
+      sub_dir: tilegeneration
+      tags:
+        - print
+      template_engines:
+        - type: shell
+          environment_variables: true
+          data:
+            - name: "TEST"
+              value: "test"
+---
+# Source: geomapfish/templates/mutualize-tilecloudchain.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: test-geomapfish-test-tilecloudchain-hosts-main
+  labels:
+    helm.sh/chart: geomapfish-0.1.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: test-tilecloudchain
+  content:
+    demo.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
+---
+# Source: geomapfish/templates/mutualize-tilecloudchain.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: test-geomapfish-test-tilecloudchain-hosts-test
+  labels:
+    helm.sh/chart: geomapfish-0.1.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: test-tilecloudchain
+  content:
+    demo-test.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml

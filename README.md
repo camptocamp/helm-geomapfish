@@ -6,3 +6,5 @@ Assemble the charts:
 - [geoportal](https://github.com/camptocamp/helm-geoportal)
 
 [Example of minimal config](./tests/recommend.yaml)
+
+[Mutualize project](https://github.com/camptocamp/helm-mutualized/)
