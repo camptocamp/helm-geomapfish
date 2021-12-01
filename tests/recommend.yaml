@@ -159,7 +159,7 @@ geoportal:
         cpu: 1m
 
   dbstats:
-    enable: false
+    enabled: false
     image:
       repository: camptocamp/c2cwsgiutils
       tag: 4
@@ -310,26 +310,26 @@ qgisserver:
   config: *config
   apacheExporter: *apacheExporter
 
-mutualized_print:
-  - name: demo
-    content:
-      type: git
-      repo: git@github.com:camptocamp/test.git
-      branch: master
-      key: admin1234
-      sub_dir: dir
-      template_engines:
-        - type: shell
-          environment_variables: true
-          data:
-            TEST: test
-
-github_webhook:
-  - name: demo
-    content:
-      repository: camptocamp/helm-geomapfish
-      url: https://example.com
-      contentType: json
+mutualize:
+  repository: camptocamp/test
+  branch: master
+  key: admin1234
+  mutualizeUrl: https://mutualized-print.apps.openshift-ch-1.camptocamp.com
+  configs:
+    - name: test-print
+      dir: print/print-apps/test
+      env:
+        TEST: test
+    - name: test-tilecloudchain
+      hosts:
+        - name: main
+          host: demo.camptocamp.com
+        - name: test
+          host: demo-test.camptocamp.com
+      dir: tilegeneration
+      tilecloudchain: true
+      env:
+        TEST: test
 
 postgresql:
   schema: main

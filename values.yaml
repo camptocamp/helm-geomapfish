@@ -27,9 +27,23 @@ gunicorn:
   maxRequestsJitter: 200
   timeout: 30
 
-mutualized_print: []
-
-github_webhook: []
+mutualize:
+  repository: camptocamp/to-fill
+  branch: master
+  key: to-fill
+  mutualizeUrl: https://mutualized-print.apps.openshift-ch-1.camptocamp.com
+  configs: []
+  #  - name: test-print
+  #    host: demo.camptocamp.com
+  #    dir: print/print-apps/test
+  #    env:
+  #      TEST: test
+  #  - name: test-tilecloudchain
+  #    host: demo.camptocamp.com
+  #    dir: tilegeneration
+  #    tilecloudchain: true
+  #    env:
+  #      TEST: test
 
 postgresql:
   schema: main

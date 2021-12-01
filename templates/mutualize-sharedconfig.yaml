@@ -1,0 +1,27 @@
+{{- range .Values.mutualize.configs }}
+---
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ .name }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+    mutualize-sharedconfig: 'true'
+spec:
+  name: {{ .name }}
+  content:
+      type: git
+      repo: git@github.com:{{ $.Values.mutualize.repository }}.git
+      branch: {{ $.Values.mutualize.branch }}
+      key: {{ $.Values.mutualize.key }}
+      sub_dir: {{ .dir }}
+      tags:
+        - print
+      template_engines:
+        - type: shell
+          environment_variables: true
+          data:
+            {{- range $name, $value := .env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+{{- end }}
