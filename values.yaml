@@ -65,9 +65,4 @@ sentry:
 statsd:
   url: monitoring-statsd:9125
 
-ingress:
-  hosts:
-    - name: main
-      host: example.com
-
 entrypoint: /
