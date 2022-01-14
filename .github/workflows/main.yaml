@@ -43,6 +43,8 @@ jobs:
 
       - run: helm template --namespace=default test . > tests/actual.yaml
       - run: diff --ignore-trailing-space tests/actual.yaml tests/expected.yaml
+      - run: cat tests/actual.yaml || true
+        if: failure()
       - run: helm lint --values=tests/recommend.yaml .
       - run: kubectl apply -f tests/expected.yaml
       - run: kubectl delete -f tests/expected.yaml || true
@@ -63,6 +65,8 @@ jobs:
 
       - run: helm template --namespace=default --values=tests/recommend.yaml test . > tests/recommend-actual.yaml
       - run: diff --ignore-trailing-space tests/recommend-actual.yaml tests/recommend-expected.yaml
+      - run: cat tests/recommend-actual.yaml || true
+        if: failure()
       - run: kubectl apply -f tests/recommend-expected.yaml
       - run: c2cciutils-k8s-wait
       - run: c2cciutils-k8s-logs
