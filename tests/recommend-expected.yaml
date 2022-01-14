@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.3
+    helm.sh/chart: geoportal-0.1.4
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -84,9 +84,9 @@ data:
   QGISSERVER_URL: http://test-geomapfish-qgisserver/
   GEOPORTAL_INTERNAL_HOST: test-geomapfish-geoportal
   TILECLOUDCHAIN_INTERNAL_HOST: test-geomapfish-tilecloudchain
-  VISIBLE_WEB_HOST: example.com
+  VISIBLE_WEB_HOST: chart-example.local
   VISIBLE_ENTRY_POINT: /
-  VISIBLE_WEB_HOST_RE_ESCAPED: "example\\.com"
+  VISIBLE_WEB_HOST_RE_ESCAPED: "chart-example\\.local"
   VISIBLE_ENTRY_POINT_RE_ESCAPED: "/"
 
   PGSCHEMA: "main"
@@ -135,12 +135,13 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.3
+    helm.sh/chart: geoportal-0.1.4
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+    prometheus: 'true'
 spec:
   type: ClusterIP
   ports:
@@ -157,9 +158,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-geoportal
+  name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.3
+    helm.sh/chart: geoportal-0.1.4
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -183,12 +184,13 @@ kind: Service
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.14
+    helm.sh/chart: mapserver-0.1.16
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+    prometheus: "true"
 spec:
   type: ClusterIP
   ports:
@@ -211,12 +213,13 @@ kind: Service
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.14
+    helm.sh/chart: qgisserver-0.1.16
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+    prometheus: "true"
 spec:
   type: ClusterIP
   ports:
@@ -239,12 +242,14 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.3
+    helm.sh/chart: geoportal-0.1.4
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: alembic
+  annotations:
+    {}
 spec:
   replicas: 1
   strategy:
@@ -399,12 +404,14 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.3
+    helm.sh/chart: geoportal-0.1.4
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+  annotations:
+    {}
 spec:
   replicas: 1
   strategy:
@@ -689,12 +696,14 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.3
+    helm.sh/chart: geoportal-0.1.4
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tools
+  annotations:
+    {}
 spec:
   replicas: 1
   strategy:
@@ -819,12 +828,14 @@ kind: Deployment
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.14
+    helm.sh/chart: mapserver-0.1.16
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+  annotations:
+    {}
 spec:
   replicas: 1
   strategy:
@@ -1035,12 +1046,14 @@ kind: Deployment
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.14
+    helm.sh/chart: qgisserver-0.1.16
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+  annotations:
+    {}
 spec:
   replicas: 1
   strategy:
