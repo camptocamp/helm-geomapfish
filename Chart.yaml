@@ -13,7 +13,7 @@ dependencies:
     version: 0.1.4
   - name: geoportal
     repository: https://camptocamp.github.io/helm-geoportal/
-    version: 0.1.5
+    version: 0.1.6
   - name: apache
     repository: https://camptocamp.github.io/helm-apache/
     alias: mapserver

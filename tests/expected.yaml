@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.5
+    helm.sh/chart: geoportal-0.1.6
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -135,7 +135,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.5
+    helm.sh/chart: geoportal-0.1.6
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -160,7 +160,7 @@ kind: Service
 metadata:
   name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.5
+    helm.sh/chart: geoportal-0.1.6
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -242,7 +242,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.5
+    helm.sh/chart: geoportal-0.1.6
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -289,7 +289,14 @@ spec:
             - alembic --name=static upgrade head
       containers:
         - name: sleep
-          image: busybox:latest
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "busybox:latest"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
           args:
             - tail
             - -f
@@ -301,7 +308,7 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.5
+    helm.sh/chart: geoportal-0.1.6
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -416,7 +423,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.5
+    helm.sh/chart: geoportal-0.1.6
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -685,7 +692,7 @@ kind: CronJob
 metadata:
   name: test-geoportal-dbstats
   labels:
-    helm.sh/chart: geoportal-0.1.5
+    helm.sh/chart: geoportal-0.1.6
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
