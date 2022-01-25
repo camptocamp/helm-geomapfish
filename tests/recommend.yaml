@@ -9,11 +9,7 @@ shared:
       name: env
       key: REDIS_GEOPORTAL_BROADCAST_PREFIX
 
-  c2cwsgiutilsEnv: &c2cwsgiutilsEnv #<<: *redisEnv
-    GUNICORN_PARAMS:
-      type: configMap
-      name: env
-      key: GUNICORN_PARAMS
+  c2cwsgiutilsEnv: &c2cwsgiutilsEnv
     C2C_LOG_VIEW_ENABLED:
       value: 1
     C2C_DEBUG_VIEW_ENABLED:
@@ -24,6 +20,20 @@ shared:
       value: console
     C2C_REQUESTS_DEFAULT_TIMEOUT:
       value: 30
+    GUNICORN_WORKERS:
+      value: 2
+    GUNICORN_THREADS:
+      value: 10
+    GUNICORN_TIMEOUT:
+      value: 30
+    GUNICORN_MAX_REQUESTS:
+      value: 2000
+    GUNICORN_MAX_REQUESTS_JITTER:
+      value: 200
+    GUNICORN_LIMIT_REQUEST_LINE:
+      value: 8190
+    GUNICORN_ACCESS_LOG_FORMAT:
+      value: '%(H)s %({Host}i)s %(m)s %(U)s?%(q)s "%(f)s" "%(a)s" %(s)s %(B)s %(D)s %(p)s'
 
   dbEnv: &dbEnv
     PGPORT:
@@ -157,61 +167,6 @@ geoportal:
       requests:
         memory: 100Mi
         cpu: 1m
-
-  dbstats:
-    enabled: false
-    image:
-      repository: camptocamp/c2cwsgiutils
-      tag: 4
-    env:
-      <<: *dbEnv
-      #SENTRY_URL:
-      #  type: configMap
-      #  name: env
-      #  key: SENTRY_URL
-      SENTRY_CLIENT_ENVIRONMENT:
-        type: configMap
-        name: env
-        key: RELEASE_NAME
-      SENTRY_CLIENT_RELEASE:
-        type: configMap
-        name: env
-        key: DBSTATS_CLIENT_RELEASE
-      SENTRY_TAG_SERVICE:
-        value: dbstats
-      STATSD_USE_TAGS:
-        value: '1'
-      STATSD_TAG_CHART:
-        type: configMap
-        name: env
-        key: CHART_NAME
-      STATSD_TAG_RELEASE:
-        type: configMap
-        name: env
-        key: RELEASE_NAME
-      STATSD_TAG_NAMESPACE:
-        type: configMap
-        name: env
-        key: RELEASE_NAMESPACE
-      C2CWSGIUTILS_STATS_DB_TRYNUMBER:
-        value: '10'
-      C2CWSGIUTILS_STATS_DB_SLEEP:
-        value: '30'
-      LOG_LEVEL:
-        value: WARNING
-      LOG_TYPE:
-        value: json
-      C2C_REQUESTS_DEFAULT_TIMEOUT:
-        value: '30'
-    resources:
-      limits:
-        memory: 200Mi
-      requests:
-        memory: 100Mi
-        cpu: 1m
-    schemas:
-      - main
-      - main_static
 
 mapserver:
   image:

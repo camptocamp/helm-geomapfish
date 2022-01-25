@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.6
+    helm.sh/chart: geoportal-0.1.7
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -68,15 +68,6 @@ data:
   CHART_NAME: geomapfish
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
-  GUNICORN_PARAMS: >-
-    --bind=:8080
-    --worker-class=gthread
-    --threads=10
-    --workers=2
-    --max-requests=2000
-    --max-requests-jitter=200
-    --timeout=30
-    --worker-tmp-dir=/dev/shm
   SENTRY_URL: https://sentry-key@o330647.ingest.sentry.io/sentry-project
   TILECLOUDCHAIN_INTERNAL_URL: http://test-geomapfish-tilecloudchain/
   GEOPORTAL_INTERNAL_URL: http://test-geomapfish-geoportal/
@@ -127,7 +118,6 @@ data:
 
   GEOPORTAL_CLIENT_RELEASE: "2.7"
   ALEMBIC_CLIENT_RELEASE: "2.7"
-  DBSTATS_CLIENT_RELEASE: "4"
 ---
 # Source: geomapfish/charts/geoportal/templates/service.yaml
 apiVersion: v1
@@ -135,7 +125,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.6
+    helm.sh/chart: geoportal-0.1.7
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -160,7 +150,7 @@ kind: Service
 metadata:
   name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.6
+    helm.sh/chart: geoportal-0.1.7
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -242,7 +232,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.6
+    helm.sh/chart: geoportal-0.1.7
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -294,11 +284,20 @@ spec:
                   configMapKeyRef:
                     name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
-              - name: "GUNICORN_PARAMS"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-geomapfish-env"
-                    key: "GUNICORN_PARAMS"
+              - name: "GUNICORN_ACCESS_LOG_FORMAT"
+                value: "%(H)s %({Host}i)s %(m)s %(U)s?%(q)s \"%(f)s\" \"%(a)s\" %(s)s %(B)s %(D)s %(p)s"
+              - name: "GUNICORN_LIMIT_REQUEST_LINE"
+                value: "8190"
+              - name: "GUNICORN_MAX_REQUESTS"
+                value: "2000"
+              - name: "GUNICORN_MAX_REQUESTS_JITTER"
+                value: "200"
+              - name: "GUNICORN_THREADS"
+                value: "10"
+              - name: "GUNICORN_TIMEOUT"
+                value: "30"
+              - name: "GUNICORN_WORKERS"
+                value: "2"
               - name: "LOG_TYPE"
                 value: "console"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
@@ -411,7 +410,7 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.6
+    helm.sh/chart: geoportal-0.1.7
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -574,11 +573,20 @@ spec:
                   configMapKeyRef:
                     name: "test-geomapfish-env"
                     key: "GEOPORTAL_INTERNAL_URL"
-              - name: "GUNICORN_PARAMS"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-geomapfish-env"
-                    key: "GUNICORN_PARAMS"
+              - name: "GUNICORN_ACCESS_LOG_FORMAT"
+                value: "%(H)s %({Host}i)s %(m)s %(U)s?%(q)s \"%(f)s\" \"%(a)s\" %(s)s %(B)s %(D)s %(p)s"
+              - name: "GUNICORN_LIMIT_REQUEST_LINE"
+                value: "8190"
+              - name: "GUNICORN_MAX_REQUESTS"
+                value: "2000"
+              - name: "GUNICORN_MAX_REQUESTS_JITTER"
+                value: "200"
+              - name: "GUNICORN_THREADS"
+                value: "10"
+              - name: "GUNICORN_TIMEOUT"
+                value: "30"
+              - name: "GUNICORN_WORKERS"
+                value: "2"
               - name: "LOG_TYPE"
                 value: "console"
               - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
@@ -703,7 +711,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.6
+    helm.sh/chart: geoportal-0.1.7
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal

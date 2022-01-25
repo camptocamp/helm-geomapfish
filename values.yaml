@@ -4,10 +4,6 @@ geoportal:
       repository: camptocamp/<project>-config
       tag: latest
 
-  dbstats:
-    # Should be on geoportal
-    serviceName: dbstats
-
 mapserver:
   config:
     <<: *config
@@ -19,13 +15,6 @@ qgisserver:
     <<: *config
     enabled: true
     folder: /etc/qgisserver
-
-gunicorn:
-  nbThreads: 10
-  nbProcesses: 2
-  maxRequests: 2000
-  maxRequestsJitter: 200
-  timeout: 30
 
 mutualize:
   repository: camptocamp/to-fill
