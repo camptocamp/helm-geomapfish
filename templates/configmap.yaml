@@ -7,24 +7,6 @@ data:
   CHART_NAME: {{ .Chart.Name }}
   RELEASE_NAME: {{ .Release.Name }}
   RELEASE_NAMESPACE: {{ .Release.Namespace }}
-  GUNICORN_PARAMS: >-
-    --bind=:8080
-    --worker-class=gthread
-    --threads={{ .Values.gunicorn.nbThreads }}
-    --workers={{ .Values.gunicorn.nbProcesses }}
-    {{- if gt .Values.gunicorn.nbProcesses 1.0 }}
-    --max-requests=2000
-    --max-requests-jitter=200
-    {{- end }}
-    --timeout={{ .Values.gunicorn.timeout }}
-    {{- if .Values.statsd.enabled }}
-    --statsd-host={{ .Values.statsd.url }}
-    --statsd-prefix={{ .service }}.{{ .Release.Name }}
-    {{- end }}
-    {{- if .Values.gunicorn.config }}
-    --config={{ .Values.gunicorn.config }}
-    {{- end }}
-    --worker-tmp-dir=/dev/shm
   SENTRY_URL: https://{{ .Values.sentry.key }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
   TILECLOUDCHAIN_INTERNAL_URL: http://{{ include "common.fullname" ( dict "root" . "service" .Values ) }}-tilecloudchain/
   GEOPORTAL_INTERNAL_URL: http://{{ include "common.fullname" ( dict "root" . "service" .Values ) }}-geoportal/
@@ -75,4 +57,3 @@ data:
 
   GEOPORTAL_CLIENT_RELEASE: {{ .Values.geoportal.image.tag | quote }}
   ALEMBIC_CLIENT_RELEASE: {{ .Values.geoportal.alembic.image.tag | quote }}
-  DBSTATS_CLIENT_RELEASE: {{ .Values.geoportal.dbstats.image.tag | quote }}
