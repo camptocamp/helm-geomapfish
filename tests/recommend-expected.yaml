@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.8
+    helm.sh/chart: geoportal-0.1.9
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -125,7 +125,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.8
+    helm.sh/chart: geoportal-0.1.9
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -150,7 +150,7 @@ kind: Service
 metadata:
   name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.8
+    helm.sh/chart: geoportal-0.1.9
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -174,7 +174,7 @@ kind: Service
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.17
+    helm.sh/chart: mapserver-0.1.18
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -203,7 +203,7 @@ kind: Service
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.17
+    helm.sh/chart: qgisserver-0.1.18
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -232,7 +232,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.8
+    helm.sh/chart: geoportal-0.1.9
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -410,7 +410,7 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.8
+    helm.sh/chart: geoportal-0.1.9
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -544,12 +544,10 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
-          args: ['bash', '-c', 'cp -a /etc/geomapfish/* /etc/geomapfish-volume/ && cp -a /etc/gunicorn/* /etc/gunicorn-volume/']
+          args: ['bash', '-c', 'cp -a /etc/geomapfish/* /etc/geomapfish-volume/']
           volumeMounts:
             - mountPath: /etc/geomapfish-volume
               name: configs
-            - mountPath: /etc/gunicorn-volume
-              name: gunicorn
       containers:
         - name: geoportal
           securityContext:
@@ -679,9 +677,6 @@ spec:
             - mountPath: /etc/geomapfish
               name: configs
               readOnly: true
-            - mountPath: /etc/gunicorn
-              name: gunicorn
-              readOnly: true
 
           ports:
             - name: http
@@ -706,8 +701,6 @@ spec:
       volumes:
         - name: configs
           emptyDir: {}
-        - name: gunicorn
-          emptyDir: {}
 ---
 # Source: geomapfish/charts/geoportal/templates/tools-deployment.yaml
 apiVersion: apps/v1
@@ -715,7 +708,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.8
+    helm.sh/chart: geoportal-0.1.9
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -847,7 +840,7 @@ kind: Deployment
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.17
+    helm.sh/chart: mapserver-0.1.18
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -1065,7 +1058,7 @@ kind: Deployment
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.17
+    helm.sh/chart: qgisserver-0.1.18
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver

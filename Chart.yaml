@@ -10,17 +10,17 @@ icon: http://geomapfish.org/images/brand/logo.png
 dependencies:
   - name: common
     repository: https://camptocamp.github.io/helm-common
-    version: 0.1.4
+    version: 0.1.5
   - name: geoportal
     repository: https://camptocamp.github.io/helm-geoportal/
-    version: 0.1.8
+    version: 0.1.9
   - name: apache
     repository: https://camptocamp.github.io/helm-apache/
     alias: mapserver
     condition: mapserver.enabled
-    version: 0.1.17
+    version: 0.1.18
   - name: apache
     repository: https://camptocamp.github.io/helm-apache/
     alias: qgisserver
     condition: qgisserver.enabled
-    version: 0.1.17
+    version: 0.1.18
