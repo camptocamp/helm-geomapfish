@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.9
+    helm.sh/chart: geoportal-0.1.10
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -125,7 +125,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.9
+    helm.sh/chart: geoportal-0.1.10
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -150,7 +150,7 @@ kind: Service
 metadata:
   name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.9
+    helm.sh/chart: geoportal-0.1.10
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -174,7 +174,7 @@ kind: Service
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.18
+    helm.sh/chart: mapserver-0.1.19
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -203,7 +203,7 @@ kind: Service
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.18
+    helm.sh/chart: qgisserver-0.1.19
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -232,14 +232,12 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.9
+    helm.sh/chart: geoportal-0.1.10
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: alembic
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
@@ -298,14 +296,12 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.9
+    helm.sh/chart: geoportal-0.1.10
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
@@ -410,14 +406,12 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.9
+    helm.sh/chart: geoportal-0.1.10
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tools
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
@@ -461,14 +455,12 @@ kind: Deployment
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.18
+    helm.sh/chart: mapserver-0.1.19
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
@@ -570,14 +562,12 @@ kind: Deployment
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.18
+    helm.sh/chart: qgisserver-0.1.19
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
