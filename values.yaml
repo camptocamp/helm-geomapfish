@@ -21,13 +21,13 @@ mutualize:
   branch: master
   key: to-fill
   mutualizeUrl: https://mutualized-print.apps.openshift-ch-1.camptocamp.com
-  configs: []
-  #  - name: test-print
+  configs: {}
+  #  test-print:
   #    host: demo.camptocamp.com
   #    dir: print/print-apps/test
   #    env:
   #      TEST: test
-  #  - name: test-tilecloudchain
+  #  test-tilecloudchain:
   #    host: demo.camptocamp.com
   #    dir: tilegeneration
   #    tilecloudchain: true

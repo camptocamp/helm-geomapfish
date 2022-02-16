@@ -271,11 +271,11 @@ mutualize:
   key: admin1234
   mutualizeUrl: https://mutualized-print.apps.openshift-ch-1.camptocamp.com
   configs:
-    - name: test-print
+    test-print:
       dir: print/print-apps/test
       env:
         TEST: test
-    - name: test-tilecloudchain
+    test-tilecloudchain:
       hosts:
         - name: main
           host: demo.camptocamp.com
