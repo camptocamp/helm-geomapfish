@@ -1,17 +1,17 @@
-{{- range $config := .Values.mutualize.configs }}
+{{- range $name, $config := .Values.mutualize.configs }}
 {{- if $config.tilecloudchain }}
 {{- range $host := $config.hosts }}
 ---
 apiVersion: camptocamp.com/v1
 kind: SharedConfigSource
 metadata:
-  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $config.name }}-hosts-{{ $host.name }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $name }}-hosts-{{ $host.name }}
   labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
     mutualize-tilecloudchain-hosts: 'true'
 spec:
-  name: {{ $config.name }}
+  name: {{ $name }}
   content:
-    {{ $host.host }}: /etc/mutualize-configs/{{ $config.name }}/config.yaml
+    {{ $host.host }}: /etc/mutualize-configs/{{ $name }}/config.yaml
 {{- end }}
 {{- end }}
 {{- end }}
