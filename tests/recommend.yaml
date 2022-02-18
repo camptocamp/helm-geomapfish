@@ -269,7 +269,8 @@ mutualize:
   repository: camptocamp/test
   branch: master
   key: admin1234
-  mutualizeUrl: https://mutualized-print.apps.openshift-ch-1.camptocamp.com
+  # Should be https://config.mutualize(-int)?.camptocamp.com
+  configUrl: https://config.mutualized.example.com
   configs:
     test-print:
       dir: print/print-apps/test
