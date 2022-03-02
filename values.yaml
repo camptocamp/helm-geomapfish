@@ -20,7 +20,8 @@ mutualize:
   repository: camptocamp/to-fill
   branch: master
   key: to-fill
-  mutualizeUrl: https://mutualized-print.apps.openshift-ch-1.camptocamp.com
+  # Should be https://config.mutualize(-int)?.camptocamp.com
+  configUrl: to-fill
   configs: {}
   #  test-print:
   #    host: demo.camptocamp.com

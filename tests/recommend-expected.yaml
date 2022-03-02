@@ -1285,7 +1285,7 @@ metadata:
     app.kubernetes.io/component: main
 spec:
   repository: camptocamp/test
-  url: /scm/1/refresh/test-print-print/
+  url: https://config.mutualized.example.com/1/refresh/test-print-print/
   contentType: json
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
@@ -1301,7 +1301,7 @@ metadata:
     app.kubernetes.io/component: main
 spec:
   repository: camptocamp/test
-  url: /scm/1/refresh/test-tilecloudchain-print/
+  url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain-print/
   contentType: json
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
