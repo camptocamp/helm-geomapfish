@@ -1,0 +1,53 @@
+{{- $fullName := include "common.fullname" ( dict "root" . "service" .Values ) -}}
+{{- $tilesService := .Values.mutualize.tiles.service -}}
+{{- range $name, $config := .Values.mutualize.configs }}
+{{- if $config.tilecloudchain }}
+{{- range $ingress_host := $config.hosts }}
+---
+{{- if semverCompare ">=1.19.0" ( trimPrefix "v" $.Capabilities.KubeVersion.Version ) }}
+apiVersion: networking.k8s.io/v1
+{{- else -}}
+{{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-tiles-{{ $ingress_host.name }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+  {{- with $.Values.mutualize.tiles.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if $ingress_host.tls }}
+  tls:
+    - hosts:
+        - {{ $ingress_host.host }}
+      secretName: {{ $ingress_host.tls.secretName }}
+{{- end }}
+  rules:
+    - host: {{ $ingress_host.host }}
+      http:
+        paths:
+        {{- range $.Values.mutualize.tiles.ingress.paths }}
+          - path: {{ . }}
+            {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $tilesService.name}}
+                port:
+                  number: {{ $tilesService.port }}
+              {{- else }}
+              serviceName: {{ $tilesService.name }}
+              servicePort: {{ $tilesService.port }}
+              {{- end -}}
+        {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

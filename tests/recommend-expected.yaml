@@ -1272,6 +1272,62 @@ spec:
         - name: tmp-volume
           emptyDir: {}
 ---
+# Source: geomapfish/templates/tiles-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-geomapfish-tiles-main
+  labels:
+    helm.sh/chart: geomapfish-0.1.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  tls:
+    - hosts:
+        - tiles.demo.example.com
+      secretName: main-tiles-tls
+  rules:
+    - host: tiles.demo.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mutualise-tiles
+                port:
+                  number: 8080
+---
+# Source: geomapfish/templates/tiles-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-geomapfish-tiles-test
+  labels:
+    helm.sh/chart: geomapfish-0.1.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  tls:
+    - hosts:
+        - tiles.demo-test.example.com
+      secretName: test-tiles-tls
+  rules:
+    - host: tiles.demo-test.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mutualise-tiles
+                port:
+                  number: 8080
+---
 # Source: geomapfish/templates/github-webhooks.yaml
 apiVersion: camptocamp.com/v1
 kind: GitHubWebhook
@@ -1377,7 +1433,7 @@ metadata:
 spec:
   name: test-tilecloudchain
   content:
-    demo.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
+    tiles.demo.example.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
 apiVersion: camptocamp.com/v1
@@ -1394,4 +1450,4 @@ metadata:
 spec:
   name: test-tilecloudchain
   content:
-    demo-test.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
+    tiles.demo-test.example.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml

@@ -109,8 +109,7 @@ geoportal:
     repository: camptocamp/geomapfishapp-geoportal
     tag: 2.7
   env:
-    <<: *configEnv
-    <<: *c2cwsgiutilsEnv
+    <<: [*configEnv, *c2cwsgiutilsEnv]
     SENTRY_CLIENT_RELEASE:
       type: configMap
       name: env
@@ -140,8 +139,7 @@ geoportal:
     image: *geoportal-image
     mainStatic: true
     env:
-      <<: *configEnv
-      <<: *c2cwsgiutilsEnv
+      <<: [*configEnv, *c2cwsgiutilsEnv]
       SENTRY_CLIENT_RELEASE:
         type: configMap
         name: env
@@ -279,13 +277,24 @@ mutualize:
     test-tilecloudchain:
       hosts:
         - name: main
-          host: demo.camptocamp.com
+          host: tiles.demo.example.com
+          tls:
+            secretName: main-tiles-tls
         - name: test
-          host: demo-test.camptocamp.com
+          host: tiles.demo-test.example.com
+          tls:
+            secretName: test-tiles-tls
       dir: tilegeneration
       tilecloudchain: true
       env:
         TEST: test
+  tiles:
+    service:
+      name: mutualise-tiles
+      port: 8080
+    ingress:
+      paths:
+        - /
 
 postgresql:
   schema: main

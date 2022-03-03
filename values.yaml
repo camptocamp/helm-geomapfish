@@ -24,16 +24,28 @@ mutualize:
   configUrl: to-fill
   configs: {}
   #  test-print:
-  #    host: demo.camptocamp.com
   #    dir: print/print-apps/test
   #    env:
   #      TEST: test
   #  test-tilecloudchain:
-  #    host: demo.camptocamp.com
-  #    dir: tilegeneration
   #    tilecloudchain: true
+  #    dir: tilegeneration
   #    env:
   #      TEST: test
+  #    hosts:
+  #      - name: test
+  #        host: test.tiles.example.com
+  #        tls:
+  #          secretName: test-tile-tls
+  tiles:
+    service:
+      name: service name to define
+      port: 8080
+    ingress:
+      annotations: []
+      paths:
+        []
+        # - /
 
 postgresql:
   schema: main
