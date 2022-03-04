@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.11
+    helm.sh/chart: geoportal-0.1.12
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -125,7 +125,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.11
+    helm.sh/chart: geoportal-0.1.12
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -150,7 +150,7 @@ kind: Service
 metadata:
   name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.11
+    helm.sh/chart: geoportal-0.1.12
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -232,7 +232,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.11
+    helm.sh/chart: geoportal-0.1.12
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -296,7 +296,7 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.11
+    helm.sh/chart: geoportal-0.1.12
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -406,7 +406,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.11
+    helm.sh/chart: geoportal-0.1.12
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
