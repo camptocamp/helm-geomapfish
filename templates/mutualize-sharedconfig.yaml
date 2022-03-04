@@ -13,9 +13,13 @@ spec:
       repo: git@github.com:{{ $.Values.mutualize.repository }}.git
       branch: {{ $.Values.mutualize.branch }}
       key: {{ $.Values.mutualize.key }}
-      sub_dir: {{ $value.dir }}
+      sub_dir: {{ .dir }}
       tags:
+      {{- if .tilecloudchain }}
         - print
+      {{- else }}
+        - tilecloudchain
+      {{- end }}
       template_engines:
         - type: shell
           environment_variables: true
