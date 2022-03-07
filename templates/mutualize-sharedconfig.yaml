@@ -23,9 +23,8 @@ spec:
       template_engines:
         - type: shell
           environment_variables: true
+          {{- with .env }}
           data:
-            {{- range $name, $value := .env }}
-            - name: {{ $name | quote }}
-              value: {{ $value | quote }}
-            {{- end }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
 {{- end }}
