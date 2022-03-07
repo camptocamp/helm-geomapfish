@@ -1325,7 +1325,7 @@ spec:
       key: admin1234
       sub_dir: print/print-apps/test
       tags:
-        - tilecloudchain
+        - print
       template_engines:
         - type: shell
           environment_variables: true
@@ -1353,7 +1353,7 @@ spec:
       key: admin1234
       sub_dir: tilegeneration
       tags:
-        - print
+        - tilecloudchain
       template_engines:
         - type: shell
           environment_variables: true

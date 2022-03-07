@@ -16,9 +16,9 @@ spec:
       sub_dir: {{ .dir }}
       tags:
       {{- if .tilecloudchain }}
-        - print
-      {{- else }}
         - tilecloudchain
+      {{- else }}
+        - print
       {{- end }}
       template_engines:
         - type: shell
