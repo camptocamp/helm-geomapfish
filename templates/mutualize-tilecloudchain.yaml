@@ -9,7 +9,7 @@ metadata:
   labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
     mutualize-tilecloudchain-hosts: 'true'
 spec:
-  name: {{ $name }}
+  name: {{ $name }}-{{ $host.name }}
   content:
     {{ $host.host }}: /etc/mutualize-configs/{{ $name }}/config.yaml
 {{- end }}

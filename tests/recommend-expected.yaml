@@ -1373,7 +1373,7 @@ metadata:
     app.kubernetes.io/component: main
     mutualize-tilecloudchain-hosts: 'true'
 spec:
-  name: test-tilecloudchain
+  name: test-tilecloudchain-main
   content:
     demo.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
 ---
@@ -1390,6 +1390,6 @@ metadata:
     app.kubernetes.io/component: main
     mutualize-tilecloudchain-hosts: 'true'
 spec:
-  name: test-tilecloudchain
+  name: test-tilecloudchain-test
   content:
     demo-test.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
