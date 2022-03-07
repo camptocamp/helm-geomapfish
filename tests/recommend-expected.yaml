@@ -1375,7 +1375,7 @@ metadata:
 spec:
   name: test-tilecloudchain-main
   content:
-    demo.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
+    demo.camptocamp.com: /etc/tilecloudchain-configs/test-tilecloudchain/config.yaml
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
 apiVersion: camptocamp.com/v1
@@ -1392,4 +1392,4 @@ metadata:
 spec:
   name: test-tilecloudchain-test
   content:
-    demo-test.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
+    demo-test.camptocamp.com: /etc/tilecloudchain-configs/test-tilecloudchain/config.yaml
