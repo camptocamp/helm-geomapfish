@@ -1325,13 +1325,12 @@ spec:
       key: admin1234
       sub_dir: print/print-apps/test
       tags:
-        - print
+        - tilecloudchain
       template_engines:
         - type: shell
           environment_variables: true
           data:
-            - name: "TEST"
-              value: "test"
+            TEST: test
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
 apiVersion: camptocamp.com/v1
@@ -1359,8 +1358,7 @@ spec:
         - type: shell
           environment_variables: true
           data:
-            - name: "TEST"
-              value: "test"
+            TEST: test
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
 apiVersion: camptocamp.com/v1
