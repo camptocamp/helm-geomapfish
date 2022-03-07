@@ -1,6 +1,7 @@
-HELM != helm
+HELM ?= helm
 
 gen-expected:
+	${HELM} dependency update .
 	${HELM} template --namespace=default test . > tests/expected.yaml || \
 		${HELM} template --debug --namespace=default test
 	sed -i 's/[[:blank:]]\+$$//g'  tests/expected.yaml
