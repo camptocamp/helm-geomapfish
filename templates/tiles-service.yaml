@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-tiles
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.mutualize.tccService }}
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 80
+  selector: {{- include "common.selectorLabels" ( dict "root" . "service" .Values ) | nindent 4 }}
