@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.12
+    helm.sh/chart: geoportal-0.1.13
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -125,7 +125,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.12
+    helm.sh/chart: geoportal-0.1.13
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -150,7 +150,7 @@ kind: Service
 metadata:
   name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.12
+    helm.sh/chart: geoportal-0.1.13
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -174,7 +174,7 @@ kind: Service
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.20
+    helm.sh/chart: mapserver-0.1.21
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -203,7 +203,7 @@ kind: Service
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.20
+    helm.sh/chart: qgisserver-0.1.21
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -232,7 +232,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.12
+    helm.sh/chart: geoportal-0.1.13
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -408,7 +408,7 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.12
+    helm.sh/chart: geoportal-0.1.13
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -704,7 +704,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.12
+    helm.sh/chart: geoportal-0.1.13
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -834,7 +834,7 @@ kind: Deployment
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.20
+    helm.sh/chart: mapserver-0.1.21
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -842,6 +842,7 @@ metadata:
     app.kubernetes.io/component: main
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
@@ -1050,7 +1051,7 @@ kind: Deployment
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.20
+    helm.sh/chart: qgisserver-0.1.21
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -1058,6 +1059,7 @@ metadata:
     app.kubernetes.io/component: main
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
