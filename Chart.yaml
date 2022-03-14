@@ -10,7 +10,7 @@ icon: http://geomapfish.org/images/brand/logo.png
 dependencies:
   - name: common
     repository: https://camptocamp.github.io/helm-common
-    version: 0.1.7
+    version: 0.2.0
   - name: geoportal
     repository: https://camptocamp.github.io/helm-geoportal/
     version: 0.1.13
