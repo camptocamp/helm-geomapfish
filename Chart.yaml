@@ -11,16 +11,3 @@ dependencies:
   - name: common
     repository: https://camptocamp.github.io/helm-common
     version: 0.2.0
-  - name: geoportal
-    repository: https://camptocamp.github.io/helm-geoportal/
-    version: 0.1.13
-  - name: apache
-    repository: https://camptocamp.github.io/helm-apache/
-    alias: mapserver
-    condition: mapserver.enabled
-    version: 0.1.21
-  - name: apache
-    repository: https://camptocamp.github.io/helm-apache/
-    alias: qgisserver
-    condition: qgisserver.enabled
-    version: 0.1.21

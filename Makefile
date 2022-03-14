@@ -2,11 +2,14 @@ HELM ?= helm
 
 gen-expected:
 	${HELM} template --namespace=default test . > tests/expected.yaml || \
-		${HELM} template --debug --namespace=default test
+		${HELM} template --debug --namespace=default test .
 	sed -i 's/[[:blank:]]\+$$//g'  tests/expected.yaml
 	${HELM} template --namespace=default --values=tests/recommend.yaml test . > tests/recommend-expected.yaml || \
-		${HELM} template --debug --namespace=default --values=tests/recommend.yaml test
+		${HELM} template --debug --namespace=default --values=tests/recommend.yaml test .
 	sed -i 's/[[:blank:]]\+$$//g'  tests/recommend-expected.yaml
+	${HELM} template --namespace=default --values=tests/full.yaml test . > tests/full-expected.yaml || \
+		${HELM} template --debug --namespace=default --values=tests/full.yaml test .
+	sed -i 's/[[:blank:]]\+$$//g'  tests/full-expected.yaml
 
 start-local:
 	k3d cluster delete test-cluster || true

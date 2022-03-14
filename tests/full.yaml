@@ -1,0 +1,35 @@
+annotations:
+  reloader.stakater.com/auto: 'true'
+
+podLabels:
+  foo: bar0
+
+alembic:
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  podLabels:
+    foo: bar1
+
+tools:
+  annotations:
+    reloader.stakater.com/auto: 'true'
+  podLabels:
+    foo: bar2
+
+ingress:
+  enabled: true
+  paths:
+    - /
+  hosts:
+    - name: main
+      host: gmf.local
+      tls:
+        secretName: mytls
+  additionalPaths:
+    customFeedback:
+      path: /custom/
+      service: geomapfish-env-version-custom-feedback
+
+serviceAccount:
+  create: true
+  name: full

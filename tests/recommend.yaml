@@ -104,166 +104,68 @@ shared:
       name: env
       key: QGISSERVER_URL
 
-geoportal:
-  image: &geoportal-image
-    repository: camptocamp/geomapfishapp-geoportal
-    tag: 2.7
+image: &geoportal-image
+  repository: camptocamp/geomapfishapp-geoportal
+  tag: 2.7
+env:
+  <<: [*configEnv, *c2cwsgiutilsEnv]
+  SENTRY_CLIENT_RELEASE:
+    type: configMap
+    name: env
+    key: GEOPORTAL_CLIENT_RELEASE
+  SENTRY_TAG_SERVICE:
+    value: geoportal
+  AUTHTKT_SECRET:
+    value: secret012345678901234567890123456789012345678901234567890123456789
+resources:
+  limits:
+    memory: 400Mi
+  requests:
+    memory: 271Mi
+    cpu: 88m
+
+configMapNameOverride:
+  env: test-geomapfish-env
+
+config:
+  image:
+    repository: camptocamp/geomapfishdemo-config
+    tag: prod-2-7
   env:
     <<: *configEnv
-    <<: *c2cwsgiutilsEnv
+    VISIBLE_WEB_PROTOCOL:
+      value: https
+
+alembic:
+  image: *geoportal-image
+  mainStatic: true
+  env:
+    <<: [*configEnv, *c2cwsgiutilsEnv]
     SENTRY_CLIENT_RELEASE:
       type: configMap
       name: env
-      key: GEOPORTAL_CLIENT_RELEASE
+      key: ALEMBIC_CLIENT_RELEASE
     SENTRY_TAG_SERVICE:
-      value: geoportal
-    AUTHTKT_SECRET:
-      value: secret012345678901234567890123456789012345678901234567890123456789
+      value: alembic
   resources:
     limits:
-      memory: 400Mi
+      memory: 200Mi
     requests:
-      memory: 271Mi
+      memory: 171Mi
       cpu: 88m
 
-  configMapNameOverride: &configMapNameOverride
-    env: test-geomapfish-env
-
-  config: &config
-    image:
-      repository: camptocamp/geomapfishdemo-config
-      tag: prod-2-7
-    env:
-      <<: *configEnv
-
-  alembic:
-    image: *geoportal-image
-    mainStatic: true
-    env:
-      <<: *configEnv
-      <<: *c2cwsgiutilsEnv
-      SENTRY_CLIENT_RELEASE:
-        type: configMap
-        name: env
-        key: ALEMBIC_CLIENT_RELEASE
-      SENTRY_TAG_SERVICE:
-        value: alembic
-    resources:
-      limits:
-        memory: 200Mi
-      requests:
-        memory: 171Mi
-        cpu: 88m
-
-  tools:
-    image:
-      repository: camptocamp/geomapfish-tools
-      tag: 2.7
-    env:
-      <<: *configEnv
-    resources:
-      limits:
-        memory: 200Mi
-      requests:
-        memory: 100Mi
-        cpu: 1m
-
-mapserver:
+tools:
   image:
-    repository: camptocamp/mapserver
-    tag: 7.6
+    repository: camptocamp/geomapfish-tools
+    tag: 2.7
   env:
-    PGOPTIONS:
-      type: configMap
-      name: env
-      key: PGOPTIONS
-    MAX_PROCESSES:
-      value: '1'
-    MAPSERVER_CATCH_SEGV:
-      value: '1'
-    SEGFAULT_SIGNALS:
-      value: all
-  resources:
-    requests:
-      memory: 110.5Mi
-      cpu: 4m
-    limits:
-      memory: 560Mi
-  configMapNameOverride: *configMapNameOverride
-  readinessProbe:
-    httpGet:
-      path: /
-      port: http
-    initialDelaySeconds: 2
-    timeoutSeconds: 10
-  livenessProbe:
-    httpGet:
-      path: /
-      port: http
-    initialDelaySeconds: 2
-    timeoutSeconds: 10
-    periodSeconds: 30
-    failureThreshold: 5
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 33 # www-data
-  config: *config
-  apacheExporter: &apacheExporter
-    image:
-      tag: v0.10.1
-    resources:
-      limits:
-        memory: 20Mi
-      requests:
-        memory: 10Mi
-        cpu: 1m
-
-qgisserver:
-  image:
-    repository: camptocamp/geomapfish-qgisserver
-    tag: gmf2.7-qgismaster
-  env:
-    <<: *redisEnv
-    MAX_PROCESSES:
-      value: '1'
-    MAX_REQUESTS_PER_PROCESS:
-      value: '500'
-    QGIS_CUSTOM_CONFIG_PATH:
-      value: /tmp
-    GEOMAPFISH_ACCESSCONTROL_BASE_URL:
-      value: http://test-qgis
-    QGIS_SERVER_LOG_LEVEL:
-      value: 0
-    FCGID_IO_TIMEOUT:
-      value: 120
-    QGIS_SERVER_IGNORE_BAD_LAYERS:
-      value: 'TRUE'
+    <<: *configEnv
   resources:
     limits:
-      memory: 1300Mi
+      memory: 200Mi
     requests:
-      memory: 113Mi
-      cpu: 12.5m
-  readinessProbe:
-    httpGet:
-      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
-      port: http
-    initialDelaySeconds: 20
-    timeoutSeconds: 300
-  livenessProbe:
-    httpGet:
-      path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
-      port: http
-    initialDelaySeconds: 20
-    timeoutSeconds: 300
-    periodSeconds: 60
-    failureThreshold: 5
-  securityContext:
-    runAsNonRoot: true
-    runAsUser: 33 # www-data
-  configMapNameOverride: *configMapNameOverride
-  config: *config
-  apacheExporter: *apacheExporter
+      memory: 100Mi
+      cpu: 1m
 
 mutualize:
   repository: camptocamp/test
@@ -286,6 +188,20 @@ mutualize:
       tilecloudchain: true
       env:
         TEST: test
+
+ingress:
+  enabled: true
+  paths:
+    - /
+  hosts:
+    - name: main
+      host: gmf.local
+      tls:
+        secretName: mytls
+  additionalPaths:
+    customFeedback:
+      path: /custom/
+      service: geomapfish-env-version-custom-feedback
 
 postgresql:
   schema: main

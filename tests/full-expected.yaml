@@ -18,6 +18,18 @@ spec:
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: main
 ---
+# Source: geomapfish/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: full
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+---
 # Source: geomapfish/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -42,6 +54,8 @@ data:
   TILECLOUDCHAIN_INTERNAL_HOST: test-geomapfish-tilecloudchain
   VISIBLE_ENTRY_POINT: /
   VISIBLE_ENTRY_POINT_RE_ESCAPED: "/"
+  VISIBLE_WEB_HOST: gmf.local
+  VISIBLE_WEB_HOST_RE_ESCAPED: "gmf\\.local"
   PGSCHEMA: "main"
   PGSCHEMA_STATIC: "main_static"
   PGOPTIONS: "-c statement_timeout=30000"
@@ -159,6 +173,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: alembic
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -174,8 +190,9 @@ spec:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: alembic
+        foo: bar1
     spec:
-      serviceAccountName: default
+      serviceAccountName: full
       securityContext:
         runAsNonRoot: true
         runAsUser: 33
@@ -221,6 +238,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -236,8 +255,9 @@ spec:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: main
+        foo: bar0
     spec:
-      serviceAccountName: default
+      serviceAccountName: full
       securityContext:
         runAsNonRoot: true
         runAsUser: 33
@@ -335,6 +355,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tools
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -350,8 +372,9 @@ spec:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tools
+        foo: bar2
     spec:
-      serviceAccountName: default
+      serviceAccountName: full
       securityContext:
         runAsNonRoot: true
         runAsUser: 33
@@ -370,3 +393,38 @@ spec:
           args:
            - sleep
            - infinity
+---
+# Source: geomapfish/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-geomapfish-main
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  tls:
+    - hosts:
+        - gmf.local
+      secretName: mytls
+  rules:
+    - host: gmf.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-geomapfish
+                port:
+                  number: 80
+          - path: "/custom/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-env-version-custom-feedback
+                port:
+                  number: 80
