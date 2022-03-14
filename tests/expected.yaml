@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.13
+    helm.sh/chart: geoportal
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -59,7 +59,7 @@ kind: ConfigMap
 metadata:
   name: test-geomapfish-env
   labels:
-    helm.sh/chart: geomapfish-0.1.0
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
@@ -125,7 +125,7 @@ kind: Service
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.13
+    helm.sh/chart: geoportal
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -150,7 +150,7 @@ kind: Service
 metadata:
   name: test-geoportal-prometheus
   labels:
-    helm.sh/chart: geoportal-0.1.13
+    helm.sh/chart: geoportal
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -174,7 +174,7 @@ kind: Service
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.21
+    helm.sh/chart: mapserver
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -203,7 +203,7 @@ kind: Service
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.21
+    helm.sh/chart: qgisserver
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -232,7 +232,7 @@ kind: Service
 metadata:
   name: test-geomapfish-tiles
   labels:
-    helm.sh/chart: geomapfish-0.1.0
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
@@ -252,7 +252,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-alembic
   labels:
-    helm.sh/chart: geoportal-0.1.13
+    helm.sh/chart: geoportal
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -274,7 +274,6 @@ spec:
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: alembic
     spec:
-
       serviceAccountName: default
       securityContext:
         runAsNonRoot: true
@@ -316,7 +315,7 @@ kind: Deployment
 metadata:
   name: test-geoportal
   labels:
-    helm.sh/chart: geoportal-0.1.13
+    helm.sh/chart: geoportal
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -338,7 +337,6 @@ spec:
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: main
     spec:
-
       serviceAccountName: default
       securityContext:
         runAsNonRoot: true
@@ -369,10 +367,10 @@ spec:
           image: "camptocamp/<project>-config:latest"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "VISIBLE_ENTRY_POINT"
-                value: "/"
-              - name: "VISIBLE_WEB_PROTOCOL"
-                value: "https"
+            - name: "VISIBLE_ENTRY_POINT"
+              value: "/"
+            - name: "VISIBLE_WEB_PROTOCOL"
+              value: "https"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -426,7 +424,7 @@ kind: Deployment
 metadata:
   name: test-geoportal-tools
   labels:
-    helm.sh/chart: geoportal-0.1.13
+    helm.sh/chart: geoportal
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geoportal
@@ -448,7 +446,6 @@ spec:
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tools
     spec:
-
       serviceAccountName: default
       securityContext:
         runAsNonRoot: true
@@ -475,7 +472,7 @@ kind: Deployment
 metadata:
   name: test-mapserver
   labels:
-    helm.sh/chart: mapserver-0.1.21
+    helm.sh/chart: mapserver
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mapserver
@@ -498,7 +495,6 @@ spec:
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: main
     spec:
-
       serviceAccountName: default
       securityContext:
         {}
@@ -583,7 +579,7 @@ kind: Deployment
 metadata:
   name: test-qgisserver
   labels:
-    helm.sh/chart: qgisserver-0.1.21
+    helm.sh/chart: qgisserver
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: qgisserver
@@ -606,7 +602,6 @@ spec:
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: main
     spec:
-
       serviceAccountName: default
       securityContext:
         {}
