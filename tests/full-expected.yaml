@@ -177,6 +177,7 @@ metadata:
     reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
@@ -242,6 +243,7 @@ metadata:
     reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
@@ -359,6 +361,7 @@ metadata:
     reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
