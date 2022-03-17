@@ -1,3 +1,7 @@
+global:
+  configMapNameOverride:
+    env: test-geomapfish-env
+
 shared:
   redisEnv: &redisEnv
     C2C_REDIS_URL:
@@ -123,9 +127,6 @@ resources:
   requests:
     memory: 271Mi
     cpu: 88m
-
-configMapNameOverride:
-  env: test-geomapfish-env
 
 config:
   image:

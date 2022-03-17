@@ -1,7 +1,11 @@
+global:
+  image:
+    pullSecrets: []
+    pullPolicy: IfNotPresent
+
 nameOverride: ''
 fullnameOverride: ''
 
-imagePullSecrets: []
 replicaCount: 1
 
 entrypoint: /
@@ -13,7 +17,6 @@ image: &image
   repository: camptocamp/geomapfishapp-geoportal
   tag: latest
   sha:
-  pullPolicy: IfNotPresent
 
 config:
   image:
