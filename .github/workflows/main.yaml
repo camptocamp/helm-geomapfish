@@ -43,11 +43,20 @@ jobs:
 
       - run: helm template --namespace=default test . > tests/actual.yaml
       - run: diff --ignore-trailing-space tests/actual.yaml tests/expected.yaml
-      - run: cat tests/actual.yaml || true
-        if: failure()
+      - run: helm lint .
+
+      - run: helm template --namespace=default --values=tests/recommend.yaml test . > tests/recommend-actual.yaml
+      - run: diff --ignore-trailing-space tests/recommend-actual.yaml tests/recommend-expected.yaml
       - run: helm lint --values=tests/recommend.yaml .
+
+      - run: helm template --namespace=default --values=tests/full.yaml  test . > tests/full-actual.yaml
+      - run: diff --ignore-trailing-space tests/full-actual.yaml tests/full-expected.yaml
+      - run: helm lint --values=tests/full.yaml .
+
       - run: kubectl apply -f tests/expected.yaml
       - run: kubectl delete -f tests/expected.yaml || true
+      - run: kubectl apply -f tests/full-expected.yaml
+      - run: kubectl delete -f tests/full-expected.yaml || true
 
       # Install operators
       - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
@@ -63,10 +72,6 @@ jobs:
         run: c2cciutils-k8s-db --script=tests/db.sql
       - run: helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false bitnami/redis
 
-      - run: helm template --namespace=default --values=tests/recommend.yaml test . > tests/recommend-actual.yaml
-      - run: diff --ignore-trailing-space tests/recommend-actual.yaml tests/recommend-expected.yaml
-      - run: cat tests/recommend-actual.yaml || true
-        if: failure()
       - run: kubectl apply -f tests/recommend-expected.yaml
       - run: c2cciutils-k8s-wait
       - run: c2cciutils-k8s-logs

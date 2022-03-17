@@ -1,55 +1,20 @@
 ---
-# Source: geomapfish/charts/geoportal/templates/pdb.yaml
+# Source: geomapfish/templates/pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: test-geoportal
+  name: test-geomapfish
   labels:
-    helm.sh/chart: geoportal
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: geoportal
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
----
-# Source: geomapfish/charts/mapserver/templates/pdb.yaml
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: test-mapserver
-  labels:
-    app.kubernetes.io/name: mapserver
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mapserver
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
----
-# Source: geomapfish/charts/qgisserver/templates/pdb.yaml
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: test-qgisserver
-  labels:
-    app.kubernetes.io/name: qgisserver
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: qgisserver
+      app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: main
 ---
@@ -75,11 +40,10 @@ data:
   QGISSERVER_URL: http://test-geomapfish-qgisserver/
   GEOPORTAL_INTERNAL_HOST: test-geomapfish-geoportal
   TILECLOUDCHAIN_INTERNAL_HOST: test-geomapfish-tilecloudchain
-  VISIBLE_WEB_HOST: chart-example.local
   VISIBLE_ENTRY_POINT: /
-  VISIBLE_WEB_HOST_RE_ESCAPED: "chart-example\\.local"
   VISIBLE_ENTRY_POINT_RE_ESCAPED: "/"
-
+  VISIBLE_WEB_HOST: gmf.local
+  VISIBLE_WEB_HOST_RE_ESCAPED: "gmf\\.local"
   PGSCHEMA: "main"
   PGSCHEMA_STATIC: "main_static"
   PGOPTIONS: "-c statement_timeout=30000"
@@ -119,16 +83,15 @@ data:
   GEOPORTAL_CLIENT_RELEASE: "2.7"
   ALEMBIC_CLIENT_RELEASE: "2.7"
 ---
-# Source: geomapfish/charts/geoportal/templates/service.yaml
+# Source: geomapfish/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-geoportal
+  name: test-geomapfish
   labels:
-    helm.sh/chart: geoportal
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
     prometheus: 'true'
@@ -140,20 +103,19 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 ---
-# Source: geomapfish/charts/geoportal/templates/service.yaml
+# Source: geomapfish/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-geoportal-prometheus
+  name: test-geomapfish-prometheus
   labels:
-    helm.sh/chart: geoportal
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 spec:
@@ -164,65 +126,7 @@ spec:
       protocol: TCP
       name: prometheus
   selector:
-    app.kubernetes.io/name: geoportal
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
----
-# Source: geomapfish/charts/mapserver/templates/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: test-mapserver
-  labels:
-    helm.sh/chart: mapserver
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mapserver
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
-    prometheus: "true"
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
-      name: http
-    - port: 9117
-      targetPort: prometheus
-      protocol: TCP
-      name: prometheus
-  selector:
-    app.kubernetes.io/name: mapserver
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
----
-# Source: geomapfish/charts/qgisserver/templates/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: test-qgisserver
-  labels:
-    helm.sh/chart: qgisserver
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: qgisserver
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
-    prometheus: "true"
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
-      name: http
-    - port: 9117
-      targetPort: prometheus
-      protocol: TCP
-      name: prometheus
-  selector:
-    app.kubernetes.io/name: qgisserver
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 ---
@@ -246,16 +150,15 @@ spec:
     port: 80
     targetPort: 80
 ---
-# Source: geomapfish/charts/geoportal/templates/alembic-deployment.yaml
+# Source: geomapfish/templates/alembic-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-geoportal-alembic
+  name: test-geomapfish-alembic
   labels:
-    helm.sh/chart: geoportal
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: alembic
 spec:
@@ -264,13 +167,13 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: geoportal
+      app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: alembic
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: geoportal
+        app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: alembic
     spec:
@@ -421,16 +324,15 @@ spec:
             - -f
             - /dev/null
 ---
-# Source: geomapfish/charts/geoportal/templates/deployment.yaml
+# Source: geomapfish/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-geoportal
+  name: test-geomapfish
   labels:
-    helm.sh/chart: geoportal
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 spec:
@@ -439,13 +341,13 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: geoportal
+      app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: main
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: geoportal
+        app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: main
     spec:
@@ -469,7 +371,7 @@ spec:
               - key: app.kubernetes.io/name
                 operator: In
                 values:
-                - geoportal
+                - geomapfish
             topologyKey: "kubernetes.io/hostname"
       initContainers:
         - name: config
@@ -558,10 +460,16 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
-          args: ['bash', '-c', 'cp -a /etc/geomapfish/* /etc/geomapfish-volume/']
+          args:
+            - bash
+            - -c
+            - cp -a /etc/geomapfish/* /etc/geomapfish-volume/ &&
+              cp -a /usr/local/tomcat/webapps/ROOT/print-apps/* /etc/print-volume/
           volumeMounts:
             - mountPath: /etc/geomapfish-volume
-              name: configs
+              name: geomapfish
+            - mountPath: /etc/print-volume
+              name: print
       containers:
         - name: geoportal
           securityContext:
@@ -689,7 +597,10 @@ spec:
 
           volumeMounts:
             - mountPath: /etc/geomapfish
-              name: configs
+              name: geomapfish
+              readOnly: true
+            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+              name: print
               readOnly: true
 
           ports:
@@ -713,19 +624,20 @@ spec:
             periodSeconds: 20
 
       volumes:
-        - name: configs
+        - name: geomapfish
+          emptyDir: {}
+        - name: print
           emptyDir: {}
 ---
-# Source: geomapfish/charts/geoportal/templates/tools-deployment.yaml
+# Source: geomapfish/templates/tools-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-geoportal-tools
+  name: test-geomapfish-tools
   labels:
-    helm.sh/chart: geoportal
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geoportal
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tools
 spec:
@@ -734,13 +646,13 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: geoportal
+      app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: tools
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: geoportal
+        app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tools
     spec:
@@ -845,449 +757,40 @@ spec:
            - sleep
            - infinity
 ---
-# Source: geomapfish/charts/mapserver/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
+# Source: geomapfish/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: test-mapserver
+  name: test-geomapfish-main
   labels:
-    helm.sh/chart: mapserver
-    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mapserver
+    app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mapserver
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: mapserver
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: main
-    spec:
-      serviceAccountName: default
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
-      affinity:
-        {}
-      initContainers:
-        - name: config
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/geomapfishdemo-config:prod-2-7"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "GEOPORTAL_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "GEOPORTAL_INTERNAL_URL"
-            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-            - name: "MAPSERVER_DATA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_SUBSELECT"
-            - name: "MAPSERVER_JOIN_TABLES"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_TABLES"
-            - name: "MAPSERVER_JOIN_WHERE"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_WHERE"
-            - name: "PGDATABASE"
-              value: "postgres"
-            - name: "PGHOST"
-              value: "test-pg-postgresql"
-            - name: "PGHOST_SLAVE"
-              value: "test-pg-postgresql"
-            - name: "PGOPTIONS"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGOPTIONS"
-            - name: "PGPASSWORD"
-              value: "mySuperTestingPassword"
-            - name: "PGPORT"
-              value: "5432"
-            - name: "PGPORT_SLAVE"
-              value: "5432"
-            - name: "PGSCHEMA"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA"
-            - name: "PGSCHEMA_STATIC"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA_STATIC"
-            - name: "PGUSER"
-              value: "postgres"
-            - name: "QGISSERVER_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "QGISSERVER_URL"
-            - name: "TILECLOUDCHAIN_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "TILECLOUDCHAIN_INTERNAL_URL"
-            - name: "VISIBLE_ENTRY_POINT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_ENTRY_POINT"
-            - name: "VISIBLE_WEB_HOST"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_WEB_HOST"
-            - name: "VISIBLE_WEB_PROTOCOL"
-              value: "https"
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          args: ['bash', '-c', 'cp -a /etc/mapserver/* /etc/config-volume/']
-          volumeMounts:
-            - mountPath: /etc/config-volume
-              name: configs
-      containers:
-        - name: apache
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/mapserver:7.6"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "MAPSERVER_CATCH_SEGV"
-              value: "1"
-            - name: "MAX_PROCESSES"
-              value: "1"
-            - name: "PGOPTIONS"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGOPTIONS"
-            - name: "SEGFAULT_SIGNALS"
-              value: "all"
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            limits:
-              memory: 560Mi
-            requests:
-              cpu: 4m
-              memory: 110.5Mi
-          volumeMounts:
-            - mountPath: /etc/mapserver
-              name: configs
-              readOnly: false
-            - mountPath: /tmp
-              name: tmp-volume
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            failureThreshold: 5
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 2
-            periodSeconds: 30
-            timeoutSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 2
-            periodSeconds: 20
-            timeoutSeconds: 10
-          startupProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 2
-            periodSeconds: 20
-            timeoutSeconds: 10
-        - name: apache-exporter
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "quay.io/lusitaniae/apache-exporter:v0.10.1"
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 1m
-              memory: 10Mi
-          args:
-            - '--scrape_uri=http://test-mapserver/server-status-remote?auto'
-          ports:
-            - name: prometheus
-              containerPort: 9117
-              protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /
-              port: prometheus
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
-            periodSeconds: 20
-      volumes:
-        - name: configs
-          emptyDir: {}
-        - name: tmp-volume
-          emptyDir: {}
----
-# Source: geomapfish/charts/qgisserver/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-qgisserver
-  labels:
-    helm.sh/chart: qgisserver
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: qgisserver
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
-spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: qgisserver
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: qgisserver
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: main
-    spec:
-      serviceAccountName: default
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
-      affinity:
-        {}
-      initContainers:
-        - name: config
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/geomapfishdemo-config:prod-2-7"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "GEOPORTAL_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "GEOPORTAL_INTERNAL_URL"
-            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-            - name: "MAPSERVER_DATA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_SUBSELECT"
-            - name: "MAPSERVER_JOIN_TABLES"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_TABLES"
-            - name: "MAPSERVER_JOIN_WHERE"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_WHERE"
-            - name: "PGDATABASE"
-              value: "postgres"
-            - name: "PGHOST"
-              value: "test-pg-postgresql"
-            - name: "PGHOST_SLAVE"
-              value: "test-pg-postgresql"
-            - name: "PGOPTIONS"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGOPTIONS"
-            - name: "PGPASSWORD"
-              value: "mySuperTestingPassword"
-            - name: "PGPORT"
-              value: "5432"
-            - name: "PGPORT_SLAVE"
-              value: "5432"
-            - name: "PGSCHEMA"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA"
-            - name: "PGSCHEMA_STATIC"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA_STATIC"
-            - name: "PGUSER"
-              value: "postgres"
-            - name: "QGISSERVER_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "QGISSERVER_URL"
-            - name: "TILECLOUDCHAIN_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "TILECLOUDCHAIN_INTERNAL_URL"
-            - name: "VISIBLE_ENTRY_POINT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_ENTRY_POINT"
-            - name: "VISIBLE_WEB_HOST"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_WEB_HOST"
-            - name: "VISIBLE_WEB_PROTOCOL"
-              value: "https"
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          args: ['bash', '-c', 'cp -a /etc/qgisserver/* /etc/config-volume/']
-          volumeMounts:
-            - mountPath: /etc/config-volume
-              name: configs
-      containers:
-        - name: apache
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/geomapfish-qgisserver:gmf2.7-qgismaster"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "C2C_BROADCAST_PREFIX"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "REDIS_GEOPORTAL_BROADCAST_PREFIX"
-            - name: "C2C_REDIS_TIMEOUT"
-              value: "30"
-            - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/1"
-            - name: "FCGID_IO_TIMEOUT"
-              value: "120"
-            - name: "GEOMAPFISH_ACCESSCONTROL_BASE_URL"
-              value: "http://test-qgis"
-            - name: "MAX_PROCESSES"
-              value: "1"
-            - name: "MAX_REQUESTS_PER_PROCESS"
-              value: "500"
-            - name: "QGIS_CUSTOM_CONFIG_PATH"
-              value: "/tmp"
-            - name: "QGIS_SERVER_IGNORE_BAD_LAYERS"
-              value: "TRUE"
-            - name: "QGIS_SERVER_LOG_LEVEL"
-              value: "0"
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            limits:
-              memory: 1300Mi
-            requests:
-              cpu: 12.5m
-              memory: 113Mi
-          volumeMounts:
-            - mountPath: /etc/qgisserver
-              name: configs
-              readOnly: false
-            - mountPath: /tmp
-              name: tmp-volume
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            failureThreshold: 5
-            httpGet:
-              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
-              port: http
-            initialDelaySeconds: 20
-            periodSeconds: 60
-            timeoutSeconds: 300
-          readinessProbe:
-            httpGet:
-              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
-              port: http
-            initialDelaySeconds: 20
-            periodSeconds: 20
-            timeoutSeconds: 300
-          startupProbe:
-            httpGet:
-              path: /?SERVICE=WMS&REQUEST=GetCapabilities&MAP=/etc/qgisserver/project.qgz
-              port: http
-            initialDelaySeconds: 20
-            periodSeconds: 20
-            timeoutSeconds: 300
-        - name: apache-exporter
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "quay.io/lusitaniae/apache-exporter:v0.10.1"
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            limits:
-              memory: 20Mi
-            requests:
-              cpu: 1m
-              memory: 10Mi
-          args:
-            - '--scrape_uri=http://test-qgisserver/server-status-remote?auto'
-          ports:
-            - name: prometheus
-              containerPort: 9117
-              protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /
-              port: prometheus
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
-            periodSeconds: 20
-      volumes:
-        - name: configs
-          emptyDir: {}
-        - name: tmp-volume
-          emptyDir: {}
+  tls:
+    - hosts:
+        - gmf.local
+      secretName: mytls
+  rules:
+    - host: gmf.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-geomapfish
+                port:
+                  number: 80
+          - path: "/custom/"
+            pathType: Prefix
+            backend:
+              service:
+                name: geomapfish-env-version-custom-feedback
+                port:
+                  number: 80
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
 apiVersion: camptocamp.com/v1

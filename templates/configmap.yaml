@@ -14,11 +14,12 @@ data:
   QGISSERVER_URL: http://{{ include "common.fullname" ( dict "root" . "service" .Values ) }}-qgisserver/
   GEOPORTAL_INTERNAL_HOST: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-geoportal
   TILECLOUDCHAIN_INTERNAL_HOST: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-tilecloudchain
-  VISIBLE_WEB_HOST: {{ (index .Values.geoportal.ingress.hosts 0).host }}
   VISIBLE_ENTRY_POINT: {{ .Values.entrypoint }}
-  VISIBLE_WEB_HOST_RE_ESCAPED: {{ replace "." "\\." (index .Values.geoportal.ingress.hosts 0).host | quote }}
   VISIBLE_ENTRY_POINT_RE_ESCAPED: {{ replace "." "\\." .Values.entrypoint | quote }}
-
+  {{- if .Values.ingress.enabled }}
+  VISIBLE_WEB_HOST: {{ (index .Values.ingress.hosts 0).host }}
+  VISIBLE_WEB_HOST_RE_ESCAPED: {{ replace "." "\\." (index .Values.ingress.hosts 0).host | quote }}
+  {{- end }}
   PGSCHEMA: {{ .Values.postgresql.schema | quote }}
   PGSCHEMA_STATIC: {{ .Values.postgresql.staticSchema | quote }}
   PGOPTIONS: "-c statement_timeout={{ .Values.postgresql.statementTimeout}}"
@@ -55,5 +56,5 @@ data:
     lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
   GEOPORTAL_BROADCAST_PREFIX: broadcast_geoportal_{{ .Values.redis.db }}
 
-  GEOPORTAL_CLIENT_RELEASE: {{ .Values.geoportal.image.tag | quote }}
-  ALEMBIC_CLIENT_RELEASE: {{ .Values.geoportal.alembic.image.tag | quote }}
+  GEOPORTAL_CLIENT_RELEASE: {{ .Values.image.tag | quote }}
+  ALEMBIC_CLIENT_RELEASE: {{ .Values.alembic.image.tag | quote }}
