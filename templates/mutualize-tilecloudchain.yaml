@@ -5,8 +5,8 @@
 apiVersion: camptocamp.com/v1
 kind: SharedConfigSource
 metadata:
-  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $name }}-hosts-{{ $host.name }}
-  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" ( dict "serviceName" $name )) }}-hosts-{{ $host.name }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" ( dict "serviceName" $name ) ) | nindent 4 }}
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: {{ $name }}-{{ $host.name }}

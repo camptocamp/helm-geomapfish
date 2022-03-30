@@ -3,20 +3,20 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: test-geomapfish
+  name: test-geomapfish-geoportal
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
+      app.kubernetes.io/component: geoportal
 ---
 # Source: geomapfish/templates/configmap.yaml
 apiVersion: v1
@@ -28,70 +28,27 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: env
 data:
-  CHART_NAME: geomapfish
   RELEASE_NAME: test
-  RELEASE_NAMESPACE: default
-  SENTRY_URL: https://sentry-key@o330647.ingest.sentry.io/sentry-project
-  TILECLOUDCHAIN_INTERNAL_URL: http://test-geomapfish-tilecloudchain/
-  GEOPORTAL_INTERNAL_URL: http://test-geomapfish-geoportal/
-  MAPSERVER_URL: http://test-geomapfish-mapserver/
-  QGISSERVER_URL: http://test-geomapfish-qgisserver/
-  GEOPORTAL_INTERNAL_HOST: test-geomapfish-geoportal
-  TILECLOUDCHAIN_INTERNAL_HOST: test-geomapfish-tilecloudchain
-  VISIBLE_ENTRY_POINT: /
-  VISIBLE_ENTRY_POINT_RE_ESCAPED: "/"
-  PGSCHEMA: "main"
-  PGSCHEMA_STATIC: "main_static"
-  PGOPTIONS: "-c statement_timeout=30000"
-
-  REDIS_SENTINELS: ":6379"
-  REDIS_DB: "0"
-  REDIS_SERVICENAME: "mymaster"
-  REDIS_TIMEOUT: "10"
-  REDIS_GEOPORTAL_BROADCAST_PREFIX:  broadcast_geoportal_0
-
-  MAPSERVER_DATA_SUBSELECT: >
-    SELECT ST_Collect(ra.area)
-    FROM main.restrictionarea AS ra,
-    main.role_restrictionarea AS rra,
-    main.layer_restrictionarea AS lra,
-    main.treeitem AS la
-    WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id
-    AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
-  MAPSERVER_DATA_NOAREA_SUBSELECT: >
-    SELECT rra.role_id
-    FROM main.restrictionarea AS ra,
-    main.role_restrictionarea AS rra,
-    main.layer_restrictionarea AS lra,
-    main.treeitem AS la
-    WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id
-    AND lra.layer_id = la.id AND la.name =
-  MAPSERVER_JOIN_TABLES: >
-    main.restrictionarea AS ra,
-    main.role_restrictionarea AS rra,
-    main.layer_restrictionarea AS lra,
-    main.treeitem AS la
-  MAPSERVER_JOIN_WHERE: >
-    rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND
-    lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
-  GEOPORTAL_BROADCAST_PREFIX: broadcast_geoportal_0
-
-  GEOPORTAL_CLIENT_RELEASE: "latest"
-  ALEMBIC_CLIENT_RELEASE: "latest"
+  GEOPORTAL_IMAGE_TAG: "latest"
+  ALEMBIC_IMAGE_TAG: "latest"
+  TOOLS_IMAGE_TAG: "latest"
+  CONFIG_IMAGE_TAG: "latest"
+  STATD_IMAGE_TAG: "latest"
+  BUSYBOX_IMAGE_TAG: "latest"
 ---
 # Source: geomapfish/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-geomapfish
+  name: test-geomapfish-geoportal
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
     prometheus: 'true'
 spec:
   type: ClusterIP
@@ -103,19 +60,19 @@ spec:
   selector:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 ---
 # Source: geomapfish/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-geomapfish-prometheus
+  name: test-geomapfish-geoportal-prometheus
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 spec:
   type: ClusterIP
   ports:
@@ -126,7 +83,7 @@ spec:
   selector:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 ---
 # Source: geomapfish/templates/tiles-service.yaml
 apiVersion: v1
@@ -138,7 +95,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: tiles
 spec:
   type: ExternalName
   externalName: service.namespace.svc.cluster.local
@@ -215,13 +172,13 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-geomapfish
+  name: test-geomapfish-geoportal
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -231,13 +188,13 @@ spec:
     matchLabels:
       app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
+      app.kubernetes.io/component: geoportal
   template:
     metadata:
       labels:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
-        app.kubernetes.io/component: main
+        app.kubernetes.io/component: geoportal
     spec:
       serviceAccountName: default
       securityContext:

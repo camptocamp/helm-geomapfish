@@ -1,60 +1,13 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-env
-  labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" ( dict "serviceName" "env" ) ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" ( dict "serviceName" "env" ) ) | nindent 4 }}
 data:
-  CHART_NAME: {{ .Chart.Name }}
   RELEASE_NAME: {{ .Release.Name }}
-  RELEASE_NAMESPACE: {{ .Release.Namespace }}
-  SENTRY_URL: https://{{ .Values.sentry.key }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
-  TILECLOUDCHAIN_INTERNAL_URL: http://{{ include "common.fullname" ( dict "root" . "service" .Values ) }}-tilecloudchain/
-  GEOPORTAL_INTERNAL_URL: http://{{ include "common.fullname" ( dict "root" . "service" .Values ) }}-geoportal/
-  MAPSERVER_URL: http://{{ include "common.fullname" ( dict "root" . "service" .Values ) }}-mapserver/
-  QGISSERVER_URL: http://{{ include "common.fullname" ( dict "root" . "service" .Values ) }}-qgisserver/
-  GEOPORTAL_INTERNAL_HOST: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-geoportal
-  TILECLOUDCHAIN_INTERNAL_HOST: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-tilecloudchain
-  VISIBLE_ENTRY_POINT: {{ .Values.entrypoint }}
-  VISIBLE_ENTRY_POINT_RE_ESCAPED: {{ replace "." "\\." .Values.entrypoint | quote }}
-  {{- if .Values.ingress.enabled }}
-  VISIBLE_WEB_HOST: {{ (index .Values.ingress.hosts 0).host }}
-  VISIBLE_WEB_HOST_RE_ESCAPED: {{ replace "." "\\." (index .Values.ingress.hosts 0).host | quote }}
-  {{- end }}
-  PGSCHEMA: {{ .Values.postgresql.schema | quote }}
-  PGSCHEMA_STATIC: {{ .Values.postgresql.staticSchema | quote }}
-  PGOPTIONS: "-c statement_timeout={{ .Values.postgresql.statementTimeout}}"
-
-  REDIS_SENTINELS: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
-  REDIS_DB: {{ .Values.redis.db | quote }}
-  REDIS_SERVICENAME: {{ .Values.redis.servicename | quote }}
-  REDIS_TIMEOUT: {{ .Values.redis.timeout | quote }}
-  REDIS_GEOPORTAL_BROADCAST_PREFIX:  broadcast_geoportal_{{ .Values.redis.db }}
-
-  MAPSERVER_DATA_SUBSELECT: >
-    SELECT ST_Collect(ra.area)
-    FROM {{ .Values.postgresql.schema }}.restrictionarea AS ra,
-    {{ .Values.postgresql.schema }}.role_restrictionarea AS rra,
-    {{ .Values.postgresql.schema }}.layer_restrictionarea AS lra,
-    {{ .Values.postgresql.schema }}.treeitem AS la
-    WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id
-    AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
-  MAPSERVER_DATA_NOAREA_SUBSELECT: >
-    SELECT rra.role_id
-    FROM {{ .Values.postgresql.schema }}.restrictionarea AS ra,
-    {{ .Values.postgresql.schema }}.role_restrictionarea AS rra,
-    {{ .Values.postgresql.schema }}.layer_restrictionarea AS lra,
-    {{ .Values.postgresql.schema }}.treeitem AS la
-    WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id
-    AND lra.layer_id = la.id AND la.name =
-  MAPSERVER_JOIN_TABLES: >
-    {{ .Values.postgresql.schema }}.restrictionarea AS ra,
-    {{ .Values.postgresql.schema }}.role_restrictionarea AS rra,
-    {{ .Values.postgresql.schema }}.layer_restrictionarea AS lra,
-    {{ .Values.postgresql.schema }}.treeitem AS la
-  MAPSERVER_JOIN_WHERE: >
-    rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND
-    lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
-  GEOPORTAL_BROADCAST_PREFIX: broadcast_geoportal_{{ .Values.redis.db }}
-
-  GEOPORTAL_CLIENT_RELEASE: {{ .Values.image.tag | quote }}
-  ALEMBIC_CLIENT_RELEASE: {{ .Values.alembic.image.tag | quote }}
+  GEOPORTAL_IMAGE_TAG: {{ .Values.image.tag | quote }}
+  ALEMBIC_IMAGE_TAG: {{ .Values.alembic.image.tag | quote }}
+  TOOLS_IMAGE_TAG: {{ .Values.tools.image.tag | quote }}
+  CONFIG_IMAGE_TAG: {{ .Values.config.image.tag | quote }}
+  STATD_IMAGE_TAG: {{ .Values.statsd.image.tag | quote }}
+  BUSYBOX_IMAGE_TAG: {{ .Values.busybox.image.tag | quote }}
