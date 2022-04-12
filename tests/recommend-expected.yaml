@@ -3,20 +3,20 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: test-geomapfish
+  name: test-geomapfish-geoportal
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
+      app.kubernetes.io/component: geoportal
 ---
 # Source: geomapfish/templates/configmap.yaml
 apiVersion: v1
@@ -28,72 +28,27 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: env
 data:
-  CHART_NAME: geomapfish
   RELEASE_NAME: test
-  RELEASE_NAMESPACE: default
-  SENTRY_URL: https://sentry-key@o330647.ingest.sentry.io/sentry-project
-  TILECLOUDCHAIN_INTERNAL_URL: http://test-geomapfish-tilecloudchain/
-  GEOPORTAL_INTERNAL_URL: http://test-geomapfish-geoportal/
-  MAPSERVER_URL: http://test-geomapfish-mapserver/
-  QGISSERVER_URL: http://test-geomapfish-qgisserver/
-  GEOPORTAL_INTERNAL_HOST: test-geomapfish-geoportal
-  TILECLOUDCHAIN_INTERNAL_HOST: test-geomapfish-tilecloudchain
-  VISIBLE_ENTRY_POINT: /
-  VISIBLE_ENTRY_POINT_RE_ESCAPED: "/"
-  VISIBLE_WEB_HOST: gmf.local
-  VISIBLE_WEB_HOST_RE_ESCAPED: "gmf\\.local"
-  PGSCHEMA: "main"
-  PGSCHEMA_STATIC: "main_static"
-  PGOPTIONS: "-c statement_timeout=30000"
-
-  REDIS_SENTINELS: "redis:6379"
-  REDIS_DB: "0"
-  REDIS_SERVICENAME: "mymaster"
-  REDIS_TIMEOUT: "10"
-  REDIS_GEOPORTAL_BROADCAST_PREFIX:  broadcast_geoportal_0
-
-  MAPSERVER_DATA_SUBSELECT: >
-    SELECT ST_Collect(ra.area)
-    FROM main.restrictionarea AS ra,
-    main.role_restrictionarea AS rra,
-    main.layer_restrictionarea AS lra,
-    main.treeitem AS la
-    WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id
-    AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
-  MAPSERVER_DATA_NOAREA_SUBSELECT: >
-    SELECT rra.role_id
-    FROM main.restrictionarea AS ra,
-    main.role_restrictionarea AS rra,
-    main.layer_restrictionarea AS lra,
-    main.treeitem AS la
-    WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id
-    AND lra.layer_id = la.id AND la.name =
-  MAPSERVER_JOIN_TABLES: >
-    main.restrictionarea AS ra,
-    main.role_restrictionarea AS rra,
-    main.layer_restrictionarea AS lra,
-    main.treeitem AS la
-  MAPSERVER_JOIN_WHERE: >
-    rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND
-    lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =
-  GEOPORTAL_BROADCAST_PREFIX: broadcast_geoportal_0
-
-  GEOPORTAL_CLIENT_RELEASE: "2.7"
-  ALEMBIC_CLIENT_RELEASE: "2.7"
+  GEOPORTAL_IMAGE_TAG: "2.7"
+  ALEMBIC_IMAGE_TAG: "2.7"
+  TOOLS_IMAGE_TAG: "2.7"
+  CONFIG_IMAGE_TAG: "prod-2-7"
+  STATD_IMAGE_TAG: "latest"
+  BUSYBOX_IMAGE_TAG: "latest"
 ---
 # Source: geomapfish/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-geomapfish
+  name: test-geomapfish-geoportal
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
     prometheus: 'true'
 spec:
   type: ClusterIP
@@ -105,19 +60,19 @@ spec:
   selector:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 ---
 # Source: geomapfish/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-geomapfish-prometheus
+  name: test-geomapfish-geoportal-prometheus
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 spec:
   type: ClusterIP
   ports:
@@ -128,7 +83,7 @@ spec:
   selector:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 ---
 # Source: geomapfish/templates/tiles-service.yaml
 apiVersion: v1
@@ -140,7 +95,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: tiles
 spec:
   type: ExternalName
   externalName: service.namespace.svc.cluster.local
@@ -200,11 +155,6 @@ spec:
               value: "30"
             - name: "C2C_SQL_PROFILER_ENABLED"
               value: "1"
-            - name: "GEOPORTAL_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "GEOPORTAL_INTERNAL_URL"
             - name: "GUNICORN_ACCESS_LOG_FORMAT"
               value: "%(H)s %({Host}i)s %(m)s %(U)s?%(q)s \"%(f)s\" \"%(a)s\" %(s)s %(B)s %(D)s %(p)s"
             - name: "GUNICORN_LIMIT_REQUEST_LINE"
@@ -221,37 +171,12 @@ spec:
               value: "2"
             - name: "LOG_TYPE"
               value: "console"
-            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-            - name: "MAPSERVER_DATA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_SUBSELECT"
-            - name: "MAPSERVER_JOIN_TABLES"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_TABLES"
-            - name: "MAPSERVER_JOIN_WHERE"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_WHERE"
             - name: "PGDATABASE"
               value: "postgres"
             - name: "PGHOST"
               value: "test-pg-postgresql"
             - name: "PGHOST_SLAVE"
               value: "test-pg-postgresql"
-            - name: "PGOPTIONS"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGOPTIONS"
             - name: "PGPASSWORD"
               value: "mySuperTestingPassword"
             - name: "PGPORT"
@@ -259,46 +184,47 @@ spec:
             - name: "PGPORT_SLAVE"
               value: "5432"
             - name: "PGSCHEMA"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA"
+              value: "main"
             - name: "PGSCHEMA_STATIC"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA_STATIC"
+              value: "main_static"
             - name: "PGUSER"
               value: "postgres"
-            - name: "QGISSERVER_URL"
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"
+            - name: "RELEASE_NAME"
               valueFrom:
                 configMapKeyRef:
                   name: "test-geomapfish-env"
-                  key: "QGISSERVER_URL"
+                  key: "RELEASE_NAME"
             - name: "SENTRY_CLIENT_RELEASE"
               valueFrom:
                 configMapKeyRef:
                   name: "test-geomapfish-env"
-                  key: "ALEMBIC_CLIENT_RELEASE"
+                  key: "ALEMBIC_IMAGE_TAG"
             - name: "SENTRY_TAG_SERVICE"
               value: "alembic"
-            - name: "TILECLOUDCHAIN_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "TILECLOUDCHAIN_INTERNAL_URL"
             - name: "VISIBLE_ENTRY_POINT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_ENTRY_POINT"
+              value: "/"
             - name: "VISIBLE_WEB_HOST"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_WEB_HOST"
+              value: "example.com"
             - name: "VISIBLE_WEB_PROTOCOL"
               value: "https"
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
@@ -329,13 +255,13 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-geomapfish
+  name: test-geomapfish-geoportal
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: geoportal
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -345,13 +271,13 @@ spec:
     matchLabels:
       app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
-      app.kubernetes.io/component: main
+      app.kubernetes.io/component: geoportal
   template:
     metadata:
       labels:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
-        app.kubernetes.io/component: main
+        app.kubernetes.io/component: geoportal
     spec:
       serviceAccountName: default
       securityContext:
@@ -383,42 +309,12 @@ spec:
           image: "camptocamp/geomapfishdemo-config:prod-2-7"
           imagePullPolicy: IfNotPresent
           env:
-            - name: "GEOPORTAL_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "GEOPORTAL_INTERNAL_URL"
-            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-            - name: "MAPSERVER_DATA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_SUBSELECT"
-            - name: "MAPSERVER_JOIN_TABLES"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_TABLES"
-            - name: "MAPSERVER_JOIN_WHERE"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_WHERE"
             - name: "PGDATABASE"
               value: "postgres"
             - name: "PGHOST"
               value: "test-pg-postgresql"
             - name: "PGHOST_SLAVE"
               value: "test-pg-postgresql"
-            - name: "PGOPTIONS"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGOPTIONS"
             - name: "PGPASSWORD"
               value: "mySuperTestingPassword"
             - name: "PGPORT"
@@ -426,39 +322,40 @@ spec:
             - name: "PGPORT_SLAVE"
               value: "5432"
             - name: "PGSCHEMA"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA"
+              value: "main"
             - name: "PGSCHEMA_STATIC"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA_STATIC"
+              value: "main_static"
             - name: "PGUSER"
               value: "postgres"
-            - name: "QGISSERVER_URL"
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"
+            - name: "RELEASE_NAME"
               valueFrom:
                 configMapKeyRef:
                   name: "test-geomapfish-env"
-                  key: "QGISSERVER_URL"
-            - name: "TILECLOUDCHAIN_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "TILECLOUDCHAIN_INTERNAL_URL"
+                  key: "RELEASE_NAME"
             - name: "VISIBLE_ENTRY_POINT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_ENTRY_POINT"
+              value: "/"
             - name: "VISIBLE_WEB_HOST"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_WEB_HOST"
+              value: "example.com"
             - name: "VISIBLE_WEB_PROTOCOL"
               value: "https"
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -490,11 +387,6 @@ spec:
               value: "30"
             - name: "C2C_SQL_PROFILER_ENABLED"
               value: "1"
-            - name: "GEOPORTAL_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "GEOPORTAL_INTERNAL_URL"
             - name: "GUNICORN_ACCESS_LOG_FORMAT"
               value: "%(H)s %({Host}i)s %(m)s %(U)s?%(q)s \"%(f)s\" \"%(a)s\" %(s)s %(B)s %(D)s %(p)s"
             - name: "GUNICORN_LIMIT_REQUEST_LINE"
@@ -511,37 +403,12 @@ spec:
               value: "2"
             - name: "LOG_TYPE"
               value: "console"
-            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-            - name: "MAPSERVER_DATA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_SUBSELECT"
-            - name: "MAPSERVER_JOIN_TABLES"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_TABLES"
-            - name: "MAPSERVER_JOIN_WHERE"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_WHERE"
             - name: "PGDATABASE"
               value: "postgres"
             - name: "PGHOST"
               value: "test-pg-postgresql"
             - name: "PGHOST_SLAVE"
               value: "test-pg-postgresql"
-            - name: "PGOPTIONS"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGOPTIONS"
             - name: "PGPASSWORD"
               value: "mySuperTestingPassword"
             - name: "PGPORT"
@@ -549,46 +416,47 @@ spec:
             - name: "PGPORT_SLAVE"
               value: "5432"
             - name: "PGSCHEMA"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA"
+              value: "main"
             - name: "PGSCHEMA_STATIC"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA_STATIC"
+              value: "main_static"
             - name: "PGUSER"
               value: "postgres"
-            - name: "QGISSERVER_URL"
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"
+            - name: "RELEASE_NAME"
               valueFrom:
                 configMapKeyRef:
                   name: "test-geomapfish-env"
-                  key: "QGISSERVER_URL"
+                  key: "RELEASE_NAME"
             - name: "SENTRY_CLIENT_RELEASE"
               valueFrom:
                 configMapKeyRef:
                   name: "test-geomapfish-env"
-                  key: "GEOPORTAL_CLIENT_RELEASE"
+                  key: "GEOPORTAL_IMAGE_TAG"
             - name: "SENTRY_TAG_SERVICE"
               value: "geoportal"
-            - name: "TILECLOUDCHAIN_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "TILECLOUDCHAIN_INTERNAL_URL"
             - name: "VISIBLE_ENTRY_POINT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_ENTRY_POINT"
+              value: "/"
             - name: "VISIBLE_WEB_HOST"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_WEB_HOST"
+              value: "example.com"
             - name: "VISIBLE_WEB_PROTOCOL"
               value: "https"
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
@@ -673,42 +541,12 @@ spec:
           image: "camptocamp/geomapfish-tools:2.7"
           imagePullPolicy: IfNotPresent
           env:
-            - name: "GEOPORTAL_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "GEOPORTAL_INTERNAL_URL"
-            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-            - name: "MAPSERVER_DATA_SUBSELECT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_DATA_SUBSELECT"
-            - name: "MAPSERVER_JOIN_TABLES"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_TABLES"
-            - name: "MAPSERVER_JOIN_WHERE"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "MAPSERVER_JOIN_WHERE"
             - name: "PGDATABASE"
               value: "postgres"
             - name: "PGHOST"
               value: "test-pg-postgresql"
             - name: "PGHOST_SLAVE"
               value: "test-pg-postgresql"
-            - name: "PGOPTIONS"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGOPTIONS"
             - name: "PGPASSWORD"
               value: "mySuperTestingPassword"
             - name: "PGPORT"
@@ -716,39 +554,40 @@ spec:
             - name: "PGPORT_SLAVE"
               value: "5432"
             - name: "PGSCHEMA"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA"
+              value: "main"
             - name: "PGSCHEMA_STATIC"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "PGSCHEMA_STATIC"
+              value: "main_static"
             - name: "PGUSER"
               value: "postgres"
-            - name: "QGISSERVER_URL"
+            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
+              value: "30000"
+            - name: "RELEASE_NAME"
               valueFrom:
                 configMapKeyRef:
                   name: "test-geomapfish-env"
-                  key: "QGISSERVER_URL"
-            - name: "TILECLOUDCHAIN_INTERNAL_URL"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "TILECLOUDCHAIN_INTERNAL_URL"
+                  key: "RELEASE_NAME"
             - name: "VISIBLE_ENTRY_POINT"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_ENTRY_POINT"
+              value: "/"
             - name: "VISIBLE_WEB_HOST"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "VISIBLE_WEB_HOST"
+              value: "example.com"
             - name: "VISIBLE_WEB_PROTOCOL"
               value: "https"
+            - name: "GEOPORTAL_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-geoportal/"
+            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
+              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_DATA_SUBSELECT"
+              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "MAPSERVER_JOIN_TABLES"
+              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"
+            - name: "MAPSERVER_JOIN_WHERE"
+              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
+            - name: "PGOPTIONS"
+              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"
+            - name: "QGISSERVER_URL"
+              value: "http://$(RELEASE_NAME)-qgisserver/"
+            - name: "TILECLOUDCHAIN_INTERNAL_URL"
+              value: "http://$(RELEASE_NAME)-tilecloudchain/"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             limits:
@@ -760,52 +599,17 @@ spec:
            - sleep
            - infinity
 ---
-# Source: geomapfish/templates/ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: test-geomapfish-main
-  labels:
-    helm.sh/chart: geomapfish
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geomapfish
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
-spec:
-  tls:
-    - hosts:
-        - gmf.local
-      secretName: mytls
-  rules:
-    - host: gmf.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: test-geomapfish
-                port:
-                  number: 80
-          - path: "/custom/"
-            pathType: Prefix
-            backend:
-              service:
-                name: geomapfish-env-version-custom-feedback
-                port:
-                  number: 80
----
 # Source: geomapfish/templates/github-webhooks.yaml
 apiVersion: camptocamp.com/v1
 kind: GitHubWebhook
 metadata:
-  name: test-geomapfish-test-print
+  name: test-geomapfish-test-prin
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: test-print
 spec:
   repository: camptocamp/test
   url: https://config.mutualized.example.com/1/refresh/test-print-print/
@@ -815,13 +619,13 @@ spec:
 apiVersion: camptocamp.com/v1
 kind: GitHubWebhook
 metadata:
-  name: test-geomapfish-test-tilecloudchain
+  name: test-geomapfish-test-tile
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: test-tilecloudchain
 spec:
   repository: camptocamp/test
   url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain-print/
@@ -831,13 +635,13 @@ spec:
 apiVersion: camptocamp.com/v1
 kind: SharedConfigSource
 metadata:
-  name: test-geomapfish-test-print
+  name: test-geomapfish-test-prin
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: test-print
     mutualize-sharedconfig: 'true'
 spec:
   name: test-print
@@ -859,13 +663,13 @@ spec:
 apiVersion: camptocamp.com/v1
 kind: SharedConfigSource
 metadata:
-  name: test-geomapfish-test-tilecloudchain
+  name: test-geomapfish-test-tile
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: test-tilecloudchain
     mutualize-sharedconfig: 'true'
 spec:
   name: test-tilecloudchain
@@ -887,13 +691,13 @@ spec:
 apiVersion: camptocamp.com/v1
 kind: SharedConfigSource
 metadata:
-  name: test-geomapfish-test-tilecloudchain-hosts-main
+  name: test-geomapfish-test-tile-hosts-main
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: test-tilecloudchain
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-main
@@ -904,13 +708,13 @@ spec:
 apiVersion: camptocamp.com/v1
 kind: SharedConfigSource
 metadata:
-  name: test-geomapfish-test-tilecloudchain-hosts-test
+  name: test-geomapfish-test-tile-hosts-test
   labels:
     helm.sh/chart: geomapfish
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: test-tilecloudchain
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-test

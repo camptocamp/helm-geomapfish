@@ -15,6 +15,7 @@ entrypoint: /
 env: {}
 annotations: {}
 
+serviceName: geoportal
 image: &image
   repository: camptocamp/geomapfishapp-geoportal
   tag: latest
@@ -47,23 +48,6 @@ mutualize:
   #    tilecloudchain: true
   #    env:
   #      TEST: test
-
-postgresql:
-  schema: main
-  staticSchema: main_static
-  statementTimeout: 30000 # milliseconds
-
-redis:
-  host: ''
-  port: 6379
-  db: 0
-  servicename: mymaster
-  timeout: 10
-
-sentry:
-  hostname: o330647.ingest.sentry.io
-  key: sentry-key
-  project: sentry-project
 
 probe:
   liveness:
