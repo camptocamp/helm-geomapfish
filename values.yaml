@@ -30,6 +30,7 @@ config:
   resources: {}
 
 mutualize:
+  environment: to be defined
   repository: camptocamp/to-fill
   branch: master
   key: to-fill

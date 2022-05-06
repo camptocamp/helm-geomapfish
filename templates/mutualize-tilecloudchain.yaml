@@ -2,7 +2,7 @@
 {{- if $config.tilecloudchain }}
 {{- range $host := $config.hosts }}
 ---
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" ( dict "serviceName" $name )) }}-hosts-{{ $host.name }}
@@ -10,6 +10,7 @@ metadata:
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: {{ $name }}-{{ $host.name }}
+  environment: {{ $.Values.mutualize.environment }}
   content:
     {{ $host.host }}: /etc/tilecloudchain-configs/{{ $name }}/config.yaml
 {{- end }}

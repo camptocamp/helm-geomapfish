@@ -632,7 +632,7 @@ spec:
   contentType: json
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: test-geomapfish-test-prin
@@ -645,6 +645,7 @@ metadata:
     mutualize-sharedconfig: 'true'
 spec:
   name: test-print
+  environment: test
   content:
       type: git
       repo: git@github.com:camptocamp/test.git
@@ -660,7 +661,7 @@ spec:
             TEST: test
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: test-geomapfish-test-tile
@@ -673,6 +674,7 @@ metadata:
     mutualize-sharedconfig: 'true'
 spec:
   name: test-tilecloudchain
+  environment: test
   content:
       type: git
       repo: git@github.com:camptocamp/test.git
@@ -688,7 +690,7 @@ spec:
             TEST: test
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: test-geomapfish-test-tile-hosts-main
@@ -701,11 +703,12 @@ metadata:
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-main
+  environment: test
   content:
     demo.camptocamp.com: /etc/tilecloudchain-configs/test-tilecloudchain/config.yaml
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: test-geomapfish-test-tile-hosts-test
@@ -718,5 +721,6 @@ metadata:
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-test
+  environment: test
   content:
     demo-test.camptocamp.com: /etc/tilecloudchain-configs/test-tilecloudchain/config.yaml

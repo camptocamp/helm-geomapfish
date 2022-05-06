@@ -1,6 +1,12 @@
 {
   separateMajorMinor: true,
   extends: ['config:base', 'schedule:earlyMondays'],
+  regexManagers: [
+    {
+      fileMatch: ['^versions.yaml$'],
+      matchStrings: ['(?<depName>.*): (?<currentValue>.*) # (?<datasource>.*)'],
+    },
+  ],
   packageRules: [
     /** Automerge the patch, the minor and the dev dependency */
     {
