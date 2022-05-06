@@ -183,6 +183,7 @@ tools:
       cpu: 1m
 
 mutualize:
+  environment: test
   repository: camptocamp/test
   branch: master
   key: admin1234

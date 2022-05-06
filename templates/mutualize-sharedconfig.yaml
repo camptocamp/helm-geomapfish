@@ -1,6 +1,6 @@
 {{- range $name, $value := .Values.mutualize.configs }}
 ---
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" ( dict "serviceName" $name ) ) }}
@@ -8,6 +8,7 @@ metadata:
     mutualize-sharedconfig: 'true'
 spec:
   name: {{ $name }}
+  environment: {{ $.Values.mutualize.environment }}
   content:
       type: git
       repo: git@github.com:{{ $.Values.mutualize.repository }}.git
