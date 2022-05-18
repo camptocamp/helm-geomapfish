@@ -631,6 +631,24 @@ spec:
   url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain-print/
   contentType: json
 ---
+# Source: geomapfish/templates/mutualize-redirect.yaml
+apiVersion: camptocamp.com/v2
+kind: SharedConfigSource
+metadata:
+  name: test-geomapfish-redirect-hosts
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: redirect-hosts
+    mutualize-redirect-hosts: 'true'
+spec:
+  name: test-geomapfish-redirect-hosts
+  environment: test
+  content:
+   example.com: example.com
+---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
 apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
