@@ -49,6 +49,8 @@ mutualize:
   #    tilecloudchain: true
   #    env:
   #      TEST: test
+  redirect:
+    hosts: []
 
 probe:
   liveness:

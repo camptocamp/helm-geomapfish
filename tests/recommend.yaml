@@ -204,6 +204,9 @@ mutualize:
       tilecloudchain: true
       env:
         TEST: test
+  redirect:
+    hosts:
+      - example.com
 
 ingress:
   enabled: false
