@@ -62,7 +62,7 @@ jobs:
       - id: scm-operator
         run: ci/get-version https://camptocamp.github.io/operator-shared-config-manager
       - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
-      - run: helm install operator-shared-config-manager --set=image.tag=${VERSION} --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
+      - run: helm install operator-shared-config-manager --set=env.ENVIRONMENT=test --set=image.tag=${VERSION} --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
         env:
           VERSION: ${{steps.scm-operator.outputs.version}}
       - id: gh-wh-operator
