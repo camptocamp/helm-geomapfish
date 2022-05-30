@@ -1,10 +1,12 @@
 {
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   separateMajorMinor: true,
   extends: ['config:base', 'schedule:earlyMondays'],
   regexManagers: [
     {
       fileMatch: ['^versions.yaml$'],
-      matchStrings: ['(?<depName>.*): (?<currentValue>.*) # (?<datasource>.*)'],
+      matchStrings: ['(?<registryUrl>.*): (?<currentValue>.*) # (?<depName>.*)'],
+      datasourceTemplate: 'helm',
     },
   ],
   packageRules: [

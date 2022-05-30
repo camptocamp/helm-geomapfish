@@ -600,7 +600,7 @@ spec:
            - infinity
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: GitHubWebhook
 metadata:
   name: test-geomapfish-test-prin
@@ -611,12 +611,13 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-print
 spec:
+  environment: test
   repository: camptocamp/test
   url: https://config.mutualized.example.com/1/refresh/test-print-print/
   contentType: json
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: GitHubWebhook
 metadata:
   name: test-geomapfish-test-tile
@@ -627,6 +628,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-tilecloudchain
 spec:
+  environment: test
   repository: camptocamp/test
   url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain-print/
   contentType: json
