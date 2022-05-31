@@ -613,7 +613,7 @@ metadata:
 spec:
   environment: test
   repository: camptocamp/test
-  url: https://config.mutualized.example.com/1/refresh/test-print-print/
+  url: https://config.mutualized.example.com/1/refresh/test-print/
   contentType: json
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
@@ -630,7 +630,7 @@ metadata:
 spec:
   environment: test
   repository: camptocamp/test
-  url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain-print/
+  url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain/
   contentType: json
 ---
 # Source: geomapfish/templates/mutualize-redirect.yaml
