@@ -186,7 +186,7 @@ mutualize:
   environment: test
   repository: camptocamp/test
   branch: master
-  key: admin1234
+  secret: admin1234
   # Should be https://config.mutualize(-int)?.camptocamp.com
   configUrl: https://config.mutualized.example.com
   configs:
