@@ -2,6 +2,22 @@ apiVersion: v1
 entries:
   geomapfish:
   - apiVersion: v2
+    created: "2022-05-31T15:03:29.728524781Z"
+    dependencies:
+    - name: common
+      repository: https://camptocamp.github.io/helm-common
+      version: 0.2.3
+    description: A Helm chart for deploying GeoMapFish on Kubernetes
+    digest: 6b7f42aa8dc0f8e6602f1746031d98666e33ec502000bfacb2476ff177fa3749
+    home: http://geomapfish.org/
+    icon: http://geomapfish.org/images/brand/logo.png
+    name: geomapfish
+    sources:
+    - https://github.com/camptocamp/c2cgeoportal
+    urls:
+    - https://github.com/camptocamp/helm-geomapfish/releases/download/0.2.7/geomapfish-0.2.7.tgz
+    version: 0.2.7
+  - apiVersion: v2
     created: "2022-05-30T15:21:21.439600985Z"
     dependencies:
     - name: common
@@ -722,4 +738,4 @@ entries:
     urls:
     - https://github.com/camptocamp/helm-geomapfish/releases/download/0.1.0/geomapfish-0.1.0.tgz
     version: 0.1.0
-generated: "2022-05-30T15:21:21.439867003Z"
+generated: "2022-05-31T15:03:29.728773482Z"
