@@ -13,7 +13,7 @@ spec:
       type: git
       repo: git@github.com:{{ $.Values.mutualize.repository }}.git
       branch: {{ $.Values.mutualize.branch }}
-      key: {{ $.Values.mutualize.key }}
+      key: {{ $.Values.mutualize.secret }}
       sub_dir: {{ .dir }}
       tags:
       {{- if .tilecloudchain }}
