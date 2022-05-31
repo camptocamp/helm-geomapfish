@@ -8,6 +8,6 @@ metadata:
 spec:
   environment: {{ $.Values.mutualize.environment }}
   repository: {{ $.Values.mutualize.repository }}
-  url: {{ $.Values.mutualize.configUrl }}/1/refresh/{{ $name }}-print/{{ $.Values.mutualize.secret }}
+  url: {{ $.Values.mutualize.configUrl }}/1/refresh/{{ $name }}/{{ $.Values.mutualize.secret }}
   contentType: json
 {{- end }}
