@@ -1,20 +1,16 @@
 {{- if .Values.alembic.enabled }}
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.alembic ) }}
   {{- include "common.metadata" ( dict "root" . "service" .Values.alembic ) | nindent 2 }}
 spec:
-  replicas: 1
-  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 3 }}
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.alembic ) | nindent 6 }}
+  activeDeadlineSeconds: 600
   template:
     metadata: {{- include "common.podMetadata" ( dict "root" . "service" .Values.alembic ) | nindent 6 }}
     spec: {{- include "common.podConfig" ( dict "root" . "service" .Values.alembic ) | nindent 6 }}
-      initContainers:
+      restartPolicy: Never
+      containers:
         - name: alembic
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.alembic ) | nindent 10 }}
           args:
@@ -25,11 +21,4 @@ spec:
           {{- else }}
             - alembic --name=static upgrade head
           {{- end }}
-      containers:
-        - name: sleep
-          {{- include "common.containerConfig" ( dict "root" . "container" .Values.busybox ) | nindent 10 }}
-          args:
-            - tail
-            - -f
-            - /dev/null
 {{- end }}
