@@ -117,72 +117,6 @@ spec:
     port: 80
     targetPort: 80
 ---
-# Source: geomapfish/templates/alembic-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-geomapfish-alembic
-  labels:
-    helm.sh/chart: geomapfish
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geomapfish
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: alembic
-  annotations:
-    reloader.stakater.com/auto: "true"
-spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: geomapfish
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: alembic
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: geomapfish
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: alembic
-        foo: bar1
-    spec:
-      serviceAccountName: full
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
-      affinity:
-        {}
-      initContainers:
-        - name: alembic
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/geomapfishapp-geoportal:latest"
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          args:
-            - bash
-            - -c
-            - alembic --name=static upgrade head
-      containers:
-        - name: sleep
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "busybox:latest"
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          args:
-            - tail
-            - -f
-            - /dev/null
----
 # Source: geomapfish/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -351,6 +285,51 @@ spec:
           args:
            - sleep
            - infinity
+---
+# Source: geomapfish/templates/alembic-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-geomapfish-alembic
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: alembic
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geomapfish
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/component: alembic
+        foo: bar1
+    spec:
+      serviceAccountName: full
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      restartPolicy: Never
+      containers:
+        - name: alembic
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishapp-geoportal:latest"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          args:
+            - bash
+            - -c
+            - alembic --name=static upgrade head
 ---
 # Source: geomapfish/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
