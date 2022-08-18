@@ -579,7 +579,7 @@ spec:
             - alembic --name=main upgrade head && alembic --name=static upgrade head
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
-apiVersion: camptocamp.com/v2
+apiVersion: camptocamp.com/v3
 kind: GitHubWebhook
 metadata:
   name: test-geomapfish-test-prin
@@ -592,11 +592,12 @@ metadata:
 spec:
   environment: test
   repository: camptocamp/test
-  url: https://config.mutualized.example.com/1/refresh/test-print/admin1234
+  url: https://config.mutualized.example.com/1/refresh/test-print
   contentType: json
+  secret: admin1234
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
-apiVersion: camptocamp.com/v2
+apiVersion: camptocamp.com/v3
 kind: GitHubWebhook
 metadata:
   name: test-geomapfish-test-tile
@@ -609,8 +610,9 @@ metadata:
 spec:
   environment: test
   repository: camptocamp/test
-  url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain/admin1234
+  url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain
   contentType: json
+  secret: admin1234
 ---
 # Source: geomapfish/templates/mutualize-redirect.yaml
 apiVersion: camptocamp.com/v2
@@ -649,7 +651,6 @@ spec:
       type: git
       repo: git@github.com:camptocamp/test.git
       branch: master
-      key: admin1234
       sub_dir: print/print-apps/test
       tags:
         - print
@@ -678,7 +679,6 @@ spec:
       type: git
       repo: git@github.com:camptocamp/test.git
       branch: master
-      key: admin1234
       sub_dir: tilegeneration
       tags:
         - tilecloudchain
