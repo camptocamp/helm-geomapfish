@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/camptocamp/helm-geomapfish/tree/HEAD)
+## [0.2.10](https://github.com/camptocamp/helm-geomapfish/tree/0.2.10) (2022-08-22)
 
-[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.9...HEAD)
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.9...0.2.10)
 
 #### :sparkles: Enhancements
 
@@ -14,11 +14,13 @@
 
 #### :wrench: Build, CI, Tests, Code style
 
+- Update the changelog [\#92](https://github.com/camptocamp/helm-geomapfish/pull/92) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Update the Renovate configuration [\#90](https://github.com/camptocamp/helm-geomapfish/pull/90) ([sbrunner](https://github.com/sbrunner))
 - Update the changelog [\#88](https://github.com/camptocamp/helm-geomapfish/pull/88) ([github-actions[bot]](https://github.com/apps/github-actions))
 
 #### :package: Dependencies update
 
+- Update dependency c2cciutils to v1.2.1 [\#94](https://github.com/camptocamp/helm-geomapfish/pull/94) ([renovate[bot]](https://github.com/apps/renovate))
 - Update Helm release operator-github-webhook to v0.2.3 [\#89](https://github.com/camptocamp/helm-geomapfish/pull/89) ([renovate[bot]](https://github.com/apps/renovate))
 - Update azure/setup-helm action to v3 [\#86](https://github.com/camptocamp/helm-geomapfish/pull/86) ([renovate[bot]](https://github.com/apps/renovate))
 - Update dependency c2cciutils to v1.2.0 [\#85](https://github.com/camptocamp/helm-geomapfish/pull/85) ([renovate[bot]](https://github.com/apps/renovate))
