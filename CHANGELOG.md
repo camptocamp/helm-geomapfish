@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased](https://github.com/camptocamp/helm-geomapfish/tree/HEAD)
+
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.10...HEAD)
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Remove Dependabot configuration [\#96](https://github.com/camptocamp/helm-geomapfish/pull/96) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#93](https://github.com/camptocamp/helm-geomapfish/pull/93) ([github-actions[bot]](https://github.com/apps/github-actions))
+
 ## [0.2.10](https://github.com/camptocamp/helm-geomapfish/tree/0.2.10) (2022-08-22)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.9...0.2.10)
