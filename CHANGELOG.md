@@ -4,24 +4,18 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.9...0.2.10)
 
-#### :sparkles: Enhancements
+**Implemented enhancements:**
 
 - Move the secret in the GitHub WebHook configuration [\#91](https://github.com/camptocamp/helm-geomapfish/pull/91) ([sbrunner](https://github.com/sbrunner))
 
-#### :books: Documentation
-
-- Add generated changelog [\#87](https://github.com/camptocamp/helm-geomapfish/pull/87) ([sbrunner](https://github.com/sbrunner))
-
-#### :wrench: Build, CI, Tests, Code style
-
-- Update the changelog [\#92](https://github.com/camptocamp/helm-geomapfish/pull/92) ([github-actions[bot]](https://github.com/apps/github-actions))
-- Update the Renovate configuration [\#90](https://github.com/camptocamp/helm-geomapfish/pull/90) ([sbrunner](https://github.com/sbrunner))
-- Update the changelog [\#88](https://github.com/camptocamp/helm-geomapfish/pull/88) ([github-actions[bot]](https://github.com/apps/github-actions))
-
-#### :package: Dependencies update
+**Merged pull requests:**
 
 - Update dependency c2cciutils to v1.2.1 [\#94](https://github.com/camptocamp/helm-geomapfish/pull/94) ([renovate[bot]](https://github.com/apps/renovate))
+- Update the changelog [\#92](https://github.com/camptocamp/helm-geomapfish/pull/92) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Update the Renovate configuration [\#90](https://github.com/camptocamp/helm-geomapfish/pull/90) ([sbrunner](https://github.com/sbrunner))
 - Update Helm release operator-github-webhook to v0.2.3 [\#89](https://github.com/camptocamp/helm-geomapfish/pull/89) ([renovate[bot]](https://github.com/apps/renovate))
+- Update the changelog [\#88](https://github.com/camptocamp/helm-geomapfish/pull/88) ([github-actions[bot]](https://github.com/apps/github-actions))
+- Add generated changelog [\#87](https://github.com/camptocamp/helm-geomapfish/pull/87) ([sbrunner](https://github.com/sbrunner))
 - Update azure/setup-helm action to v3 [\#86](https://github.com/camptocamp/helm-geomapfish/pull/86) ([renovate[bot]](https://github.com/apps/renovate))
 - Update dependency c2cciutils to v1.2.0 [\#85](https://github.com/camptocamp/helm-geomapfish/pull/85) ([renovate[bot]](https://github.com/apps/renovate))
 
@@ -29,16 +23,13 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.8...0.2.9)
 
-#### :package: Dependencies update
-
-- Update dependency c2cciutils to v1.2.dev20220620031414 [\#84](https://github.com/camptocamp/helm-geomapfish/pull/84) ([renovate[bot]](https://github.com/apps/renovate))
-- Update dependency c2cciutils to v1.2.dev20220609220245 [\#82](https://github.com/camptocamp/helm-geomapfish/pull/82) ([renovate[bot]](https://github.com/apps/renovate))
-- Update all patch versions [\#80](https://github.com/camptocamp/helm-geomapfish/pull/80) ([renovate[bot]](https://github.com/apps/renovate))
-
 **Merged pull requests:**
 
+- Update dependency c2cciutils to v1.2.dev20220620031414 [\#84](https://github.com/camptocamp/helm-geomapfish/pull/84) ([renovate[bot]](https://github.com/apps/renovate))
 - Convert the alembic deployment into a job [\#83](https://github.com/camptocamp/helm-geomapfish/pull/83) ([sbrunner](https://github.com/sbrunner))
+- Update dependency c2cciutils to v1.2.dev20220609220245 [\#82](https://github.com/camptocamp/helm-geomapfish/pull/82) ([renovate[bot]](https://github.com/apps/renovate))
 - Don't run 2 CI jobs in a pull request [\#81](https://github.com/camptocamp/helm-geomapfish/pull/81) ([sbrunner](https://github.com/sbrunner))
+- Update all patch versions [\#80](https://github.com/camptocamp/helm-geomapfish/pull/80) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [0.2.8](https://github.com/camptocamp/helm-geomapfish/tree/0.2.8) (2022-05-31)
 
@@ -52,32 +43,26 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.6...0.2.7)
 
-#### :package: Dependencies update
-
-- Update Helm release operator-shared-config-manager to v0.2.2 [\#76](https://github.com/camptocamp/helm-geomapfish/pull/76) ([renovate[bot]](https://github.com/apps/renovate))
-
 **Merged pull requests:**
 
 - Remove extra print [\#77](https://github.com/camptocamp/helm-geomapfish/pull/77) ([sbrunner](https://github.com/sbrunner))
+- Update Helm release operator-shared-config-manager to v0.2.2 [\#76](https://github.com/camptocamp/helm-geomapfish/pull/76) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [0.2.6](https://github.com/camptocamp/helm-geomapfish/tree/0.2.6) (2022-05-30)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.5...0.2.6)
 
-#### :package: Dependencies update
-
-- Update dependency c2cciutils to v1.2.dev20220527115520 [\#74](https://github.com/camptocamp/helm-geomapfish/pull/74) ([renovate[bot]](https://github.com/apps/renovate))
-- Update Helm release common to v0.2.3 [\#73](https://github.com/camptocamp/helm-geomapfish/pull/73) ([renovate[bot]](https://github.com/apps/renovate))
-
 **Merged pull requests:**
 
 - For the new version of the GitHubWebHook operator [\#75](https://github.com/camptocamp/helm-geomapfish/pull/75) ([sbrunner](https://github.com/sbrunner))
+- Update dependency c2cciutils to v1.2.dev20220527115520 [\#74](https://github.com/camptocamp/helm-geomapfish/pull/74) ([renovate[bot]](https://github.com/apps/renovate))
+- Update Helm release common to v0.2.3 [\#73](https://github.com/camptocamp/helm-geomapfish/pull/73) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [0.2.5](https://github.com/camptocamp/helm-geomapfish/tree/0.2.5) (2022-05-19)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.4...0.2.5)
 
-#### :package: Dependencies update
+**Merged pull requests:**
 
 - Update all patch versions [\#72](https://github.com/camptocamp/helm-geomapfish/pull/72) ([renovate[bot]](https://github.com/apps/renovate))
 
@@ -93,25 +78,19 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.2...0.2.3)
 
-#### :package: Dependencies update
-
-- Update dependency c2cciutils to v1.2.dev20220506093925 [\#69](https://github.com/camptocamp/helm-geomapfish/pull/69) ([renovate[bot]](https://github.com/apps/renovate))
-- Update dependency c2cciutils to v1.2.dev20220414132101 [\#68](https://github.com/camptocamp/helm-geomapfish/pull/68) ([renovate[bot]](https://github.com/apps/renovate))
-
 **Merged pull requests:**
 
 - Use the new version of Shared config manager operator [\#70](https://github.com/camptocamp/helm-geomapfish/pull/70) ([sbrunner](https://github.com/sbrunner))
+- Update dependency c2cciutils to v1.2.dev20220506093925 [\#69](https://github.com/camptocamp/helm-geomapfish/pull/69) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.2.dev20220414132101 [\#68](https://github.com/camptocamp/helm-geomapfish/pull/68) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [0.2.2](https://github.com/camptocamp/helm-geomapfish/tree/0.2.2) (2022-04-12)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.1...0.2.2)
 
-#### :package: Dependencies update
-
-- Update dependency c2cciutils to v1.2.dev20220331120018 [\#67](https://github.com/camptocamp/helm-geomapfish/pull/67) ([renovate[bot]](https://github.com/apps/renovate))
-
 **Merged pull requests:**
 
+- Update dependency c2cciutils to v1.2.dev20220331120018 [\#67](https://github.com/camptocamp/helm-geomapfish/pull/67) ([renovate[bot]](https://github.com/apps/renovate))
 - Remove unneeded in config map, fix service name [\#66](https://github.com/camptocamp/helm-geomapfish/pull/66) ([sbrunner](https://github.com/sbrunner))
 
 ## [0.2.1](https://github.com/camptocamp/helm-geomapfish/tree/0.2.1) (2022-03-18)
@@ -122,10 +101,12 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.20...0.2.0)
 
-#### :package: Dependencies update
+**Merged pull requests:**
 
+- Add missing revisionHistoryLimit [\#65](https://github.com/camptocamp/helm-geomapfish/pull/65) ([sbrunner](https://github.com/sbrunner))
 - Update dependency c2cciutils to v1.2.dev20220317100006 [\#64](https://github.com/camptocamp/helm-geomapfish/pull/64) ([renovate[bot]](https://github.com/apps/renovate))
 - Update Helm release common to v0.2.1 [\#63](https://github.com/camptocamp/helm-geomapfish/pull/63) ([renovate[bot]](https://github.com/apps/renovate))
+- Chart reorganization [\#62](https://github.com/camptocamp/helm-geomapfish/pull/62) ([sbrunner](https://github.com/sbrunner))
 - Update Helm release common to v0.2.0 [\#61](https://github.com/camptocamp/helm-geomapfish/pull/61) ([renovate[bot]](https://github.com/apps/renovate))
 - Update dependency c2cciutils to v1.2.dev20220314145935 [\#60](https://github.com/camptocamp/helm-geomapfish/pull/60) ([renovate[bot]](https://github.com/apps/renovate))
 - Update actions/checkout action to v3 [\#59](https://github.com/camptocamp/helm-geomapfish/pull/59) ([renovate[bot]](https://github.com/apps/renovate))
@@ -133,22 +114,14 @@
 - Update Helm release common to v0.1.7 [\#56](https://github.com/camptocamp/helm-geomapfish/pull/56) ([renovate[bot]](https://github.com/apps/renovate))
 - Configure Renovate [\#55](https://github.com/camptocamp/helm-geomapfish/pull/55) ([renovate[bot]](https://github.com/apps/renovate))
 
-**Merged pull requests:**
-
-- Add missing revisionHistoryLimit [\#65](https://github.com/camptocamp/helm-geomapfish/pull/65) ([sbrunner](https://github.com/sbrunner))
-- Chart reorganization [\#62](https://github.com/camptocamp/helm-geomapfish/pull/62) ([sbrunner](https://github.com/sbrunner))
-
 ## [0.1.20](https://github.com/camptocamp/helm-geomapfish/tree/0.1.20) (2022-03-10)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.19...0.1.20)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.2.dev20220304093002 to 1.2.dev20220309162621 in /ci [\#53](https://github.com/camptocamp/helm-geomapfish/pull/53) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
 - Remove the selector from the external service [\#54](https://github.com/camptocamp/helm-geomapfish/pull/54) ([sbrunner](https://github.com/sbrunner))
+- Bump c2cciutils from 1.2.dev20220304093002 to 1.2.dev20220309162621 in /ci [\#53](https://github.com/camptocamp/helm-geomapfish/pull/53) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [0.1.19](https://github.com/camptocamp/helm-geomapfish/tree/0.1.19) (2022-03-08)
 
@@ -191,12 +164,9 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.12...0.1.13)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.2.dev20220302121825 to 1.2.dev20220304093002 in /ci [\#49](https://github.com/camptocamp/helm-geomapfish/pull/49) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
+- Bump c2cciutils from 1.2.dev20220302121825 to 1.2.dev20220304093002 in /ci [\#49](https://github.com/camptocamp/helm-geomapfish/pull/49) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Upgrade helm-geoportal for ingress additionalPaths [\#48](https://github.com/camptocamp/helm-geomapfish/pull/48) ([arnaud-morvan](https://github.com/arnaud-morvan))
 - Upgrade helm-geoportal for ingress-custom-paths [\#46](https://github.com/camptocamp/helm-geomapfish/pull/46) ([arnaud-morvan](https://github.com/arnaud-morvan))
 
@@ -204,7 +174,7 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.11...0.1.12)
 
-#### :package: Dependencies update
+**Merged pull requests:**
 
 - Bump c2cciutils from 1.2.dev20220301083327 to 1.2.dev20220302121825 in /ci [\#44](https://github.com/camptocamp/helm-geomapfish/pull/44) ([dependabot[bot]](https://github.com/apps/dependabot))
 
@@ -212,29 +182,23 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.10...0.1.11)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.2.dev20220215091734 to 1.2.dev20220301083327 in /ci [\#42](https://github.com/camptocamp/helm-geomapfish/pull/42) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
+- Bump c2cciutils from 1.2.dev20220215091734 to 1.2.dev20220301083327 in /ci [\#42](https://github.com/camptocamp/helm-geomapfish/pull/42) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Fix config URL [\#41](https://github.com/camptocamp/helm-geomapfish/pull/41) ([sbrunner](https://github.com/sbrunner))
 
 ## [0.1.10](https://github.com/camptocamp/helm-geomapfish/tree/0.1.10) (2022-02-16)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.9...0.1.10)
 
-#### :package: Dependencies update
+**Merged pull requests:**
 
+- Configs as dict [\#40](https://github.com/camptocamp/helm-geomapfish/pull/40) ([sbrunner](https://github.com/sbrunner))
 - Bump c2cciutils from 1.2.dev20220214124120 to 1.2.dev20220215091734 in /ci [\#39](https://github.com/camptocamp/helm-geomapfish/pull/39) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.2.dev20220209105112 to 1.2.dev20220214124120 in /ci [\#38](https://github.com/camptocamp/helm-geomapfish/pull/38) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.2.dev20220208134628 to 1.2.dev20220209105112 in /ci [\#37](https://github.com/camptocamp/helm-geomapfish/pull/37) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.2.dev20220207125831 to 1.2.dev20220208134628 in /ci [\#36](https://github.com/camptocamp/helm-geomapfish/pull/36) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20220203110559 to 1.2.dev20220207125831 in /ci [\#35](https://github.com/camptocamp/helm-geomapfish/pull/35) ([dependabot[bot]](https://github.com/apps/dependabot))
-
-**Merged pull requests:**
-
-- Configs as dict [\#40](https://github.com/camptocamp/helm-geomapfish/pull/40) ([sbrunner](https://github.com/sbrunner))
 
 ## [0.1.9](https://github.com/camptocamp/helm-geomapfish/tree/0.1.9) (2022-02-07)
 
@@ -248,13 +212,10 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.7...0.1.8)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.1.dev20220131090250 to 1.1.dev20220203110559 in /ci [\#32](https://github.com/camptocamp/helm-geomapfish/pull/32) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
 - Do the upgrades [\#33](https://github.com/camptocamp/helm-geomapfish/pull/33) ([sbrunner](https://github.com/sbrunner))
+- Bump c2cciutils from 1.1.dev20220131090250 to 1.1.dev20220203110559 in /ci [\#32](https://github.com/camptocamp/helm-geomapfish/pull/32) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [0.1.7](https://github.com/camptocamp/helm-geomapfish/tree/0.1.7) (2022-02-02)
 
@@ -268,14 +229,11 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.5...0.1.6)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.1.dev20220124152826 to 1.1.dev20220131090250 in /ci [\#27](https://github.com/camptocamp/helm-geomapfish/pull/27) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
 - Other upgrade [\#29](https://github.com/camptocamp/helm-geomapfish/pull/29) ([sbrunner](https://github.com/sbrunner))
 - Update geoportal [\#28](https://github.com/camptocamp/helm-geomapfish/pull/28) ([sbrunner](https://github.com/sbrunner))
+- Bump c2cciutils from 1.1.dev20220124152826 to 1.1.dev20220131090250 in /ci [\#27](https://github.com/camptocamp/helm-geomapfish/pull/27) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [0.1.5](https://github.com/camptocamp/helm-geomapfish/tree/0.1.5) (2022-01-25)
 
@@ -285,7 +243,7 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.3...0.1.4)
 
-#### :package: Dependencies update
+**Merged pull requests:**
 
 - Bump c2cciutils from 1.1.dev20220120144445 to 1.1.dev20220124152826 in /ci [\#26](https://github.com/camptocamp/helm-geomapfish/pull/26) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20220119105226 to 1.1.dev20220120144445 in /ci [\#25](https://github.com/camptocamp/helm-geomapfish/pull/25) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -295,39 +253,34 @@
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.2...0.1.3)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.1.dev20211215101636 to 1.1.dev20220105162844 in /ci [\#22](https://github.com/camptocamp/helm-geomapfish/pull/22) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Bump c2cciutils from 1.1.dev20211209145632 to 1.1.dev20211215101636 in /ci [\#21](https://github.com/camptocamp/helm-geomapfish/pull/21) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Bump c2cciutils from 1.1.dev20211125140927 to 1.1.dev20211209145632 in /ci [\#20](https://github.com/camptocamp/helm-geomapfish/pull/20) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
 - Upgrade the dependencies [\#23](https://github.com/camptocamp/helm-geomapfish/pull/23) ([sbrunner](https://github.com/sbrunner))
+- Bump c2cciutils from 1.1.dev20211215101636 to 1.1.dev20220105162844 in /ci [\#22](https://github.com/camptocamp/helm-geomapfish/pull/22) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump c2cciutils from 1.1.dev20211209145632 to 1.1.dev20211215101636 in /ci [\#21](https://github.com/camptocamp/helm-geomapfish/pull/21) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump c2cciutils from 1.1.dev20211125140927 to 1.1.dev20211209145632 in /ci [\#20](https://github.com/camptocamp/helm-geomapfish/pull/20) ([dependabot[bot]](https://github.com/apps/dependabot))
 
 ## [0.1.2](https://github.com/camptocamp/helm-geomapfish/tree/0.1.2) (2021-12-01)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.1...0.1.2)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.1.dev20211122024433 to 1.1.dev20211125140927 in /ci [\#18](https://github.com/camptocamp/helm-geomapfish/pull/18) ([dependabot[bot]](https://github.com/apps/dependabot))
-- Bump c2cciutils from 1.1.dev20211022130135 to 1.1.dev20211122024433 in /ci [\#17](https://github.com/camptocamp/helm-geomapfish/pull/17) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
 - Add mutualize TileCloud-chain, better mutualize configuration [\#19](https://github.com/camptocamp/helm-geomapfish/pull/19) ([sbrunner](https://github.com/sbrunner))
+- Bump c2cciutils from 1.1.dev20211122024433 to 1.1.dev20211125140927 in /ci [\#18](https://github.com/camptocamp/helm-geomapfish/pull/18) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump c2cciutils from 1.1.dev20211022130135 to 1.1.dev20211122024433 in /ci [\#17](https://github.com/camptocamp/helm-geomapfish/pull/17) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Add operators for mutualized print [\#16](https://github.com/camptocamp/helm-geomapfish/pull/16) ([sbrunner](https://github.com/sbrunner))
 
 ## [0.1.1](https://github.com/camptocamp/helm-geomapfish/tree/0.1.1) (2021-11-04)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.0...0.1.1)
 
-#### :package: Dependencies update
+**Merged pull requests:**
 
 - Bump c2cciutils from 1.1.dev20211021112135 to 1.1.dev20211022130135 in /ci [\#15](https://github.com/camptocamp/helm-geomapfish/pull/15) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20211021084718 to 1.1.dev20211021112135 in /ci [\#14](https://github.com/camptocamp/helm-geomapfish/pull/14) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20211019114043 to 1.1.dev20211021084718 in /ci [\#13](https://github.com/camptocamp/helm-geomapfish/pull/13) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Add tests with k3d [\#12](https://github.com/camptocamp/helm-geomapfish/pull/12) ([sbrunner](https://github.com/sbrunner))
 - Bump c2cciutils from 1.1.dev20211012114625 to 1.1.dev20211019114043 in /ci [\#11](https://github.com/camptocamp/helm-geomapfish/pull/11) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20211008145734 to 1.1.dev20211012114625 in /ci [\#10](https://github.com/camptocamp/helm-geomapfish/pull/10) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20211007121148 to 1.1.dev20211008145734 in /ci [\#9](https://github.com/camptocamp/helm-geomapfish/pull/9) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -338,20 +291,13 @@
 - Bump c2cciutils from 1.1.dev20210913073441 to 1.1.dev20210915084344 in /ci [\#4](https://github.com/camptocamp/helm-geomapfish/pull/4) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump c2cciutils from 1.1.dev20210903085429 to 1.1.dev20210913073441 in /ci [\#3](https://github.com/camptocamp/helm-geomapfish/pull/3) ([dependabot[bot]](https://github.com/apps/dependabot))
 
-**Merged pull requests:**
-
-- Add tests with k3d [\#12](https://github.com/camptocamp/helm-geomapfish/pull/12) ([sbrunner](https://github.com/sbrunner))
-
 ## [0.1.0](https://github.com/camptocamp/helm-geomapfish/tree/0.1.0) (2021-09-09)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/c1e5f454c23826dc7112d6e86ab7dbe375b95a5e...0.1.0)
 
-#### :package: Dependencies update
-
-- Bump c2cciutils from 1.1.dev20210901090041 to 1.1.dev20210903085429 in /ci [\#2](https://github.com/camptocamp/helm-geomapfish/pull/2) ([dependabot[bot]](https://github.com/apps/dependabot))
-
 **Merged pull requests:**
 
+- Bump c2cciutils from 1.1.dev20210901090041 to 1.1.dev20210903085429 in /ci [\#2](https://github.com/camptocamp/helm-geomapfish/pull/2) ([dependabot[bot]](https://github.com/apps/dependabot))
 - First version [\#1](https://github.com/camptocamp/helm-geomapfish/pull/1) ([sbrunner](https://github.com/sbrunner))
 
 \* _This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)_
