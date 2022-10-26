@@ -162,6 +162,8 @@ alembic:
       key: ALEMBIC_IMAGE_TAG
     SENTRY_TAG_SERVICE:
       value: alembic
+  labels:
+    backend: backend
   resources:
     limits:
       memory: 200Mi
@@ -210,3 +212,12 @@ mutualize:
 
 ingress:
   enabled: false
+
+networkPolicy:
+  ports:
+    - protocol: TCP
+      port: 8080
+  redis:
+    enabled: true
+    labels:
+      app.kubernetes.io/instance: test-redis

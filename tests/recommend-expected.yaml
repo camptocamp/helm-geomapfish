@@ -1,4 +1,39 @@
 ---
+# Source: geomapfish/templates/networkpolicy.yaml
+# For backend pod (that should only be access from the geoportal pod)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-geomapfish-geoportal
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: geoportal
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: test
+      backend: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    # For Prometheus
+    - ports:
+        - port: prometheus
+          protocol: TCP
+    # For geoportal
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: geomapfish
+              app.kubernetes.io/instance: test
+              app.kubernetes.io/component: geoportal
+      ports:
+        - port: 8080
+          protocol: TCP
+---
 # Source: geomapfish/templates/pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -353,106 +388,6 @@ spec:
         - name: print
           emptyDir: {}
 ---
-# Source: geomapfish/templates/tools-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-geomapfish-tools
-  labels:
-    helm.sh/chart: geomapfish
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geomapfish
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tools
-spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: geomapfish
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: tools
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: geomapfish
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: tools
-    spec:
-      serviceAccountName: default
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
-      affinity:
-        {}
-      containers:
-        - name: tools
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/geomapfish-tools:2.7"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "PGDATABASE"
-              value: "postgres"
-            - name: "PGHOST"
-              value: "test-pg-postgresql"
-            - name: "PGHOST_SLAVE"
-              value: "test-pg-postgresql"
-            - name: "PGPASSWORD"
-              value: "mySuperTestingPassword"
-            - name: "PGPORT"
-              value: "5432"
-            - name: "PGPORT_SLAVE"
-              value: "5432"
-            - name: "PGSCHEMA"
-              value: "main"
-            - name: "PGSCHEMA_STATIC"
-              value: "main_static"
-            - name: "PGUSER"
-              value: "postgres"
-            - name: "POSTGRESQL_STATEMENT_TIMEOUT"
-              value: "30000"
-            - name: "RELEASE_NAME"
-              valueFrom:
-                configMapKeyRef:
-                  name: "test-geomapfish-env"
-                  key: "RELEASE_NAME"
-            - name: "VISIBLE_ENTRY_POINT"
-              value: "/"
-            - name: "VISIBLE_WEB_HOST"
-              value: "example.com"
-            - name: "VISIBLE_WEB_PROTOCOL"
-              value: "https"
-            - name: "GEOPORTAL_INTERNAL_URL"
-              value: "http://$(RELEASE_NAME)-geoportal/"
-            - name: "MAPSERVER_DATA_NOAREA_SUBSELECT"
-              value: "SELECT rra.role_id FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
-            - name: "MAPSERVER_DATA_SUBSELECT"
-              value: "SELECT ST_Collect(ra.area) FROM $(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la WHERE rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
-            - name: "MAPSERVER_JOIN_TABLES"
-              value: "$(PGSCHEMA).restrictionarea AS ra, $(PGSCHEMA).role_restrictionarea AS rra, $(PGSCHEMA).layer_restrictionarea AS lra, $(PGSCHEMA).treeitem AS la\n"
-            - name: "MAPSERVER_JOIN_WHERE"
-              value: "rra.role_id in (%role_ids%) AND rra.restrictionarea_id = ra.id AND lra.restrictionarea_id = ra.id AND lra.layer_id = la.id AND la.name =\n"
-            - name: "PGOPTIONS"
-              value: "-c statement_timeout=$(POSTGRESQL_STATEMENT_TIMEOUT)"
-            - name: "QGISSERVER_URL"
-              value: "http://$(RELEASE_NAME)-qgisserver/"
-            - name: "TILECLOUDCHAIN_INTERNAL_URL"
-              value: "http://$(RELEASE_NAME)-tilecloudchain/"
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            limits:
-              memory: 200Mi
-            requests:
-              cpu: 1m
-              memory: 100Mi
-          args:
-           - sleep
-           - infinity
----
 # Source: geomapfish/templates/alembic-job.yaml
 apiVersion: batch/v1
 kind: Job
@@ -464,6 +399,7 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: alembic
+    backend: backend
 spec:
   activeDeadlineSeconds: 600
   template:

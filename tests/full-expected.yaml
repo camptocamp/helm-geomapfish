@@ -1,4 +1,57 @@
 ---
+# Source: geomapfish/templates/networkpolicy.yaml
+# For backend pod (that should only be access from the geoportal pod)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-geomapfish-geoportal
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: geoportal
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: test
+      backend: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    # For Prometheus
+    - ports:
+        - port: prometheus
+          protocol: TCP
+    # For geoportal
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: geomapfish
+              app.kubernetes.io/instance: test
+              app.kubernetes.io/component: geoportal
+---
+# Source: geomapfish/templates/networkpolicy.yaml
+# No ingress traffic for tools
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-geomapfish-tools
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tools
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geomapfish
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tools
+  policyTypes:
+    - Ingress
+---
 # Source: geomapfish/templates/pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget

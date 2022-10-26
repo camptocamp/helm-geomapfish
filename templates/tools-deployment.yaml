@@ -19,4 +19,5 @@ spec:
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.tools ) | nindent 10 }}
           args:
            - sleep
-           - infinity{{- end }}
+           - infinity
+{{- end }}
