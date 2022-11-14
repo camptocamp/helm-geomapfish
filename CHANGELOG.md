@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.3.0](https://github.com/camptocamp/helm-geomapfish/tree/0.3.0) (2022-11-14)
+
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.10...0.3.0)
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Fix repository in workflow used to delete old workflow runs [\#113](https://github.com/camptocamp/helm-geomapfish/pull/113) ([sbrunner](https://github.com/sbrunner))
+- Fix repository in workflow used to delete old workflow runs [\#112](https://github.com/camptocamp/helm-geomapfish/pull/112) ([sbrunner](https://github.com/sbrunner))
+- Add workflow to delete old workflow runs [\#110](https://github.com/camptocamp/helm-geomapfish/pull/110) ([sbrunner](https://github.com/sbrunner))
+- Fix the get config in changelog workflow [\#104](https://github.com/camptocamp/helm-geomapfish/pull/104) ([sbrunner](https://github.com/sbrunner))
+- Schedule Renovate on early Saturday [\#101](https://github.com/camptocamp/helm-geomapfish/pull/101) ([sbrunner](https://github.com/sbrunner))
+- Fix the changelog generator workflow [\#99](https://github.com/camptocamp/helm-geomapfish/pull/99) ([sbrunner](https://github.com/sbrunner))
+- Clean all the images already present in the image given by GitHub [\#98](https://github.com/camptocamp/helm-geomapfish/pull/98) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog generation workflow [\#97](https://github.com/camptocamp/helm-geomapfish/pull/97) ([sbrunner](https://github.com/sbrunner))
+- Remove Dependabot configuration [\#96](https://github.com/camptocamp/helm-geomapfish/pull/96) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#93](https://github.com/camptocamp/helm-geomapfish/pull/93) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+#### :package: Dependencies update
+
+- Update Helm release common to v0.3.0 [\#114](https://github.com/camptocamp/helm-geomapfish/pull/114) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.3.11 [\#111](https://github.com/camptocamp/helm-geomapfish/pull/111) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.3.10 [\#108](https://github.com/camptocamp/helm-geomapfish/pull/108) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.3.9 [\#107](https://github.com/camptocamp/helm-geomapfish/pull/107) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.3.7 [\#106](https://github.com/camptocamp/helm-geomapfish/pull/106) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.3.5 [\#105](https://github.com/camptocamp/helm-geomapfish/pull/105) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.3.0 [\#100](https://github.com/camptocamp/helm-geomapfish/pull/100) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.2.10](https://github.com/camptocamp/helm-geomapfish/tree/0.2.10) (2022-08-22)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.9...0.2.10)
@@ -104,7 +131,7 @@
 
 ## [0.2.2](https://github.com/camptocamp/helm-geomapfish/tree/0.2.2) (2022-04-12)
 
-[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.1...0.2.2)
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.0...0.2.2)
 
 #### :package: Dependencies update
 
@@ -114,13 +141,13 @@
 
 - Remove unneeded in config map, fix service name [\#66](https://github.com/camptocamp/helm-geomapfish/pull/66) ([sbrunner](https://github.com/sbrunner))
 
-## [0.2.1](https://github.com/camptocamp/helm-geomapfish/tree/0.2.1) (2022-03-18)
-
-[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.0...0.2.1)
-
 ## [0.2.0](https://github.com/camptocamp/helm-geomapfish/tree/0.2.0) (2022-03-18)
 
-[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.20...0.2.0)
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.1...0.2.0)
+
+## [0.2.1](https://github.com/camptocamp/helm-geomapfish/tree/0.2.1) (2022-03-18)
+
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.20...0.2.1)
 
 #### :package: Dependencies update
 
