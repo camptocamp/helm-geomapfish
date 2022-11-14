@@ -146,7 +146,7 @@ spec:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: geoportal
-        foo: bar0
+        foo: "bar0"
     spec:
       serviceAccountName: full
       securityContext:
@@ -264,7 +264,7 @@ spec:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tools
-        foo: bar2
+        foo: "bar2"
     spec:
       serviceAccountName: full
       securityContext:
@@ -307,7 +307,7 @@ spec:
         app.kubernetes.io/name: geomapfish
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: alembic
-        foo: bar1
+        foo: "bar1"
     spec:
       serviceAccountName: full
       securityContext:
