@@ -30,6 +30,7 @@ config:
   resources: {}
 
 mutualize:
+  serviceName: mutualize
   environment: to be defined
   repository: camptocamp/to-fill
   branch: master
@@ -51,6 +52,9 @@ mutualize:
   #      TEST: test
   redirect:
     hosts: []
+
+  rbac: false
+  rbacGroups: []
 
 probe:
   liveness:

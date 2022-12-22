@@ -50,6 +50,56 @@ data:
   STATD_IMAGE_TAG: "latest"
   BUSYBOX_IMAGE_TAG: "latest"
 ---
+# Source: geomapfish/templates/mutualize-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: test-geomapfish-mutualize
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: mutualize
+rules:
+- apiGroups:
+    - camptocamp.com
+  resources:
+    - sharedconfigconfigs
+    - sharedconfigsources
+    - githubwebhooks
+  verbs:
+    - get
+    - watch
+    - list
+    - create
+    - update
+    - patch
+    - delete
+---
+# Source: geomapfish/templates/mutualize-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: test-geomapfish-mutualize
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: mutualize
+subjects:
+- kind: Group
+  name: group1
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: group2
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: test-geomapfish-mutualize
+  apiGroup: rbac.authorization.k8s.io
+---
 # Source: geomapfish/templates/service.yaml
 apiVersion: v1
 kind: Service
