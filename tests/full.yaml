@@ -30,6 +30,12 @@ ingress:
       path: /custom/
       service: geomapfish-env-version-custom-feedback
 
+mutualize:
+  rbac: true
+  rbacGroups:
+    - group1
+    - group2
+
 serviceAccount:
   create: true
   name: full
