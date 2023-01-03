@@ -1,4 +1,36 @@
 ---
+# Source: geomapfish/templates/networkpolicy.yaml
+# For backend pod (that should only be access from the geoportal pod)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-geomapfish-geoportal
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: geoportal
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: test
+      backend: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    # For Prometheus
+    - ports:
+        - port: prometheus
+          protocol: TCP
+    # For geoportal
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: geomapfish
+              app.kubernetes.io/instance: test
+              app.kubernetes.io/component: geoportal
+---
 # Source: geomapfish/templates/pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -219,54 +251,6 @@ spec:
           emptyDir: {}
         - name: print
           emptyDir: {}
----
-# Source: geomapfish/templates/tools-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-geomapfish-tools
-  labels:
-    helm.sh/chart: geomapfish
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geomapfish
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tools
-spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: geomapfish
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: tools
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: geomapfish
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: tools
-    spec:
-      serviceAccountName: default
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
-      affinity:
-        {}
-      containers:
-        - name: tools
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/geomapfish-tools:latest"
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          args:
-           - sleep
-           - infinity
 ---
 # Source: geomapfish/templates/alembic-job.yaml
 apiVersion: batch/v1

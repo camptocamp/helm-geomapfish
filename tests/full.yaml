@@ -11,6 +11,7 @@ alembic:
     foo: bar1
 
 tools:
+  enabled: true
   annotations:
     reloader.stakater.com/auto: 'true'
   podLabels:

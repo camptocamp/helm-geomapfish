@@ -98,7 +98,7 @@ statsd:
 
 tools:
   serviceName: tools
-  enabled: true
+  enabled: false
   image:
     repository: camptocamp/geomapfish-tools
     tag: latest
@@ -143,6 +143,10 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+
+# Information needed to create the network policy
+networkPolicy: {}
+#  ports: []
 
 resources:
   {}
