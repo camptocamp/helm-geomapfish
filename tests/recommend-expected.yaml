@@ -135,8 +135,7 @@ spec:
     spec:
       serviceAccountName: default
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
+        {}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -383,8 +382,7 @@ spec:
     spec:
       serviceAccountName: default
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
+        {}
       affinity:
         {}
       containers:
@@ -475,8 +473,7 @@ spec:
     spec:
       serviceAccountName: default
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
+        {}
       affinity:
         {}
       restartPolicy: Never
