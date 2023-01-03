@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.4.0](https://github.com/camptocamp/helm-geomapfish/tree/0.4.0) (2022-12-23)
+
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.3.0...0.4.0)
+
+#### :sparkles: Enhancements
+
+- Add RBAC for mutualize custom resources [\#123](https://github.com/camptocamp/helm-geomapfish/pull/123) ([sbrunner](https://github.com/sbrunner))
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Configure Renovate for kubernetes [\#122](https://github.com/camptocamp/helm-geomapfish/pull/122) ([sbrunner](https://github.com/sbrunner))
+- Configure Renovate to run monthly [\#121](https://github.com/camptocamp/helm-geomapfish/pull/121) ([sbrunner](https://github.com/sbrunner))
+- Configure Mend Bolt [\#120](https://github.com/camptocamp/helm-geomapfish/pull/120) ([sbrunner](https://github.com/sbrunner))
+- Upgrade deprecated set-output commands [\#116](https://github.com/camptocamp/helm-geomapfish/pull/116) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#115](https://github.com/camptocamp/helm-geomapfish/pull/115) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+
+#### :package: Dependencies update
+
+- Update dependency c2cciutils to v1.4.4 [\#124](https://github.com/camptocamp/helm-geomapfish/pull/124) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.4.0 [\#118](https://github.com/camptocamp/helm-geomapfish/pull/118) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.3.12 [\#117](https://github.com/camptocamp/helm-geomapfish/pull/117) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.3.0](https://github.com/camptocamp/helm-geomapfish/tree/0.3.0) (2022-11-14)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.10...0.3.0)
