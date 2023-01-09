@@ -3,12 +3,12 @@
 apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
-  name: {{ include "common.fullname" ( dict "root" $ "service" ( dict "serviceName" "redirect" )) }}-hosts
-  labels: {{ include "common.labels" ( dict "root" $ "service" ( dict "serviceName" "redirect-hosts" ) ) | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect" ) }}-hosts
+  {{- include "common.metadata" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect"  ) | nindent 2 }}
     mutualize-redirect-hosts: 'true'
 spec:
   name: {{ include "common.fullname" ( dict "root" $ "service" ( dict "serviceName" "redirect" )) }}-hosts
-  environment: {{ $.Values.mutualize.environment }}
+  environment: {{ .Values.mutualize.environment }}
   content:
 {{- range $host := .Values.mutualize.redirect.hosts }}
    {{ $host }}: {{ $host }}

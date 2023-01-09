@@ -3,8 +3,8 @@
 apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
-  name: {{ include "common.fullname" ( dict "root" $ "service" ( dict "serviceName" $name ) ) }}
-  labels: {{ include "common.labels" ( dict "root" $ "service" ( dict "serviceName" $name ) ) | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.mutualize.sharedConfig "serviceName" $name ) }}
+  {{- include "common.metadata" ( dict "root" $ "service" $.Values.mutualize.sharedConfig "serviceName" $name  ) | nindent 2 }}
     mutualize-sharedconfig: 'true'
 spec:
   name: {{ $name }}

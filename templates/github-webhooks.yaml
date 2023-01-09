@@ -3,8 +3,8 @@
 apiVersion: camptocamp.com/v3
 kind: GitHubWebhook
 metadata:
-  name: {{ include "common.fullname" ( dict "root" $ "service" ( dict "serviceName" $name ) ) }}
-  labels: {{ include "common.labels" ( dict "root" $ "service" ( dict "serviceName" $name ) ) | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.mutualize.webhook "serviceName" $name ) }}
+  {{- include "common.metadata" ( dict "root" $ "service" $.Values.mutualize.webhook "serviceName" $name) | nindent 2 }}
 spec:
   environment: {{ $.Values.mutualize.environment }}
   repository: {{ $.Values.mutualize.repository }}

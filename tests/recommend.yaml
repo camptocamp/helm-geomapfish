@@ -189,6 +189,12 @@ mutualize:
   secret: admin1234
   # Should be https://config.mutualize(-int)?.camptocamp.com
   configUrl: https://config.mutualized.example.com
+  webhook:
+    annotations:
+      test: webhook
+  sharedConfig:
+    annotations:
+      test: sharedConfig
   configs:
     test-print:
       dir: print/print-apps/test
@@ -207,6 +213,8 @@ mutualize:
   redirect:
     hosts:
       - example.com
+    annotations:
+      test: redirect
 
 ingress:
   enabled: false

@@ -38,6 +38,10 @@ mutualize:
   # Should be https://config.mutualize(-int)?.camptocamp.com
   configUrl: to-fill
   tccService: service.namespace.svc.cluster.local
+  webhook:
+    annotations: {}
+  sharedConfig:
+    annotations: {}
   configs: {}
   #  test-print:
   #    host: demo.camptocamp.com
@@ -52,6 +56,7 @@ mutualize:
   #      TEST: test
   redirect:
     hosts: []
+    annotations: {}
 
   rbac: false
   rbacGroups: []
