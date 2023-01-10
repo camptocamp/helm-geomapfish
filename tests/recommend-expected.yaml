@@ -586,6 +586,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-print
+  annotations:
+    test: webhook
 spec:
   environment: test
   repository: camptocamp/test
@@ -604,6 +606,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-tilecloudchain
+  annotations:
+    test: webhook
 spec:
   environment: test
   repository: camptocamp/test
@@ -621,7 +625,9 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: redirect-hosts
+    app.kubernetes.io/component: redirect
+  annotations:
+    test: redirect
     mutualize-redirect-hosts: 'true'
 spec:
   name: test-geomapfish-redirect-hosts
@@ -640,6 +646,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-print
+  annotations:
+    test: sharedConfig
     mutualize-sharedconfig: 'true'
 spec:
   name: test-print
@@ -668,6 +676,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-tilecloudchain
+  annotations:
+    test: sharedConfig
     mutualize-sharedconfig: 'true'
 spec:
   name: test-tilecloudchain
@@ -696,6 +706,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-tilecloudchain
+  annotations:
+    test: sharedConfig
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-main
@@ -714,6 +726,8 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: test-tilecloudchain
+  annotations:
+    test: sharedConfig
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-test
