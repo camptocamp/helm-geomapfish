@@ -37,7 +37,7 @@ mutualize:
   secret: to-fill
   # Should be https://config.mutualize(-int)?.camptocamp.com
   configUrl: to-fill
-  tccService: service.namespace.svc.cluster.local
+  tccService:
   webhook:
     annotations: {}
   sharedConfig:

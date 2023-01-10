@@ -36,6 +36,8 @@ mutualize:
     - group1
     - group2
 
+  tccService: service.namespace.svc.cluster.local
+
 serviceAccount:
   create: true
   name: full
