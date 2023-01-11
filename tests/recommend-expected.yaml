@@ -85,26 +85,6 @@ spec:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: geoportal
 ---
-# Source: geomapfish/templates/tiles-service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: test-geomapfish-tiles
-  labels:
-    helm.sh/chart: geomapfish
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geomapfish
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tiles
-spec:
-  type: ExternalName
-  externalName: service.namespace.svc.cluster.local
-  ports:
-  - name: http
-    protocol: TCP
-    port: 80
-    targetPort: 80
----
 # Source: geomapfish/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
