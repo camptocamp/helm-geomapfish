@@ -1,12 +1,11 @@
 {{- range $name, $value := .Values.mutualize.configs }}
 ---
-apiVersion: camptocamp.com/v3
-kind: GitHubWebhook
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhook{{ $.Values.mutualize.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.mutualize.webhook "serviceName" $name ) }}
   {{- include "common.metadata" ( dict "root" $ "service" $.Values.mutualize.webhook "serviceName" $name) | nindent 2 }}
 spec:
-  environment: {{ $.Values.mutualize.environment }}
   repository: {{ $.Values.mutualize.repository }}
   url: {{ $.Values.mutualize.configUrl }}/1/refresh/{{ $name }}
   contentType: json

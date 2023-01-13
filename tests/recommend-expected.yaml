@@ -556,8 +556,8 @@ spec:
             - alembic --name=main upgrade head && alembic --name=static upgrade head
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
-apiVersion: camptocamp.com/v3
-kind: GitHubWebhook
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhookTest
 metadata:
   name: test-geomapfish-test-prin
   labels:
@@ -569,15 +569,14 @@ metadata:
   annotations:
     test: webhook
 spec:
-  environment: test
   repository: camptocamp/test
   url: https://config.mutualized.example.com/1/refresh/test-print
   contentType: json
   secret: admin1234
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
-apiVersion: camptocamp.com/v3
-kind: GitHubWebhook
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhookTest
 metadata:
   name: test-geomapfish-test-tile
   labels:
@@ -589,15 +588,14 @@ metadata:
   annotations:
     test: webhook
 spec:
-  environment: test
   repository: camptocamp/test
   url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain
   contentType: json
   secret: admin1234
 ---
 # Source: geomapfish/templates/mutualize-redirect.yaml
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceTest
 metadata:
   name: test-geomapfish-redirect-hosts
   labels:
@@ -611,13 +609,12 @@ metadata:
     mutualize-redirect-hosts: 'true'
 spec:
   name: default-test-geomapfish-8a1b57e94ab2e54e95b52dbf472789a92a8c78fa
-  environment: test
   content:
    example.com: example.com
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceTest
 metadata:
   name: test-geomapfish-test-prin
   labels:
@@ -631,7 +628,6 @@ metadata:
     mutualize-sharedconfig: 'true'
 spec:
   name: test-print
-  environment: test
   content:
       type: git
       repo: git@github.com:camptocamp/test.git
@@ -646,8 +642,8 @@ spec:
             TEST: test
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceTest
 metadata:
   name: test-geomapfish-test-tile
   labels:
@@ -661,7 +657,6 @@ metadata:
     mutualize-sharedconfig: 'true'
 spec:
   name: test-tilecloudchain
-  environment: test
   content:
       type: git
       repo: git@github.com:camptocamp/test.git
@@ -676,8 +671,8 @@ spec:
             TEST: test
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceTest
 metadata:
   name: test-geomapfish-test-tile-hosts-main
   labels:
@@ -691,13 +686,12 @@ metadata:
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-main
-  environment: test
   content:
     demo.camptocamp.com: /etc/tilecloudchain-configs/test-tilecloudchain/config.yaml
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceTest
 metadata:
   name: test-geomapfish-test-tile-hosts-test
   labels:
@@ -711,6 +705,5 @@ metadata:
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: test-tilecloudchain-test
-  environment: test
   content:
     demo-test.camptocamp.com: /etc/tilecloudchain-configs/test-tilecloudchain/config.yaml
