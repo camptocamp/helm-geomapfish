@@ -610,7 +610,7 @@ metadata:
     test: redirect
     mutualize-redirect-hosts: 'true'
 spec:
-  name: test-geomapfish-redirect-hosts
+  name: default-test-geomapfish-8a1b57e94ab2e54e95b52dbf472789a92a8c78fa
   environment: test
   content:
    example.com: example.com
