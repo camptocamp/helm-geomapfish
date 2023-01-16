@@ -2,15 +2,14 @@
 {{- if $config.tilecloudchain }}
 {{- range $host := $config.hosts }}
 ---
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ $.Values.mutualize.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.mutualize.sharedConfig "serviceName" $name ) }}-hosts-{{ $host.name }}
   {{- include "common.metadata" ( dict "root" $ "service" $.Values.mutualize.sharedConfig "serviceName" $name ) | nindent 2 }}
     mutualize-tilecloudchain-hosts: 'true'
 spec:
   name: {{ $name }}-{{ $host.name }}
-  environment: {{ $.Values.mutualize.environment }}
   content:
     {{ $host.host }}: /etc/tilecloudchain-configs/{{ $name }}/config.yaml
 {{- end }}

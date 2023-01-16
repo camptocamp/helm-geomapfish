@@ -68,7 +68,7 @@ jobs:
         run: ci/get-version https://camptocamp.github.io/operator-shared-config-manager
       - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
       - run:
-          helm install operator-shared-config-manager --set=env.ENVIRONMENT=test --set=image.tag=${VERSION} --version=${VERSION}
+          helm install operator-shared-config-manager --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t --set=image.tag=${VERSION} --version=${VERSION}
           operator-shared-config-manager/operator-shared-config-manager
         env:
           VERSION: ${{steps.scm-operator.outputs.version}}
@@ -76,7 +76,7 @@ jobs:
         run: ci/get-version https://camptocamp.github.io/operator-github-webhook
       - run: helm repo add operator-github-webhook https://camptocamp.github.io/operator-github-webhook
       - run:
-          helm install operator-github-webhook --set=env.ENVIRONMENT=test --set=image.tag=${VERSION} --version=${VERSION}
+          helm install operator-github-webhook --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t --set=image.tag=${VERSION} --version=${VERSION}
           operator-github-webhook/operator-github-webhook
         env:
           VERSION: ${{steps.gh-wh-operator.outputs.version}}

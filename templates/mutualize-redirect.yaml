@@ -1,14 +1,13 @@
 ---
 {{- if .Values.mutualize.redirect.hosts }}
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ .Values.mutualize.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect" ) }}-hosts
   {{- include "common.metadata" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect"  ) | nindent 2 }}
     mutualize-redirect-hosts: 'true'
 spec:
   name: {{ .Release.Namespace }}-{{ include "common.fullname" ( dict "root" . "service" .Values.mutualize.redirect ) }}-{{ sha1sum ( toJson .Values.mutualize.redirect.hosts ) }}
-  environment: {{ .Values.mutualize.environment }}
   content:
 {{- range $host := .Values.mutualize.redirect.hosts }}
    {{ $host }}: {{ $host }}

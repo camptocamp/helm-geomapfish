@@ -1,14 +1,13 @@
 {{- range $name, $value := .Values.mutualize.configs }}
 ---
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ $.Values.mutualize.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.mutualize.sharedConfig "serviceName" $name ) }}
   {{- include "common.metadata" ( dict "root" $ "service" $.Values.mutualize.sharedConfig "serviceName" $name  ) | nindent 2 }}
     mutualize-sharedconfig: 'true'
 spec:
   name: {{ $name }}
-  environment: {{ $.Values.mutualize.environment }}
   content:
       type: git
       repo: git@github.com:{{ $.Values.mutualize.repository }}.git

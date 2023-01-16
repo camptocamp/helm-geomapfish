@@ -31,7 +31,7 @@ config:
 
 mutualize:
   serviceName: mutualize
-  environment: to be defined
+  environment: ''
   repository: camptocamp/to-fill
   branch: master
   secret: to-fill
