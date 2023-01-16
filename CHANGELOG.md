@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.5.0](https://github.com/camptocamp/helm-geomapfish/tree/0.5.0) (2023-01-16)
+
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.4.0...0.5.0)
+
+#### :sparkles: Enhancements
+
+- Use new version of the operators [\#131](https://github.com/camptocamp/helm-geomapfish/pull/131) ([sbrunner](https://github.com/sbrunner))
+- By default, don't create an external service on mutualize tcc [\#129](https://github.com/camptocamp/helm-geomapfish/pull/129) ([sbrunner](https://github.com/sbrunner))
+- Be able to add specific annotation to operator object [\#128](https://github.com/camptocamp/helm-geomapfish/pull/128) ([sbrunner](https://github.com/sbrunner))
+
+#### :bug: Bug Fixes
+
+- Add checksum in the redirect host spec name [\#130](https://github.com/camptocamp/helm-geomapfish/pull/130) ([sbrunner](https://github.com/sbrunner))
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Fix pull requests check workflow, use our CI token [\#127](https://github.com/camptocamp/helm-geomapfish/pull/127) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#126](https://github.com/camptocamp/helm-geomapfish/pull/126) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+
+#### :package: Dependencies update
+
+- Update all minor versions \(minor\) [\#125](https://github.com/camptocamp/helm-geomapfish/pull/125) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.4.0](https://github.com/camptocamp/helm-geomapfish/tree/0.4.0) (2022-12-23)
 
 [Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.3.0...0.4.0)
@@ -153,7 +176,7 @@
 
 ## [0.2.2](https://github.com/camptocamp/helm-geomapfish/tree/0.2.2) (2022-04-12)
 
-[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.0...0.2.2)
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.1...0.2.2)
 
 #### :package: Dependencies update
 
@@ -163,13 +186,13 @@
 
 - Remove unneeded in config map, fix service name [\#66](https://github.com/camptocamp/helm-geomapfish/pull/66) ([sbrunner](https://github.com/sbrunner))
 
-## [0.2.0](https://github.com/camptocamp/helm-geomapfish/tree/0.2.0) (2022-03-18)
-
-[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.1...0.2.0)
-
 ## [0.2.1](https://github.com/camptocamp/helm-geomapfish/tree/0.2.1) (2022-03-18)
 
-[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.20...0.2.1)
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.2.0...0.2.1)
+
+## [0.2.0](https://github.com/camptocamp/helm-geomapfish/tree/0.2.0) (2022-03-18)
+
+[Full Changelog](https://github.com/camptocamp/helm-geomapfish/compare/0.1.20...0.2.0)
 
 #### :package: Dependencies update
 
