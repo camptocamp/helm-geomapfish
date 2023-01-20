@@ -1,3 +1,4 @@
+{{- if .Values.mutualize.enabled }}
 {{- range $name, $value := .Values.mutualize.configs }}
 ---
 apiVersion: camptocamp.com/v4
@@ -10,4 +11,5 @@ spec:
   url: {{ $.Values.mutualize.configUrl }}/1/refresh/{{ $name }}
   contentType: json
   secret: {{ $.Values.mutualize.secret }}
+{{- end }}
 {{- end }}

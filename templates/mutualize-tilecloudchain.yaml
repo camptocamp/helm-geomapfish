@@ -1,3 +1,4 @@
+{{- if .Values.mutualize.enabled }}
 {{- range $name, $config := .Values.mutualize.configs }}
 {{- if $config.tilecloudchain }}
 {{- range $host := $config.hosts }}
@@ -12,6 +13,7 @@ spec:
   name: {{ $name }}-{{ $host.name }}
   content:
     {{ $host.host }}: /etc/tilecloudchain-configs/{{ $name }}/config.yaml
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -30,6 +30,7 @@ config:
   resources: {}
 
 mutualize:
+  enabled: false
   serviceName: mutualize
   environment: ''
   repository: camptocamp/to-fill
