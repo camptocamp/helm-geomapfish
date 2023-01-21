@@ -1,3 +1,4 @@
+{{- if .Values.mutualize.enabled }}
 ---
 {{- if .Values.mutualize.redirect.hosts }}
 apiVersion: camptocamp.com/v3
@@ -11,5 +12,6 @@ spec:
   content:
 {{- range $host := .Values.mutualize.redirect.hosts }}
    {{ $host }}: {{ $host }}
+{{- end }}
 {{- end }}
 {{- end }}

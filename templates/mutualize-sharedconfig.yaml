@@ -1,3 +1,4 @@
+{{- if .Values.mutualize.enabled }}
 {{- range $name, $value := .Values.mutualize.configs }}
 ---
 apiVersion: camptocamp.com/v3
@@ -26,4 +27,5 @@ spec:
           data:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+{{- end }}
 {{- end }}

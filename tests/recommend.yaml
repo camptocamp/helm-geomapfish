@@ -183,6 +183,7 @@ tools:
       cpu: 1m
 
 mutualize:
+  enabled: true
   environment: test
   repository: camptocamp/test
   branch: master
