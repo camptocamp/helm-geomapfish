@@ -47,3 +47,12 @@ One other `SharedConfigSource` will be create for each entry in key `hosts` of e
 Those object are used by the
 [Shared Config Manager Operator](https://github.com/camptocamp/operator-shared-config-manager)
 to create a `ConfigMap` (from the `SharedConfigConfig` object) that contains the TileCloud Chain hosts config.
+
+## Contributing
+
+Install the pre-commit hooks:
+
+```bash
+pip install pre-commit
+pre-commit install --allow-missing-config
+```
