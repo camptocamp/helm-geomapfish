@@ -34,6 +34,16 @@ jobs:
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
 
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: "pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}\npre-commit-"
+      - run: pre-commit run --all-files
+        env:
+          SKIP: helm-lock
+      - run: git diff
+        if: failure()
       - name: Checks
         run: c2cciutils-checks
 
@@ -61,23 +71,24 @@ jobs:
       - run: kubectl apply -f tests/expected.yaml
       - run: kubectl delete -f tests/expected.yaml || true
       - run: kubectl apply -f tests/full-expected.yaml
-      - run: kubectl delete -f tests/full-expected.yaml || true
+      - run:
+          kubectl delete -f tests/full-expected.yaml || true
 
-        # Install operators
+          # Install operators
       - id: scm-operator
         run: ci/get-version https://camptocamp.github.io/operator-shared-config-manager
       - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
       - run:
-          helm install operator-shared-config-manager --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t --set=image.tag=${VERSION} --version=${VERSION}
-          operator-shared-config-manager/operator-shared-config-manager
+          helm install operator-shared-config-manager --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t
+          --set=image.tag=${VERSION} --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
         env:
           VERSION: ${{steps.scm-operator.outputs.version}}
       - id: gh-wh-operator
         run: ci/get-version https://camptocamp.github.io/operator-github-webhook
       - run: helm repo add operator-github-webhook https://camptocamp.github.io/operator-github-webhook
       - run:
-          helm install operator-github-webhook --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t --set=image.tag=${VERSION} --version=${VERSION}
-          operator-github-webhook/operator-github-webhook
+          helm install operator-github-webhook --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t
+          --set=image.tag=${VERSION} --version=${VERSION} operator-github-webhook/operator-github-webhook
         env:
           VERSION: ${{steps.gh-wh-operator.outputs.version}}
 
