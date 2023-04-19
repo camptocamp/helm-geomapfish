@@ -56,16 +56,8 @@ jobs:
       - name: Setup k3s/k3d
         run: c2cciutils-k8s-install
 
-      - run: helm template --namespace=default test . > tests/actual.yaml
-      - run: diff --ignore-trailing-space tests/actual.yaml tests/expected.yaml
       - run: helm lint .
-
-      - run: helm template --namespace=default --values=tests/recommend.yaml test . > tests/recommend-actual.yaml
-      - run: diff --ignore-trailing-space tests/recommend-actual.yaml tests/recommend-expected.yaml
       - run: helm lint --values=tests/recommend.yaml .
-
-      - run: helm template --namespace=default --values=tests/full.yaml  test . > tests/full-actual.yaml
-      - run: diff --ignore-trailing-space tests/full-actual.yaml tests/full-expected.yaml
       - run: helm lint --values=tests/full.yaml .
 
       - run: kubectl apply -f tests/expected.yaml
