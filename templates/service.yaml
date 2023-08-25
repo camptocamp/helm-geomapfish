@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}
   labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
-    prometheus: 'true'
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,19 +11,3 @@ spec:
       protocol: TCP
       name: http
   selector: {{- include "common.selectorLabels" ( dict "root" . "service" .Values ) | nindent 4 }}
-{{- if .Values.prometheus }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-prometheus
-  labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: 80
-      targetPort: prometheus
-      protocol: TCP
-      name: prometheus
-  selector: {{- include "common.selectorLabels" ( dict "root" . "service" .Values ) | nindent 4 }}
-{{- end }}

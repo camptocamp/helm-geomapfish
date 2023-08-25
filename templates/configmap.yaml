@@ -9,5 +9,3 @@ data:
   ALEMBIC_IMAGE_TAG: {{ .Values.alembic.image.tag | quote }}
   TOOLS_IMAGE_TAG: {{ .Values.tools.image.tag | quote }}
   CONFIG_IMAGE_TAG: {{ .Values.config.image.tag | quote }}
-  STATD_IMAGE_TAG: {{ .Values.statsd.image.tag | quote }}
-  BUSYBOX_IMAGE_TAG: {{ .Values.busybox.image.tag | quote }}

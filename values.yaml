@@ -38,7 +38,7 @@ mutualize:
   secret: to-fill
   # Should be https://config.mutualize(-int)?.camptocamp.com
   configUrl: to-fill
-  tccService:
+  tccService: false
   webhook:
     annotations: {}
   sharedConfig:
@@ -82,26 +82,6 @@ alembic:
   annotations: {}
   resources: {}
 
-busybox:
-  image:
-    repository: busybox
-    tag: latest
-  serviceName: busybox
-  env: {}
-  annotations: {}
-  resources: {}
-
-statsd:
-  serviceName: statsd
-  enabled: true
-  image:
-    repository: ghcr.io/camptocamp/c2cwsgiutils
-    tag: latest
-    sha:
-  env: {}
-  annotations: {}
-  resources: {}
-
 tools:
   serviceName: tools
   enabled: true
@@ -141,14 +121,12 @@ ingress:
     {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  paths: []
   hosts:
-    - host: chart-example.local
-      paths: []
-
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+    []
+    # - host: chart-example.local
+    #   tls:
+    #     secretName: chart-example-tls
 
 resources:
   {}
@@ -169,4 +147,9 @@ tolerations: []
 
 affinity: {}
 
-prometheus: true
+podMonitor:
+  enabled: false
+  endpoint:
+    honorLabels: true
+    interval: 10s
+    port: prometheus

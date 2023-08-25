@@ -47,8 +47,6 @@ data:
   ALEMBIC_IMAGE_TAG: "latest"
   TOOLS_IMAGE_TAG: "latest"
   CONFIG_IMAGE_TAG: "latest"
-  STATD_IMAGE_TAG: "latest"
-  BUSYBOX_IMAGE_TAG: "latest"
 ---
 # Source: geomapfish/templates/mutualize-role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -111,7 +109,6 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: geoportal
-    prometheus: 'true'
 spec:
   type: ClusterIP
   ports:
@@ -119,29 +116,6 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-  selector:
-    app.kubernetes.io/name: geomapfish
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: geoportal
----
-# Source: geomapfish/templates/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: test-geomapfish-geoportal-prometheus
-  labels:
-    helm.sh/chart: geomapfish
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: geomapfish
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: geoportal
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: prometheus
-      protocol: TCP
-      name: prometheus
   selector:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
@@ -412,3 +386,26 @@ spec:
                 name: geomapfish-env-version-custom-feedback
                 port:
                   number: 80
+---
+# Source: geomapfish/templates/podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-geomapfish-geoportal
+  labels:
+    helm.sh/chart: geomapfish
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: geomapfish
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: geoportal
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geomapfish
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: geoportal
+  podMetricsEndpoints:
+    -
+      honorLabels: true
+      interval: 10s
+      port: prometheus

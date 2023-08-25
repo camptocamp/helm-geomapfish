@@ -48,6 +48,10 @@ Those object are used by the
 [Shared Config Manager Operator](https://github.com/camptocamp/operator-shared-config-manager)
 to create a `ConfigMap` (from the `SharedConfigConfig` object) that contains the TileCloud Chain hosts config.
 
+## Schema documentation
+
+Documentation based on the schema defined in [values.md](./values.md).
+
 ## Contributing
 
 Install the pre-commit hooks:
