@@ -2,18 +2,7 @@ global:
   configMapNameOverride:
     env: test-geomapfish-env
 
-shared:
-  redisEnv: &redisEnv
-    C2C_REDIS_URL:
-      value: redis://test-redis-master/1
-    C2C_REDIS_TIMEOUT:
-      value: '30'
-    REDIS_DB:
-      value: '0'
-    C2C_BROADCAST_PREFIX:
-      value: broadcast_geoportal_$(REDIS_DB)
-      order: 1
-
+common:
   c2cwsgiutilsEnv: &c2cwsgiutilsEnv
     C2C_LOG_VIEW_ENABLED:
       value: '1'
@@ -124,7 +113,7 @@ shared:
 
 image: &geoportal-image
   repository: camptocamp/geomapfishapp-geoportal
-  tag: 2.7
+  tag: '2.7'
 env:
   <<: [*configEnv, *c2cwsgiutilsEnv]
   SENTRY_CLIENT_RELEASE:
@@ -172,7 +161,7 @@ alembic:
 tools:
   image:
     repository: camptocamp/geomapfish-tools
-    tag: 2.7
+    tag: '2.7'
   env:
     <<: *configEnv
   resources:

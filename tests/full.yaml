@@ -4,6 +4,9 @@ annotations:
 podLabels:
   foo: bar0
 
+podMonitor:
+  enabled: true
+
 alembic:
   annotations:
     reloader.stakater.com/auto: 'true'
