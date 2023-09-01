@@ -165,7 +165,8 @@
         "env": {
           "$ref": "#/definitions/env"
         }
-      }
+      },
+      "required": ["image"]
     },
     "image": {
       "type": "object",
@@ -183,7 +184,9 @@
           "type": ["null", "string"],
           "description": "Image sha"
         }
-      }
+      },
+      "required": ["repository"],
+      "anyOf": [{ "required": ["tag"] }, { "required": ["sha"] }]
     },
     "env": {
       "type": "object",
@@ -497,7 +500,8 @@
           "description": "Update the main and the static schemas",
           "default": false
         }
-      }
+      },
+      "required": ["image"]
     },
     "tools": {
       "$ref": "#/definitions/podConfig"
@@ -783,5 +787,6 @@
         }
       }
     }
-  }
+  },
+  "required": ["image"]
 }
