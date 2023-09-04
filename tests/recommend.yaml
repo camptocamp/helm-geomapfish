@@ -2,7 +2,7 @@ global:
   configMapNameOverride:
     env: test-geomapfish-env
 
-common:
+sharedAnchor:
   c2cwsgiutilsEnv: &c2cwsgiutilsEnv
     C2C_LOG_VIEW_ENABLED:
       value: '1'
