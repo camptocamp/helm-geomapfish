@@ -2,11 +2,12 @@
 
 ## Properties
 
-- **`common`**
 - **`global`** _(object)_
   - **`image`**: Refer to _[#/definitions/globalImage](#definitions/globalImage)_.
   - **`configMapNameOverride`**: Refer to _[#/definitions/configMapNameOverride](#definitions/configMapNameOverride)_.
   - **`revisionHistoryLimit`** _(integer)_: The number of old history to keep to allow rollback.
+- **`common`**
+- **`sharedAnchor`**: Free space where we can defined anchor to be used later.
 - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
 - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
 - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
