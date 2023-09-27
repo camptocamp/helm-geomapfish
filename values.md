@@ -24,8 +24,8 @@
 - **`tolerations`**: Refer to _[#/definitions/tolerations](#definitions/tolerations)_.
 - **`podSecurityContext`**: Refer to _[#/definitions/podSecurityContext](#definitions/podSecurityContext)_.
 - **`securityContext`**: Refer to _[#/definitions/securityContext](#definitions/securityContext)_.
-- **`podMonitor`** _(object)_: The Prometheus Pod Monitor, config. Cannot contain additional properties.
-  - **`enabled`** _(boolean)_: Enable the Prometheus Pod Monitor.
+- **`podMonitor`** _(object)_: The Prometheus PodMonitor, configuration. Cannot contain additional properties.
+  - **`enabled`** _(boolean)_: Enable the Prometheus PodMonitor.
   - **`endpoint`** _(object)_: The Prometheus endpoint.
 - **`replicaCount`**: Refer to _[#/definitions/replicaCount](#definitions/replicaCount)_.
 - **`image`**: Refer to _[#/definitions/image](#definitions/image)_.
@@ -98,7 +98,7 @@
   - **`branch`** _(string)_: The branch of the project.
   - **`configs`** _(object)_: The mutualize configurations (GitHub WebHook and SharedConfigs). Can contain additional properties.
     - **Additional Properties**
-  - **`webhook`** _(object)_: The mutualize webhook configuration. Cannot contain additional properties.
+  - **`webhook`** _(object)_: The mutualize WebHook configuration. Cannot contain additional properties.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
     - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
@@ -106,9 +106,9 @@
     - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
     - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
-  - **`secret`** _(string)_: The secret of the mutualize config, used to create the WebHook.
+  - **`secret`** _(string)_: The secret of the mutualize configuration, used to create the WebHook.
   - **`configUrl`** _(string)_: The URL of the mutualize configuration, used to create the WebHook.
-  - **`sharedConfig`** _(object)_: The mutualize shared config configuration. Cannot contain additional properties.
+  - **`sharedConfig`** _(object)_: The mutualize shared configuration configuration. Cannot contain additional properties.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
     - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
@@ -136,7 +136,7 @@
 - <a id="definitions/nameOverride"></a>**`nameOverride`** _(string)_: [helm-common] Override the name.
 - <a id="definitions/fullnameOverride"></a>**`fullnameOverride`** _(string)_: [helm-common] Override the fullname.
 - <a id="definitions/releaseTrunc"></a>**`releaseTrunc`** _(integer)_: [helm-common] The release trunk length. Default: `20`.
-- <a id="definitions/prefixTrunc"></a>**`prefixTrunc`** _(integer)_: [helm-common] The prefix trunk length (release anf chart name). Default: `40`.
+- <a id="definitions/prefixTrunc"></a>**`prefixTrunc`** _(integer)_: [helm-common] The prefix trunk length (release and chart name). Default: `40`.
 - <a id="definitions/serviceAccount"></a>**`serviceAccount`** _(object)_: [helm-common] Service account configuration.
   - **`create`** _(boolean)_: Create a service account.
   - **`name`** _(string)_: Name of the service account.
@@ -145,7 +145,7 @@
 - <a id="definitions/globalImage"></a>**`globalImage`** _(object)_: [helm-common] global image configuration.
   - **`pullPolicy`** _(string)_: Image pull policy.
   - **`pullSecrets`** _(array)_: Image pull secrets.
-- <a id="definitions/configMapNameOverride"></a>**`configMapNameOverride`** _(object)_: [helm-common] global: Used to be able to globally override the name of the config map. Can contain additional properties.
+- <a id="definitions/configMapNameOverride"></a>**`configMapNameOverride`** _(object)_: [helm-common] global: Used to be able to globally override the name of the ConfigMap. Can contain additional properties.
   - **Additional Properties** _(string)_
 - <a id="definitions/labels"></a>**`labels`** _(object)_: [helm-common] Pod labels. Can contain additional properties.
   - **Additional Properties** _(string)_
