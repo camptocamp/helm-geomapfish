@@ -48,8 +48,8 @@ jobs:
           SKIP: helm-lock
       - run: git diff && false
         if: failure()
-      - name: Checks
-        run: c2cciutils-checks
+      - name: Print environment information
+        run: c2cciutils-env
 
       - name: Install helm
         uses: azure/setup-helm@v3
@@ -114,9 +114,17 @@ jobs:
       - name: Publish
         run: c2cciutils-publish
 
-      - name: Install octokit/action
-        run: npm install @octokit/action
-      - name: Run changelog
-        run: node .github/run-changelog.mjs
+      - name: Trigger changelog workflow
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/github-script@v6
+        with:
+          script: |-
+            if (process.env.GITHUB_REF_TYPE == 'tag') {
+                console.log('Trigger changelog');
+                await github.rest.repos.createDispatchEvent({
+                    owner: 'camptocamp',
+                    repo: 'helm-mutualize',
+                    event_type: 'changelog',
+                });
+            }
