@@ -115,8 +115,6 @@ jobs:
         run: c2cciutils-publish
 
       - name: Trigger changelog workflow
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: actions/github-script@v7
         with:
           script: |-
@@ -124,7 +122,9 @@ jobs:
                 console.log('Trigger changelog');
                 await github.rest.repos.createDispatchEvent({
                     owner: 'camptocamp',
-                    repo: 'helm-mutualize',
+                    repo: 'helm-geomapfish',
                     event_type: 'changelog',
                 });
             }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
