@@ -68,9 +68,9 @@
 - **`ingress`** _(object)_: The Ingress configuration. Cannot contain additional properties.
   - **`enabled`** _(boolean)_: Enable the Ingress.
   - **`labels`** _(object)_: The labels of the Ingress. Can contain additional properties.
-    - **Additional Properties** _(string)_
+    - **Additional properties** _(string)_
   - **`annotations`** _(object)_: The annotations of the Ingress. Can contain additional properties.
-    - **Additional Properties** _(string)_
+    - **Additional properties** _(string)_
   - **`hosts`** _(array)_: The hosts of the Ingress.
     - **Items** _(object)_: Cannot contain additional properties.
       - **`name`** _(string)_: The name of the host configuration.
@@ -80,7 +80,7 @@
   - **`paths`** _(array)_
     - **Items** _(string)_
   - **`additionalPaths`** _(object)_: Can contain additional properties.
-    - **Additional Properties** _(object)_: Cannot contain additional properties.
+    - **Additional properties** _(object)_: Cannot contain additional properties.
       - **`path`** _(string)_: The path of the Ingress.
       - **`service`** _(string)_: The service of the Service.
       - **`port`** _(integer)_: The port of the Service. Default: `80`.
@@ -97,7 +97,7 @@
   - **`repository`** _(string)_: The repository of the project.
   - **`branch`** _(string)_: The branch of the project.
   - **`configs`** _(object)_: The mutualize configurations (GitHub WebHook and SharedConfigs). Can contain additional properties.
-    - **Additional Properties**
+    - **Additional properties**
   - **`webhook`** _(object)_: The mutualize WebHook configuration. Cannot contain additional properties.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
@@ -146,15 +146,15 @@
   - **`pullPolicy`** _(string)_: Image pull policy.
   - **`pullSecrets`** _(array)_: Image pull secrets.
 - <a id="definitions/configMapNameOverride"></a>**`configMapNameOverride`** _(object)_: [helm-common] global: Used to be able to globally override the name of the ConfigMap. Can contain additional properties.
-  - **Additional Properties** _(string)_
+  - **Additional properties** _(string)_
 - <a id="definitions/labels"></a>**`labels`** _(object)_: [helm-common] Pod labels. Can contain additional properties.
-  - **Additional Properties** _(string)_
+  - **Additional properties** _(string)_
 - <a id="definitions/annotations"></a>**`annotations`** _(object)_: [helm-common] Pod annotations. Can contain additional properties.
-  - **Additional Properties** _(string)_
+  - **Additional properties** _(string)_
 - <a id="definitions/podLabels"></a>**`podLabels`** _(object)_: [helm-common] Labels used only in the Pod definition. Can contain additional properties.
-  - **Additional Properties** _(string)_
+  - **Additional properties** _(string)_
 - <a id="definitions/podAnnotations"></a>**`podAnnotations`** _(object)_: [helm-common] Annotations used only in the Pod definition. Can contain additional properties.
-  - **Additional Properties** _(string)_
+  - **Additional properties** _(string)_
 - <a id="definitions/serviceName"></a>**`serviceName`** _(string)_: [helm-common] The name of the service (not Kubernetes service), this will postfix the name.
 - <a id="definitions/affinity"></a>**`affinity`** _(object)_: [helm-common] Pod: The used affinity.
 - <a id="definitions/tolerations"></a>**`tolerations`** _(array)_: [helm-common] Pod: Tolerations.
@@ -184,7 +184,7 @@
   - **`tag`** _(string)_: Image tag, used if the sha is not defined.
   - **`sha`** _(['null', 'string'])_: Image sha.
 - <a id="definitions/env"></a>**`env`** _(object)_: [helm-common] Container: Environment variables. Can contain additional properties.
-  - **Additional Properties**
+  - **Additional properties**
     - **One of**
       - _object_
         - **`type`** _(string, required)_: Disable the environment variable. Must be one of: `["none"]`.
