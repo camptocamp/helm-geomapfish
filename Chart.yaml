@@ -10,4 +10,4 @@ icon: https://raw.githubusercontent.com/geomapfish/geomapfish_website/master/con
 dependencies:
   - name: common
     repository: https://camptocamp.github.io/helm-common
-    version: 1.0.1
+    version: 2.0.1
