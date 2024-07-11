@@ -1,3 +1,9 @@
 [tool.black]
 line-length = 110
 target-version = ["py39"]
+
+[tool.poetry]
+name = "helm-geomapfish"
+version = "0.0.0"
+description = "HELM chart for GeoMapFish"
+authors = ["Camptocamp <info@camptocamp.com>"]
