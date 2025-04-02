@@ -87,24 +87,24 @@ jobs:
         run: ci/get-version https://camptocamp.github.io/operator-shared-config-manager
       - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
       - run:
-          helm install operator-shared-config-manager --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t
-          --set=image.tag=${VERSION} --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
+          helm template operator-shared-config-manager --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t
+          --set=image.tag=${VERSION} --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager | kubectl apply -f -
         env:
           VERSION: ${{steps.scm-operator.outputs.version}}
       - id: gh-wh-operator
         run: ci/get-version https://camptocamp.github.io/operator-github-webhook
       - run: helm repo add operator-github-webhook https://camptocamp.github.io/operator-github-webhook
       - run:
-          helm install operator-github-webhook --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t
-          --set=image.tag=${VERSION} --version=${VERSION} operator-github-webhook/operator-github-webhook
+          helm template operator-github-webhook --set=env.ENVIRONMENT=test --set=crd.suffix=test --set=crd.shortSuffix=t
+          --set=image.tag=${VERSION} --version=${VERSION} operator-github-webhook/operator-github-webhook | kubectl apply -f -
         env:
           VERSION: ${{steps.gh-wh-operator.outputs.version}}
 
       - name: Create the database
         run: c2cciutils-k8s-db --script=tests/db.sql
       - run:
-          helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false
-          bitnami/redis
+          helm template test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false
+          bitnami/redis | kubectl apply -f -
 
       - run: kubectl apply -f tests/recommend-expected.yaml
       - run: c2cciutils-k8s-wait
@@ -112,7 +112,6 @@ jobs:
         if: always()
       - run: kubectl delete -f tests/recommend-expected.yaml || true
 
-      - run: helm uninstall test-redis
       - name: Clean the database
         run: c2cciutils-k8s-db --cleanup
         if: always()
