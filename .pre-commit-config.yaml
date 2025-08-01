@@ -10,7 +10,7 @@ ci:
     - jsonschema-validator
 repos:
   - repo: https://github.com/sbrunner/jsonschema2md
-    rev: 1.5.2
+    rev: 1.6.1
     hooks:
       - id: jsonschema2md
         files: values.schema.json
@@ -35,7 +35,7 @@ repos:
       - id: trailing-whitespace
       - id: mixed-line-ending
   - repo: https://github.com/sbrunner/hooks
-    rev: 1.4.1
+    rev: 1.5.0
     hooks:
       - id: copyright
       - id: workflows-require-timeout
