@@ -6,7 +6,6 @@
   - <a id="properties/global/properties/image"></a>**`image`**: Refer to _[#/definitions/globalImage](#definitions/globalImage)_.
   - <a id="properties/global/properties/configMapNameOverride"></a>**`configMapNameOverride`**: Refer to _[#/definitions/configMapNameOverride](#definitions/configMapNameOverride)_.
   - <a id="properties/global/properties/revisionHistoryLimit"></a>**`revisionHistoryLimit`** _(integer)_: The number of old history to keep to allow rollback.
-- <a id="properties/common"></a>**`common`**
 - <a id="properties/sharedAnchor"></a>**`sharedAnchor`**: Free space where we can defined anchor to be used later.
 - <a id="properties/nameOverride"></a>**`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
 - <a id="properties/fullnameOverride"></a>**`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
@@ -28,7 +27,7 @@
   - <a id="properties/podMonitor/properties/enabled"></a>**`enabled`** _(boolean)_: Enable the Prometheus PodMonitor.
   - <a id="properties/podMonitor/properties/endpoint"></a>**`endpoint`** _(object)_: The Prometheus endpoint.
 - <a id="properties/replicaCount"></a>**`replicaCount`**: Refer to _[#/definitions/replicaCount](#definitions/replicaCount)_.
-- <a id="properties/image"></a>**`image`**: Refer to _[#/definitions/image](#definitions/image)_.
+- <a id="properties/image"></a>**`image`** _(required)_: Refer to _[#/definitions/image](#definitions/image)_.
 - <a id="properties/env"></a>**`env`**: Refer to _[#/definitions/env](#definitions/env)_.
 - <a id="properties/entrypoint"></a>**`entrypoint`** _(string)_: The entrypoint of the application, used by the probes.
 - <a id="properties/probe"></a>**`probe`** _(object)_: Cannot contain additional properties.
@@ -61,7 +60,7 @@
   - <a id="properties/alembic/properties/affinity"></a>**`affinity`**: Refer to _[#/definitions/affinity](#definitions/affinity)_.
   - <a id="properties/alembic/properties/nodeSelector"></a>**`nodeSelector`**: Refer to _[#/definitions/nodeSelector](#definitions/nodeSelector)_.
   - <a id="properties/alembic/properties/replicaCount"></a>**`replicaCount`**: Refer to _[#/definitions/replicaCount](#definitions/replicaCount)_.
-  - <a id="properties/alembic/properties/image"></a>**`image`**: Refer to _[#/definitions/image](#definitions/image)_.
+  - <a id="properties/alembic/properties/image"></a>**`image`** _(required)_: Refer to _[#/definitions/image](#definitions/image)_.
   - <a id="properties/alembic/properties/env"></a>**`env`**: Refer to _[#/definitions/env](#definitions/env)_.
   - <a id="properties/alembic/properties/mainStatic"></a>**`mainStatic`** _(boolean)_: Update the main and the static schemas. Default: `false`.
 - <a id="properties/tools"></a>**`tools`**: Refer to _[#/definitions/podConfig](#definitions/podConfig)_.
@@ -97,7 +96,6 @@
   - <a id="properties/mutualize/properties/repository"></a>**`repository`** _(string)_: The repository of the project.
   - <a id="properties/mutualize/properties/branch"></a>**`branch`** _(string)_: The branch of the project.
   - <a id="properties/mutualize/properties/configs"></a>**`configs`** _(object)_: The mutualize configurations (GitHub WebHook and SharedConfigs). Can contain additional properties.
-    - <a id="properties/mutualize/properties/configs/additionalProperties"></a>**Additional properties**
   - <a id="properties/mutualize/properties/webhook"></a>**`webhook`** _(object)_: The mutualize WebHook configuration. Cannot contain additional properties.
     - <a id="properties/mutualize/properties/webhook/properties/nameOverride"></a>**`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - <a id="properties/mutualize/properties/webhook/properties/fullnameOverride"></a>**`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
@@ -126,7 +124,7 @@
     - <a id="properties/mutualize/properties/redirect/properties/annotations"></a>**`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
     - <a id="properties/mutualize/properties/redirect/properties/hosts"></a>**`hosts`** _(array)_: The mutualize redirect hosts.
       - <a id="properties/mutualize/properties/redirect/properties/hosts/items"></a>**Items** _(string)_
-  - <a id="properties/mutualize/properties/tccService"></a>**`tccService`** _(['boolean', 'string'])_: The name of the TileCloud-chain service, deprecated due low security. Default: `false`.
+  - <a id="properties/mutualize/properties/tccService"></a>**`tccService`** _(boolean or string)_: The name of the TileCloud-chain service, deprecated due low security. Default: `false`.
   - <a id="properties/mutualize/properties/rbac"></a>**`rbac`** _(boolean)_: Enable the Kubernetes RBAC for the mutualize objects.
   - <a id="properties/mutualize/properties/rbacGroups"></a>**`rbacGroups`** _(array)_: The Active directory groups used in the RBAC configuration.
     - <a id="properties/mutualize/properties/rbacGroups/items"></a>**Items** _(string)_
@@ -175,31 +173,29 @@
   - <a id="definitions/podConfig/properties/affinity"></a>**`affinity`**: Refer to _[#/definitions/affinity](#definitions/affinity)_.
   - <a id="definitions/podConfig/properties/nodeSelector"></a>**`nodeSelector`**: Refer to _[#/definitions/nodeSelector](#definitions/nodeSelector)_.
   - <a id="definitions/podConfig/properties/replicaCount"></a>**`replicaCount`**: Refer to _[#/definitions/replicaCount](#definitions/replicaCount)_.
-  - <a id="definitions/podConfig/properties/image"></a>**`image`**: Refer to _[#/definitions/image](#definitions/image)_.
+  - <a id="definitions/podConfig/properties/image"></a>**`image`** _(required)_: Refer to _[#/definitions/image](#definitions/image)_.
   - <a id="definitions/podConfig/properties/env"></a>**`env`**: Refer to _[#/definitions/env](#definitions/env)_.
 - <a id="definitions/image"></a>**`image`** _(object)_: [helm-common] Container: Image configuration.
   - **Any of**
-    - <a id="definitions/image/anyOf/0"></a>
-    - <a id="definitions/image/anyOf/1"></a>
   - <a id="definitions/image/properties/repository"></a>**`repository`** _(string, required)_: Image repository.
   - <a id="definitions/image/properties/tag"></a>**`tag`** _(string)_: Image tag, used if the sha is not defined.
-  - <a id="definitions/image/properties/sha"></a>**`sha`** _(['null', 'string'])_: Image sha.
+  - <a id="definitions/image/properties/sha"></a>**`sha`** _(null or string)_: Image sha.
 - <a id="definitions/env"></a>**`env`** _(object)_: [helm-common] Container: Environment variables. Can contain additional properties.
   - <a id="definitions/env/additionalProperties"></a>**Additional properties**
     - **One of**
       - <a id="definitions/env/additionalProperties/oneOf/0"></a>_object_
-        - <a id="definitions/env/additionalProperties/oneOf/0/properties/type"></a>**`type`** _(string, required)_: Disable the environment variable. Must be one of: `["none"]`.
+        - <a id="definitions/env/additionalProperties/oneOf/0/properties/type"></a>**`type`** _(string, required)_: Disable the environment variable. Must be one of: "none".
       - <a id="definitions/env/additionalProperties/oneOf/1"></a>_object_
-        - <a id="definitions/env/additionalProperties/oneOf/1/properties/type"></a>**`type`** _(string)_: Environment variable from a direct value. Must be one of: `["value"]`. Default: `"value"`.
-        - <a id="definitions/env/additionalProperties/oneOf/1/properties/order"></a>**`order`** _(integer)_: Order of the environment variable. Must be one of: `[0, 1]`. Default: `0`.
+        - <a id="definitions/env/additionalProperties/oneOf/1/properties/type"></a>**`type`** _(string)_: Environment variable from a direct value. Must be one of: "value". Default: `"value"`.
+        - <a id="definitions/env/additionalProperties/oneOf/1/properties/order"></a>**`order`** _(integer)_: Order of the environment variable. Must be one of: 0 or 1. Default: `0`.
         - <a id="definitions/env/additionalProperties/oneOf/1/properties/value"></a>**`value`** _(string, required)_: Value of the environment variable.
       - <a id="definitions/env/additionalProperties/oneOf/2"></a>_object_
-        - <a id="definitions/env/additionalProperties/oneOf/2/properties/type"></a>**`type`** _(string, required)_: Environment variable from a ConfigMap or a Secret. Must be one of: `["configMap", "secret"]`.
-        - <a id="definitions/env/additionalProperties/oneOf/2/properties/order"></a>**`order`** _(integer)_: Order of the environment variable. Must be one of: `[0, 1]`. Default: `0`.
+        - <a id="definitions/env/additionalProperties/oneOf/2/properties/type"></a>**`type`** _(string, required)_: Environment variable from a ConfigMap or a Secret. Must be one of: "configMap" or "secret".
+        - <a id="definitions/env/additionalProperties/oneOf/2/properties/order"></a>**`order`** _(integer)_: Order of the environment variable. Must be one of: 0 or 1. Default: `0`.
         - <a id="definitions/env/additionalProperties/oneOf/2/properties/name"></a>**`name`** _(string, required)_: Name of the ConfigMap or Secret, if 'self', same name as the service.
         - <a id="definitions/env/additionalProperties/oneOf/2/properties/key"></a>**`key`** _(string, required)_: Key of the ConfigMap or Secret.
       - <a id="definitions/env/additionalProperties/oneOf/3"></a>_object_
-        - <a id="definitions/env/additionalProperties/oneOf/3/properties/type"></a>**`type`** _(string, required)_: Free valueFrom for an environment variable. Must be one of: `["valueFrom"]`.
-        - <a id="definitions/env/additionalProperties/oneOf/3/properties/order"></a>**`order`** _(integer)_: Order of the environment variable. Must be one of: `[0, 1]`. Default: `0`.
+        - <a id="definitions/env/additionalProperties/oneOf/3/properties/type"></a>**`type`** _(string, required)_: Free valueFrom for an environment variable. Must be one of: "valueFrom".
+        - <a id="definitions/env/additionalProperties/oneOf/3/properties/order"></a>**`order`** _(integer)_: Order of the environment variable. Must be one of: 0 or 1. Default: `0`.
         - <a id="definitions/env/additionalProperties/oneOf/3/properties/valueFrom"></a>**`valueFrom`** _(object, required)_
 - <a id="definitions/resources"></a>**`resources`** _(object)_: [helm-common] Container: The container resources.
