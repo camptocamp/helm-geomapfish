@@ -95,6 +95,7 @@
   - <a id="properties/mutualize/properties/environment"></a>**`environment`** _(string)_: The environment of the mutualize (int or prod).
   - <a id="properties/mutualize/properties/repository"></a>**`repository`** _(string)_: The repository of the project.
   - <a id="properties/mutualize/properties/branch"></a>**`branch`** _(string)_: The branch of the project.
+  - <a id="properties/mutualize/properties/github_access_type"></a>**`github_access_type`** _(string)_: The type of access to check (admin|push|pull). Must be one of: "admin", "push", or "pull". Default: `"push"`.
   - <a id="properties/mutualize/properties/configs"></a>**`configs`** _(object)_: The mutualize configurations (GitHub WebHook and SharedConfigs). Can contain additional properties.
   - <a id="properties/mutualize/properties/webhook"></a>**`webhook`** _(object)_: The mutualize WebHook configuration. Cannot contain additional properties.
     - <a id="properties/mutualize/properties/webhook/properties/nameOverride"></a>**`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.

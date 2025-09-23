@@ -10,6 +10,8 @@ spec:
   repository: {{ $.Values.mutualize.repository }}
   url: {{ $.Values.mutualize.configUrl }}/1/refresh/{{ $name }}
   contentType: json
-  secret: {{ $.Values.mutualize.secret }}
+  {{- with $.Values.mutualize.secret }}
+  secret: {{ . }}
+  {{- end }}
 {{- end }}
 {{- end }}

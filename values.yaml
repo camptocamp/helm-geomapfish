@@ -35,7 +35,6 @@ mutualize:
   environment: ''
   repository: camptocamp/to-fill
   branch: master
-  secret: to-fill
   # Should be https://config.mutualize(-int)?.camptocamp.com
   configUrl: to-fill
   tccService: false
