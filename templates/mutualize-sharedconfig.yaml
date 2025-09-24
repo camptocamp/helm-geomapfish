@@ -27,5 +27,9 @@ spec:
           data:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+      auth:
+        github_repository: {{ $.Values.mutualize.repository }}
+        # The type of access to check (admin|push|pull).
+        github_access_type: {{ $.Values.mutualize.github_access_type | default "push" }}
 {{- end }}
 {{- end }}

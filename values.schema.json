@@ -633,6 +633,12 @@
           "type": "string",
           "description": "The branch of the project"
         },
+        "github_access_type": {
+          "type": "string",
+          "description": "The type of access to check (admin|push|pull)",
+          "enum": ["admin", "push", "pull"],
+          "default": "push"
+        },
         "configs": {
           "type": "object",
           "description": "The mutualize configurations (GitHub WebHook and SharedConfigs)",

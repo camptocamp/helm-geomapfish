@@ -630,6 +630,10 @@ spec:
           environment_variables: true
           data:
             TEST: test
+      auth:
+        github_repository: camptocamp/test
+        # The type of access to check (admin|push|pull).
+        github_access_type: push
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
 apiVersion: camptocamp.com/v3
@@ -659,6 +663,10 @@ spec:
           environment_variables: true
           data:
             TEST: test
+      auth:
+        github_repository: camptocamp/test
+        # The type of access to check (admin|push|pull).
+        github_access_type: push
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
 apiVersion: camptocamp.com/v3
