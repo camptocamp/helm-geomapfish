@@ -19,7 +19,7 @@ repos:
           - values.schema.json
           - values.md
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: detect-private-key
       - id: check-merge-conflict
@@ -121,7 +121,7 @@ repos:
           - github-workflows-require-timeout
       - id: check-renovate
         additional_dependencies:
-          - pyjson5==1.6.9 # pypi
+          - pyjson5==2.0.0 # pypi
   - repo: https://github.com/sirwart/ripsecrets
     rev: v0.1.11
     hooks:
@@ -137,7 +137,7 @@ repos:
         args:
           - --py39-plus
   - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
+    rev: 7.0.0
     hooks:
       - id: isort
   - repo: https://github.com/psf/black
