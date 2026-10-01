@@ -89,7 +89,7 @@ repos:
     hooks:
       - id: prettier
         additional_dependencies:
-          - prettier@3.9.6 # npm
+          - prettier@3.9.9 # npm
           - prettier-plugin-sh@0.19.0 # npm
           - prettier-plugin-toml@2.0.6 # npm
           - '@prettier/plugin-xml@0.12.0' # npm
@@ -137,7 +137,7 @@ repos:
         args:
           - --py39-plus
   - repo: https://github.com/PyCQA/isort
-    rev: 9.0.1
+    rev: 9.0.2
     hooks:
       - id: isort
   - repo: https://github.com/psf/black
