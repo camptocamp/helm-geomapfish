@@ -38,6 +38,13 @@ jobs:
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
 
+      # Pre-commit regenerates the checked-in fixtures, so keep it on one
+      # stable Helm version instead of the runner's preinstalled one.
+      - name: Install helm (early, for pre-commit hooks)
+        uses: azure/setup-helm@v5
+        with:
+          version: 3.21.4
+
       - uses: actions/cache@v6
         with:
           path: ~/.cache/pre-commit
