@@ -12,6 +12,8 @@ on:
 permissions:
   actions: write
   contents: write
+  id-token: write
+  packages: write
 
 env:
   HAS_SECRETS: ${{ secrets.HAS_SECRETS }}
@@ -28,12 +30,6 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-
-      - uses: camptocamp/initialise-gopass-summon-action@17703c87720ba3766abc90da60b437783b530d93 # v2
-        with:
-          ci-gpg-private-key: ${{secrets.CI_GPG_PRIVATE_KEY}}
-          github-gopass-ci-token: ${{secrets.GOPASS_CI_GITHUB_TOKEN}}
-        if: env.HAS_SECRETS == 'HAS_SECRETS'
 
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
@@ -124,7 +120,9 @@ jobs:
         if: always()
 
       - name: Publish
-        run: c2cciutils-publish
+        run: tag-publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: git diff --exit-code --patch > /tmp/dpkg-versions.patch || true
         if: failure()
