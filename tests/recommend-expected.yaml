@@ -17,6 +17,7 @@ spec:
       app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: geoportal
+
 ---
 # Source: geomapfish/templates/configmap.yaml
 apiVersion: v1
@@ -35,6 +36,7 @@ data:
   ALEMBIC_IMAGE_TAG: "2.7"
   TOOLS_IMAGE_TAG: "2.7"
   CONFIG_IMAGE_TAG: "prod-2-7"
+
 ---
 # Source: geomapfish/templates/service.yaml
 apiVersion: v1
@@ -58,6 +60,7 @@ spec:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: geoportal
+
 ---
 # Source: geomapfish/templates/deployment.yaml
 apiVersion: apps/v1
@@ -313,6 +316,7 @@ spec:
           emptyDir: {}
         - name: print
           emptyDir: {}
+
 ---
 # Source: geomapfish/templates/tools-deployment.yaml
 apiVersion: apps/v1
@@ -416,6 +420,7 @@ spec:
           args:
            - sleep
            - infinity
+
 ---
 # Source: geomapfish/templates/alembic-job.yaml
 apiVersion: batch/v1
@@ -544,6 +549,7 @@ spec:
             - bash
             - -c
             - alembic --name=main upgrade head && alembic --name=static upgrade head
+
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
 apiVersion: camptocamp.com/v4
@@ -563,6 +569,7 @@ spec:
   url: https://config.mutualized.example.com/1/refresh/test-print
   contentType: json
   secret: admin1234
+
 ---
 # Source: geomapfish/templates/github-webhooks.yaml
 apiVersion: camptocamp.com/v4
@@ -582,6 +589,7 @@ spec:
   url: https://config.mutualized.example.com/1/refresh/test-tilecloudchain
   contentType: json
   secret: admin1234
+
 ---
 # Source: geomapfish/templates/mutualize-redirect.yaml
 apiVersion: camptocamp.com/v3
@@ -601,6 +609,7 @@ spec:
   name: default-test-geomapfish-8a1b57e94ab2e54e95b52dbf472789a92a8c78fa
   content:
    example.com: example.com
+
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
 apiVersion: camptocamp.com/v3
@@ -634,6 +643,7 @@ spec:
         github_repository: camptocamp/test
         # The type of access to check (admin|push|pull).
         github_access_type: push
+
 ---
 # Source: geomapfish/templates/mutualize-sharedconfig.yaml
 apiVersion: camptocamp.com/v3
@@ -667,6 +677,7 @@ spec:
         github_repository: camptocamp/test
         # The type of access to check (admin|push|pull).
         github_access_type: push
+
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
 apiVersion: camptocamp.com/v3
@@ -686,6 +697,7 @@ spec:
   name: test-tilecloudchain-main
   content:
     demo.camptocamp.com: /etc/tilecloudchain-configs/test-tilecloudchain/config.yaml
+
 ---
 # Source: geomapfish/templates/mutualize-tilecloudchain.yaml
 apiVersion: camptocamp.com/v3

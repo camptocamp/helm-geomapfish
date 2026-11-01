@@ -17,6 +17,7 @@ spec:
       app.kubernetes.io/name: geomapfish
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: geoportal
+
 ---
 # Source: geomapfish/templates/serviceaccount.yaml
 apiVersion: v1
@@ -29,6 +30,7 @@ metadata:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: geoportal
+
 ---
 # Source: geomapfish/templates/configmap.yaml
 apiVersion: v1
@@ -47,6 +49,7 @@ data:
   ALEMBIC_IMAGE_TAG: "latest"
   TOOLS_IMAGE_TAG: "latest"
   CONFIG_IMAGE_TAG: "latest"
+
 ---
 # Source: geomapfish/templates/mutualize-role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -74,6 +77,7 @@ rules:
     - update
     - patch
     - delete
+
 ---
 # Source: geomapfish/templates/mutualize-rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -97,6 +101,7 @@ roleRef:
   kind: Role
   name: test-geomapfish-mutualize
   apiGroup: rbac.authorization.k8s.io
+
 ---
 # Source: geomapfish/templates/service.yaml
 apiVersion: v1
@@ -120,6 +125,7 @@ spec:
     app.kubernetes.io/name: geomapfish
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: geoportal
+
 ---
 # Source: geomapfish/templates/tiles-service.yaml
 apiVersion: v1
@@ -140,6 +146,7 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
+
 ---
 # Source: geomapfish/templates/deployment.yaml
 apiVersion: apps/v1
@@ -257,6 +264,7 @@ spec:
           emptyDir: {}
         - name: print
           emptyDir: {}
+
 ---
 # Source: geomapfish/templates/tools-deployment.yaml
 apiVersion: apps/v1
@@ -307,6 +315,7 @@ spec:
           args:
            - sleep
            - infinity
+
 ---
 # Source: geomapfish/templates/alembic-job.yaml
 apiVersion: batch/v1
@@ -351,6 +360,7 @@ spec:
             - bash
             - -c
             - alembic --name=static upgrade head
+
 ---
 # Source: geomapfish/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
@@ -386,6 +396,7 @@ spec:
                 name: geomapfish-env-version-custom-feedback
                 port:
                   number: 80
+
 ---
 # Source: geomapfish/templates/podmonitor.yaml
 apiVersion: monitoring.coreos.com/v1
